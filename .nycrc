@@ -1,0 +1,32 @@
+{
+  "check-coverage": true,
+  "statements": 20,
+  "branches": 20,
+  "functions": 20,
+  "lines": 20,
+  "extension": [
+    ".ts",
+    ".tsx"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
+  "exclude": [
+    "*.d.ts",
+    "src/**/types.ts",
+    "src/**/*.types.ts",
+    "src/**/__tests__/**",
+    "src/tests/**"
+  ],
+  "require": [
+    "ts-node/register",
+    "./tools/setupChaiDomAsserions.js"
+  ],
+  "reporter": [
+    "text-summary",
+    "html"
+  ],
+  "all": true,
+  "cache": true
+}

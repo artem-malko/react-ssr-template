@@ -1,0 +1,17 @@
+.git
+.idea/
+.vscode
+.DS_Store
+.nyc_output
+.tsc_incremental_output
+.env
+.cache
+
+node_modules
+npm-debug.log
+
+build
+docs
+coverage
+
+/src/config/local.ts
