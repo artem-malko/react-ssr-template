@@ -25,11 +25,11 @@ const clientConfig: webpack.Configuration = {
     app: './src/applications/client/index.tsx',
 
     // Polyfills
-    intersectionObserver: './src/shared/polyfills/intersectionObserver.js',
-    requestidlecallback: './src/shared/polyfills/requestidlecallback.js',
-    rafPolyfill: './src/shared/polyfills/raf.js',
-    es6Shim: './src/shared/polyfills/es6shim.js',
-    pad: './src/shared/polyfills/pad.js',
+    intersectionObserver: './src/polyfills/intersectionObserver.js',
+    requestidlecallback: './src/polyfills/requestidlecallback.js',
+    rafPolyfill: './src/polyfills/raf.js',
+    es6Shim: './src/polyfills/es6shim.js',
+    pad: './src/polyfills/pad.js',
   },
 
   output: {
@@ -117,17 +117,6 @@ const clientConfig: webpack.Configuration = {
               case 'scheduler':
               case 'object-assign':
                 return 'react';
-              case 'redux':
-              case 'symbol-observable':
-              case 'react-redux':
-              case 'react-is':
-              case 'invariant':
-              case 'hoist-non-react-statics':
-              case '@babel':
-              case 'prop-types':
-              case 'redux-batched-subscribe':
-              case 'reselect':
-                return 'redux';
               default:
                 return 'vendor';
             }

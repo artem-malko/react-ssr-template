@@ -1,0 +1,16 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "all",
+    "prettier.arrowParens": "always",
+    "prettier.printWidth": 106,
+    "prettier.semi": true,
+    "eslint.enable": true,
+    "eslint.validate": [
+        "typescript",
+        "typescriptreact"
+    ],
+    "eslint.alwaysShowStatus": true
+}

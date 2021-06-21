@@ -1,0 +1,73 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // Client application debug
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Start browser for debugging client side from VSCode",
+      // Replace with URL to your local dev-version
+      "url": "http://localhost:4000",
+      "webRoot": "${workspaceFolder}/",
+    },
+
+    // Server application debug
+    {
+      "type": "node",
+      "name": "Attach Server",
+      "request": "attach",
+      /*
+        Default port for debug in NodeJS 9229.
+
+        You can pass another in --inspect arg for nodemaon in Makefile
+        --inspect=127.0.0.1:6666
+      */
+      "port": 9229,
+      "protocol": "inspector",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceFolder}/",
+      "restart": true,
+      "smartStep": true,
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha run all tests with debug",
+      "env": {
+        "NODE_PATH": "./src",
+        "RTL_SKIP_AUTO_CLEANUP": "true",
+        "TS_NODE_TRANSPILE_ONLY": "true",
+        "NODE_ENV": "test",
+      },
+      "envFile": "${workspaceFolder}/.env_test",
+      "program": "${workspaceFolder}/node_modules/.bin/mocha",
+      "args": [
+          "--require", "ts-node/register",
+          "--require", "./tools/setupChaiDomAsserions.js",
+          "--require", "src/tests/hooks/beforeAndAfterEach.ts",
+          "--require", "source-map-support/register",
+          "--bail",
+          "--recursive",
+          "${workspaceFolder}/src/**/__tests__/*.ts",
+          "${workspaceFolder}/src/**/__tests__/**/*.ts",
+          "${workspaceFolder}/src/**/__tests__/*.tsx",
+          "${workspaceFolder}/src/**/__tests__/**/*.tsx",
+          "--enable-source-maps",
+          "--reporter", "nyan",
+          "--timeout", "999999",
+          "--colors",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "protocol": "inspector"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Attach Server + Client",
+      "configurations": ["Attach Server", "Client"]
+    },
+  ]
+}
