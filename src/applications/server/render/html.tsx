@@ -36,7 +36,7 @@ export function Html(props: Props) {
       </head>
       <body>
         <div id="app">
-          <App />
+          <App renderCallback={() => console.log('renderered')} />
         </div>
         <script dangerouslySetInnerHTML={{ __html: inlineScript }} />
         <script dangerouslySetInnerHTML={{ __html: polyfillsSourceCode }} />

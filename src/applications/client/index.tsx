@@ -5,6 +5,5 @@ import { App } from 'ui/main/app';
 const container = document.getElementById('app');
 
 const root = (ReactDOM as any).hydrateRoot(container);
-root.render(<App />);
 
-console.log('WOOOW, IT WORKS!');
+root.render(<App renderCallback={() => console.log('WOOOW, renderered')} />);
