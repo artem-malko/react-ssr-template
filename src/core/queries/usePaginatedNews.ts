@@ -6,7 +6,7 @@ export const usePaginatedNews = (page = 1) => {
     ['news', page],
     async () => {
       // Simple fake latency for the requests from server side
-      const timeout = process.env.APP_ENV === 'server' ? 5000 : 500;
+      const timeout = process.env.APP_ENV === 'server' ? 3000 : 300;
       await new Promise((resolve) => setTimeout(resolve, timeout));
 
       return axios

@@ -18,6 +18,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
   let didError = false;
 
+  // Just for test
+  const forcedToUseOnComplete = req.query['render'] === 'wait';
+
   /**
    * For SEO specifically, where the correct status code is extra important,
    * you can use onCompleteAll instead of onReadyToStream as the place
@@ -25,7 +28,8 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
    * However, that also delays when you start giving content to the bot,
    * and giving it earlier may give you better rankings due to perf.
    */
-  const methodName = req.isSearchBot ? 'onCompleteAll' : 'onReadyToStream';
+  const useOnComplete = req.isSearchBot;
+  const methodName = forcedToUseOnComplete || useOnComplete ? 'onCompleteAll' : 'onReadyToStream';
 
   assetsPromise.then((assets) => {
     const { startWriting, abort } = pipeToNodeWritable(
