@@ -5,7 +5,7 @@ type Props = {
   queryId: string;
   queryOutput: UseQueryResult;
 };
-// @TODO add description to than flow
+// @TODO add a description to that flow
 export const InitialData = memo<Props>(({ queryId, queryOutput }) => {
   const id = `query_id-${queryId}`;
 
@@ -39,9 +39,9 @@ export const getInitialDataFromDom = (queryId: string) => {
     return;
   }
 
-  // @TODO add Node type checking like in React 18 server restore
+  // @TODO add a comment Node type checking like in React 18 server restore
   const rawData = document.getElementById(createDomIdForQuery(queryId))?.childNodes[0]?.textContent;
 
-  // @TODO catch parse errors
+  // @TODO catch any parse errors
   return rawData ? JSON.parse(rawData) : undefined;
 };
