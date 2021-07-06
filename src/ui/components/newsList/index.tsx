@@ -1,9 +1,10 @@
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { memo, useState } from 'react';
+import { InitialData } from 'ui/components/initialData';
 
 export const NewsList = memo(() => {
   const [page, setPage] = useState(1);
-  const news = usePaginatedNews(page);
+  const { news, queryId } = usePaginatedNews(page);
 
   return (
     <div>
@@ -11,15 +12,19 @@ export const NewsList = memo(() => {
         Prev page
       </button>
       <button onClick={() => setPage(page + 1)}>Next page</button>
-      {news.isFetching && <div>Updating...</div>}
-      {news.isSuccess &&
-        news.data.map((item) => (
-          <div key={item.id}>
-            {item.title}
-            <hr />
-          </div>
-        ))}
       <br />
+      <br />
+      <div style={{ padding: 10, outline: '1px solid blue' }}>
+        {news.isFetching && <div>Updating...</div>}
+        {news.isSuccess &&
+          news.data.map((item) => (
+            <div key={item.id}>
+              {item.title}
+              <hr />
+            </div>
+          ))}
+      </div>
+      <InitialData queryId={queryId} queryOutput={news} />
     </div>
   );
 });
