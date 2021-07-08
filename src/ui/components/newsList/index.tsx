@@ -1,10 +1,14 @@
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
-import { memo, useState } from 'react';
+import { memo, useLayoutEffect, useState } from 'react';
 import { InitialData } from 'ui/components/initialData';
 
 export const NewsList = memo(() => {
   const [page, setPage] = useState(1);
   const { news, queryId } = usePaginatedNews(page);
+
+  useLayoutEffect(() => {
+    console.log('NEWSLIST RENDERED ON CLIENT');
+  }, []);
 
   return (
     <div>
@@ -24,7 +28,9 @@ export const NewsList = memo(() => {
             </div>
           ))}
       </div>
+
       <InitialData queryId={queryId} queryOutput={news} />
     </div>
   );
 });
+export default NewsList;

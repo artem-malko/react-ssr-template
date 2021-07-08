@@ -18,7 +18,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
   let didError = false;
 
-  // Just for test
+  // @JUST_FOR_TEST
   const forcedToUseOnComplete = req.query['render'] === 'wait';
 
   /**

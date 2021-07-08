@@ -16,7 +16,7 @@ export const usePaginatedNews = (page = 1) => {
     ['news', page],
     async () => {
       // Simple fake latency for the requests from server side
-      const timeout = process.env.APP_ENV === 'server' ? 3000 : 300;
+      const timeout = process.env.APP_ENV === 'server' ? 4000 : 400;
       await new Promise((resolve) => setTimeout(resolve, timeout));
 
       return axios.get(`http://node-hnapi.herokuapp.com/news?page=${page}`).then((res) => {

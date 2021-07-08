@@ -25,6 +25,7 @@ const serverConfig: webpack.Configuration = {
             options: {
               transpileOnly: true,
               compilerOptions: {
+                module: 'esnext',
                 target: 'es2018',
                 jsx: isProduction ? 'react-jsx' : 'react-jsxdev',
               },

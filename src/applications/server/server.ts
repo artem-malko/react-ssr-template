@@ -42,6 +42,17 @@ server.use(cookieParser());
 // Check, that current client is a search bot
 server.use(isSearchBot);
 
+// @JUST_FOR_TEST JUST FOR TEST
+server.use((req, _, next) => {
+  if (req.url.includes('newsList')) {
+    // Artificially delay serving JS
+    // to demonstrate streaming HTML.
+    setTimeout(next, 10000);
+  } else {
+    next();
+  }
+});
+
 server.use(
   publicPath,
   express.static(path.resolve(process.cwd(), 'build', 'public'), {

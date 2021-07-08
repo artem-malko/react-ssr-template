@@ -1,7 +1,9 @@
-import React, { memo } from 'react';
+import React, { lazy, memo } from 'react';
 import { Preloader } from 'ui/kit/preloader';
-import { NewsList } from 'ui/components/newsList';
 import { StaticComponent } from 'ui/components/staticComponent';
+import { Search } from 'ui/components/search';
+
+const NewsList = lazy(() => import(/* webpackPrefetch: true */ 'ui/components/newsList'));
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -19,6 +21,9 @@ export const App = memo<Props>(({ renderCallback }) => {
       }}
     >
       App component. This text is rendered before hacker news API will return any response
+      <br />
+      <br />
+      <Search />
       <br />
       <br />
       <React.Suspense fallback={<Preloader />}>
