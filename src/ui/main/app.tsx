@@ -3,7 +3,7 @@ import { Preloader } from 'ui/kit/preloader';
 import { StaticComponent } from 'ui/components/staticComponent';
 import { Search } from 'ui/components/search';
 
-const NewsList = lazy(() => import(/* webpackPrefetch: true */ 'ui/components/newsList'));
+const NewsList = lazy(() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList'));
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5

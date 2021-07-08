@@ -12,6 +12,7 @@ export const NewsList = memo(() => {
 
   return (
     <div>
+      <h2>NewsList Component</h2>
       <button disabled={page === 1} onClick={() => setPage(page - 1)}>
         Prev page
       </button>

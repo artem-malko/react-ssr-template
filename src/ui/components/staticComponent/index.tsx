@@ -8,6 +8,7 @@ export const StaticComponent = memo(() => {
         outline: '1px solid green',
       }}
     >
+      <h2>StaticComponent Component</h2>
       This is an example static component without any data fetching.
     </div>
   );
