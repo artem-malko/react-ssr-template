@@ -19,7 +19,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   let didError = false;
 
   // @JUST_FOR_TEST
-  const forcedToUseOnComplete = req.query['render'] === 'wait';
+  const forcedToUseOnComplete = req.query['render'] === 'useOnComplete';
 
   /**
    * For SEO specifically, where the correct status code is extra important,

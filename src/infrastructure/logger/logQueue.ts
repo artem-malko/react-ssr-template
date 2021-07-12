@@ -11,7 +11,7 @@ type QueueLogParams = { environment: 'client'; level: 'info' | 'error' | 'perfor
 const request = createRequest({ networkTimeout: 30 * 1000 });
 
 const action = (logParams: QueueLogParams) => {
-  // @TODO set the pass outside
+  // @TODO set the path from the outside
   return request('/_/log', {
     method: 'post',
     data: logParams,

@@ -31,15 +31,19 @@ export const App = memo<Props>(({ renderCallback }) => {
       </React.Suspense>
       <br />
       <StaticComponent />
-      <br /> The component above is rendered before hacker news API will return any response
+      <br /> The component above is rendered before hacker news API will return any response.
+      <br /> News API has a 4000 ms timeout on the server side before a real request.
       <br /> Full HTML will be ready after NewList will fetch, checkout Network tab in your dev tools
       <br /> You can switch to a prev behavior, when client should wait,
-      <br /> when all server side requests will be finished to send the first byte to client
+      <br /> when all server side requests will be finished to send the first byte to client.
       <br /> Open{' '}
-      <a href="http://localhost:4000?render=wait" target="_blank" rel="noreferrer">
-        http://localhost:4000?render=wait
+      <a href="http://localhost:4000?render=useOnComplete" target="_blank" rel="noreferrer">
+        http://localhost:4000?render=useOnComplete
       </a>{' '}
       to wait for the API response, and then send the first byte
+      <br /> By the way, NewList component will be loaded with React.lazy and 10000ms timeout.
+      <br /> This has been done to show you, that you can use SearchBar, even other React components are
+      still in a loading stage
     </div>
   );
 });
