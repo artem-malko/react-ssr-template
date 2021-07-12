@@ -4,7 +4,7 @@ import { InitialData } from 'ui/components/initialData';
 
 export const NewsList = memo(() => {
   const [page, setPage] = useState(1);
-  const { news, queryId } = usePaginatedNews(page);
+  const news = usePaginatedNews(page);
 
   useLayoutEffect(() => {
     console.log('NEWSLIST RENDERED ON CLIENT');
@@ -30,7 +30,7 @@ export const NewsList = memo(() => {
           ))}
       </div>
 
-      <InitialData queryId={queryId} queryOutput={news} />
+      <InitialData queryOutput={news} />
     </div>
   );
 });

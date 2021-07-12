@@ -1,13 +1,14 @@
-import { memo, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { UseQueryResult } from 'react-query';
 
 type Props = {
-  queryId: string;
+  // queryId: string;
   queryOutput: UseQueryResult;
 };
 // @TODO add a description to that flow
-export const InitialData = memo<Props>(({ queryId, queryOutput }) => {
-  const id = `query_id-${queryId}`;
+export const InitialData = memo<Props>(({ queryOutput }) => {
+  // @TODO_AFTER_REACT_18_RELEASE remove as any
+  const id = (React as any).unstable_useOpaqueIdentifier();
 
   useEffect(() => {
     const mutableEl = document.getElementById(id);
