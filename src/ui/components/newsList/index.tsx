@@ -30,6 +30,7 @@ export const NewsList = memo(() => {
           ))}
       </div>
 
+      {/* Checkout a component sources to know, how it works */}
       <InitialData queryOutput={news} />
     </div>
   );
