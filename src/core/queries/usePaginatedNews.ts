@@ -1,12 +1,9 @@
-import React from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { getInitialDataFromDom } from 'ui/components/initialData';
 
 export const usePaginatedNews = (page = 1) => {
-  // @TODO_AFTER_REACT_18_RELEASE remove as any
-  // https://github.com/reactjs/rfcs/pull/32
-  const queryId = (React as any).unstable_useOpaqueIdentifier();
+  const queryId = 'paginated_news';
 
   const news = useQuery<
     Array<{
@@ -27,12 +24,10 @@ export const usePaginatedNews = (page = 1) => {
     },
     {
       staleTime: Infinity,
-      initialData: () => {
-        return getInitialDataFromDom(queryId);
-      },
+      initialData: () => getInitialDataFromDom(queryId),
       // keepPreviousData: true,
     },
   );
 
-  return news;
+  return { news, queryId };
 };

@@ -1,8 +1,8 @@
-import React, { memo, useEffect } from 'react';
+import { memo, useEffect } from 'react';
 import { UseQueryResult } from 'react-query';
 
 type Props = {
-  // queryId: string;
+  queryId: string;
   queryOutput: UseQueryResult;
 };
 
@@ -29,9 +29,8 @@ type Props = {
  * And as soon, as InitialData  component will be rendered, we will remove the HTML-comment inner text, so
  * the query will be use its own cache, not the initial data from the server side.
  */
-export const InitialData = memo<Props>(({ queryOutput }) => {
-  // @TODO_AFTER_REACT_18_RELEASE remove as any
-  const id = (React as any).unstable_useOpaqueIdentifier();
+export const InitialData = memo<Props>(({ queryId, queryOutput }) => {
+  const id = createDomIdForQuery(queryId);
 
   useEffect(() => {
     const mutableEl = document.getElementById(id);
@@ -54,10 +53,6 @@ export const InitialData = memo<Props>(({ queryOutput }) => {
   );
 });
 
-const createDomIdForQuery = (queryId: string) => {
-  return `query_id-${queryId}`;
-};
-
 export const getInitialDataFromDom = (queryId: string) => {
   if (process.env.APP_ENV === 'server') {
     return;
@@ -68,4 +63,8 @@ export const getInitialDataFromDom = (queryId: string) => {
 
   // @TODO catch any parse errors
   return rawData ? JSON.parse(rawData) : undefined;
+};
+
+const createDomIdForQuery = (queryId: string) => {
+  return `query_id-${queryId}`;
 };
