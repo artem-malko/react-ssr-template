@@ -4,6 +4,7 @@ import { App } from 'ui/main/app';
 import { AssetsData } from '../utils/assets';
 import { getFullPath } from './utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { StrictMode } from 'react';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -51,9 +52,11 @@ export function Html(props: Props) {
       </head>
       <body>
         <div id="app">
-          <QueryClientProvider client={queryClient}>
-            <App renderCallback={() => console.log('renderered')} />
-          </QueryClientProvider>
+          <StrictMode>
+            <QueryClientProvider client={queryClient}>
+              <App renderCallback={() => console.log('renderered')} />
+            </QueryClientProvider>
+          </StrictMode>
         </div>
         {/**
          * Actually, there should be a hydration process for react-query like

@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom';
 import { App } from 'ui/main/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { StrictMode } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,7 +26,9 @@ const root = (ReactDOM as any).hydrateRoot(container);
  * So, will be waiting for any ideas from the React team.
  */
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <App renderCallback={() => console.log('WOOOW, renderered')} />
-  </QueryClientProvider>,
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <App renderCallback={() => console.log('WOOOW, renderered')} />
+    </QueryClientProvider>
+  </StrictMode>,
 );
