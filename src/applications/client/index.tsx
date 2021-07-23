@@ -2,6 +2,8 @@ import ReactDOM from 'react-dom';
 import { App } from 'ui/main/app';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { StrictMode } from 'react';
+import { ConfigContext } from 'config/react';
+import { getClientApplicationConfig } from 'config/generator/client';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,8 +16,9 @@ const queryClient = new QueryClient({
 
 // @TODO_AFTER_REACT_18_RELEASE remove as any
 const container = document.getElementById('app');
-
 const root = (ReactDOM as any).hydrateRoot(container);
+
+const config = getClientApplicationConfig();
 
 /**
  * Actually, there should be a rehydration process for react-query like
@@ -27,8 +30,10 @@ const root = (ReactDOM as any).hydrateRoot(container);
  */
 root.render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App renderCallback={() => console.log('WOOOW, renderered')} />
-    </QueryClientProvider>
+    <ConfigContext.Provider value={config}>
+      <QueryClientProvider client={queryClient}>
+        <App renderCallback={() => console.log('WOOOW, renderered')} />
+      </QueryClientProvider>
+    </ConfigContext.Provider>
   </StrictMode>,
 );

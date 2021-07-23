@@ -1,6 +1,9 @@
+import { useConfig } from 'config/react';
 import { memo } from 'react';
 
 export const StaticComponent = memo(() => {
+  const config = useConfig();
+
   return (
     <div
       style={{
@@ -10,6 +13,8 @@ export const StaticComponent = memo(() => {
     >
       <h2>StaticComponent Component</h2>
       This is an example static component without any data fetching.
+      <br />
+      This is a field from config networkTimeout: {config.hackerNewsAPIURL}
     </div>
   );
 });

@@ -5,6 +5,7 @@ import { AssetsData } from '../utils/assets';
 import { getFullPath } from './utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { StrictMode } from 'react';
+import { ConfigContext } from 'config/react';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -53,9 +54,11 @@ export function Html(props: Props) {
       <body>
         <div id="app">
           <StrictMode>
-            <QueryClientProvider client={queryClient}>
-              <App renderCallback={() => console.log('renderered')} />
-            </QueryClientProvider>
+            <ConfigContext.Provider value={serverApplicationConfig}>
+              <QueryClientProvider client={queryClient}>
+                <App renderCallback={() => console.log('renderered')} />
+              </QueryClientProvider>
+            </ConfigContext.Provider>
           </StrictMode>
         </div>
         {/**

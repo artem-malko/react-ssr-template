@@ -47,7 +47,7 @@ server.use((req, _, next) => {
   if (req.url.includes('newsList')) {
     // Artificially delay serving JS
     // to demonstrate streaming HTML.
-    setTimeout(next, 10000);
+    setTimeout(next, 100);
   } else {
     next();
   }
