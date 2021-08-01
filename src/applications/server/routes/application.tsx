@@ -1,6 +1,11 @@
+import { AppState } from 'core/store/types';
 import express from 'express';
+import { createURLCompiler } from 'infrastructure/router/compileURL';
+import { Store } from 'redux';
+import { routes } from 'ui/main/routing';
 import { Html } from '../render/html';
-import { getAssets } from '../utils/assets';
+import { restoreStore } from '../store';
+import { AssetsData, getAssets } from '../utils/assets';
 import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
@@ -8,6 +13,7 @@ import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
 const { pipeToNodeWritable } = require('react-dom/server');
 
 const assetsPromise = getAssets();
+const compile = createURLCompiler(routes);
 
 export const createApplicationRouter: () => express.Handler = () => (req, res) => {
   res.set('X-Content-Type-Options', 'nosniff');
@@ -31,28 +37,46 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   const useOnComplete = req.isSearchBot;
   const methodName = forcedToUseOnComplete || useOnComplete ? 'onCompleteAll' : 'onReadyToStream';
 
-  assetsPromise.then((assets) => {
-    const { startWriting, abort } = pipeToNodeWritable(
-      <Html polyfillsSourceCode={polyfillsSourceCode} assets={assets} />,
-      res,
-      {
-        [methodName]() {
-          // If something errored before we started streaming, we set the error code appropriately.
-          res.status(didError ? 500 : 200);
-          res.setHeader('Content-type', 'text/html');
-          res.write('<!DOCTYPE html>');
+  const storePromise = restoreStore(req, res);
 
-          startWriting();
-        },
-        // @TODO looks quite silly, need to refactor it
-        onError(x: any) {
-          didError = true;
-          console.error(x);
-        },
-      },
-    );
+  Promise.all<Store<AppState>, AssetsData>([storePromise, assetsPromise]).then(([store, assets]) => {
+    const state = store.getState();
+    const compiledUrl = compile(state.appContext);
+    const status = state.appContext.page.errorCode ? state.appContext.page.errorCode : 200;
 
-    // Abandon and switch to client rendering if enough time passes.
-    setTimeout(abort, 5000);
+    if (status === 200 && req.url !== '/' && compiledUrl !== req.url.replace(/\/$/, '')) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('--------');
+        console.log('REDIRECT');
+        console.log('Requested  URL: ', req.url.replace(/\/$/, ''));
+        console.log('Compiled   URL: ', compiledUrl);
+        console.log('New appContext: ', state.appContext);
+        console.log('--------');
+      }
+      res.redirect(301, compiledUrl);
+    } else {
+      const { startWriting, abort } = pipeToNodeWritable(
+        <Html polyfillsSourceCode={polyfillsSourceCode} assets={assets} store={store} />,
+        res,
+        {
+          [methodName]() {
+            // If something errored before we started streaming, we set the error code appropriately.
+            res.status(didError ? 500 : 200);
+            res.setHeader('Content-type', 'text/html');
+            res.write('<!DOCTYPE html>');
+
+            startWriting();
+          },
+          // @TODO looks quite silly, need to refactor it
+          onError(x: any) {
+            didError = true;
+            console.error(x);
+          },
+        },
+      );
+
+      // Abandon and switch to client rendering if enough time passes.
+      setTimeout(abort, 5000);
+    }
   });
 };

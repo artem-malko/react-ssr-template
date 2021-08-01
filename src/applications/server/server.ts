@@ -47,7 +47,8 @@ server.use((req, _, next) => {
   if (req.url.includes('newsList')) {
     // Artificially delay serving JS
     // to demonstrate streaming HTML.
-    setTimeout(next, 100);
+    // I'd like to remove it from dev process
+    setTimeout(next, process.env.NODE_ENV !== 'production' ? 100 : 10000);
   } else {
     next();
   }

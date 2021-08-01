@@ -1,7 +1,12 @@
-import React, { lazy, memo } from 'react';
+import React, { lazy, memo, useCallback } from 'react';
 import { Preloader } from 'ui/kit/preloader';
 import { StaticComponent } from 'ui/components/staticComponent';
 import { Search } from 'ui/components/search';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppState } from 'core/store/types';
+import { openPage } from 'core/actions/appContext/openPage';
+import { historyPush } from 'infrastructure/router/actions';
+import { sequence } from 'infrastructure/signal';
 
 const NewsList = lazy(() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList'));
 
@@ -12,6 +17,22 @@ type Props = {
   renderCallback: () => void;
 };
 export const App = memo<Props>(({ renderCallback }) => {
+  const dispatch = useDispatch();
+  const page = useSelector((state: AppState) => state.appContext.page);
+  const openErrorPage = useCallback(() => {
+    dispatch(
+      sequence(
+        openPage({
+          name: 'error',
+          params: {
+            code: 404,
+          },
+        }),
+        historyPush(),
+      ),
+    );
+  }, [dispatch]);
+
   return (
     <div
       ref={renderCallback}
@@ -44,6 +65,11 @@ export const App = memo<Props>(({ renderCallback }) => {
       <br /> By the way, NewList component will be loaded with React.lazy and 10000ms timeout.
       <br /> This has been done to show you, that you can use SearchBar, even other React components are
       still in a loading stage
+      <br />
+      <br />
+      <br /> Page is: {JSON.stringify(page)}
+      <br />
+      <button onClick={openErrorPage}>Open error page</button>
     </div>
   );
 });

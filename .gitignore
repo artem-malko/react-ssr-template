@@ -41,3 +41,5 @@ node_modules/
 *.cpuprofile
 
 build
+
+.DS_Store
