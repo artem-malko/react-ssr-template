@@ -22,6 +22,11 @@ export const setQueryStringParams = createActionConstructor<{ params: URLQueryPa
     }
 
     // @JUST_FOR_TEST JUST FOR TEST
+    if ('test_strict_mode_attr' in queryParams && queryParams['test_strict_mode_attr']) {
+      mutableQueryParams['test_strict_mode_attr'] = queryParams['test_strict_mode_attr'];
+    }
+
+    // @JUST_FOR_TEST JUST FOR TEST
     if ('render' in queryParams && queryParams['render']) {
       mutableQueryParams['render'] = queryParams['render'];
     }

@@ -1,26 +1,26 @@
 import { Route, RouteWithoutParams, RouteWithParams, URLQueryParams } from '../types';
 
-export const openPage = (payload: any) => ({
+export const testsOnlyOpenPageAction = (payload: any) => ({
   type: 'openPage',
   payload,
 });
-export const setQueryStringParams = (payload: { params: URLQueryParams }) => ({
+export const testsOnlySetQueryStringParams = (payload: { params: URLQueryParams }) => ({
   type: 'setQueryStringParams',
   payload,
 });
 export const routerSignals = {
-  onError404Action: openPage({
+  onError404Action: testsOnlyOpenPageAction({
     name: 'error404',
     errorCode: 404,
   }),
-  setQueryStringParams,
+  setQueryStringParams: testsOnlySetQueryStringParams,
 };
-export type RootPage = {
+export type TestsOnlyRootPage = {
   name: 'root';
 };
-export const rootPageRoute: Route<RouteWithoutParams, RootPage> = {
+export const testsOnlyRootPageRoute: Route<RouteWithoutParams, TestsOnlyRootPage> = {
   path: '/',
-  signal: () => openPage({ name: 'root' }),
+  signal: () => testsOnlyOpenPageAction({ name: 'root' }),
 };
 
 export type PageWithRequiredParams = {
@@ -35,7 +35,7 @@ export const pageWithRequiredParamsRoute: Route<
 > = {
   path: '/page_with_required_params/:id',
   signal: ({ id }) => {
-    return openPage({
+    return testsOnlyOpenPageAction({
       name: 'pageWithRequiredParams',
       params: {
         id,
@@ -56,7 +56,7 @@ export const pageWithRequiredParamsWithQueryRoute: Route<
 > = {
   path: '/page_with_required_params_with_query/:id',
   signal: ({ id }, queryParams) => {
-    return openPage({
+    return testsOnlyOpenPageAction({
       name: 'pageWithRequiredParamsWithQuery',
       params: {
         id: queryParams['query_param']
@@ -81,7 +81,7 @@ export const pageWithNotRequiredParamsRoute: Route<
   path: '/page_with_not_required_params/:id/:name?',
   signal: ({ id, name }) => {
     console.log;
-    return openPage({
+    return testsOnlyOpenPageAction({
       name: 'pageWithNotRequiredParams',
       params: {
         id,

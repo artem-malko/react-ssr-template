@@ -3,14 +3,14 @@ import {
   pageWithNotRequiredParamsRoute,
   pageWithRequiredParamsRoute,
   pageWithRequiredParamsWithQueryRoute,
-  rootPageRoute,
+  testsOnlyRootPageRoute,
 } from './mock.spec';
 import { createURLCompiler } from '../compileURL';
 
 describe('Routing compile URL', () => {
   it('returns / for the root page', () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
     });
 
     const appContext = {
@@ -26,7 +26,7 @@ describe('Routing compile URL', () => {
 
   it('returns correct path for a page with params (usage of the default matchPageToPathParams)', () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
       pageWithRequiredParams: pageWithRequiredParamsRoute,
     });
 
@@ -46,7 +46,7 @@ describe('Routing compile URL', () => {
 
   it('returns correct path for a page with params (usage of the custom matchPageToPathParams)', () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
       pageWithRequiredParams: {
         ...pageWithRequiredParamsRoute,
         matchPageToPathParams: ({ id }) => {
@@ -74,7 +74,7 @@ describe('Routing compile URL', () => {
   it(`returns correct path for a page with required params and not required params
       (usage of the default matchPageToPathParams, a not required param is undefiend)`, () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
       pageWithNotRequiredParams: pageWithNotRequiredParamsRoute,
     });
     const appContext = {
@@ -93,7 +93,7 @@ describe('Routing compile URL', () => {
 
   it('returns correct path for a page with defiend matchPageToQueryParams function', () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
       pageWithRequiredParamsWithQuery: {
         ...pageWithRequiredParamsWithQueryRoute,
         matchPageToQueryParams: ({ id }) => {
@@ -121,7 +121,7 @@ describe('Routing compile URL', () => {
   it(`returns correct path for a page with defiend matchPageToQueryParams function
       (a query param withour value)`, () => {
     const compileURL = createURLCompiler({
-      root: rootPageRoute,
+      root: testsOnlyRootPageRoute,
       pageWithRequiredParamsWithQuery: {
         ...pageWithRequiredParamsWithQueryRoute,
         matchPageToQueryParams: () => {

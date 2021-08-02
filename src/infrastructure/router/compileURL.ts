@@ -70,6 +70,7 @@ export function createURLCompiler<PageName extends string>(routes: Routes<AnyPag
     return mutableParts.join('');
   };
 }
+export type URLCompiler = ReturnType<typeof createURLCompiler>;
 
 function compileQueryString(queryStringParams: URLQueryParams | undefined): string | undefined {
   if (!queryStringParams || Object.keys(queryStringParams).length === 0) {

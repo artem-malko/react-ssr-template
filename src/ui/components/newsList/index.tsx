@@ -1,10 +1,34 @@
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
-import { memo, useLayoutEffect, useState } from 'react';
+import { patchPage } from 'core/signals/page';
+import { memo, useCallback, useLayoutEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { InitialData } from 'ui/components/initialData';
 
-export const NewsList = memo(() => {
-  const [page, setPage] = useState(1);
+export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
+  const [page, setPage] = useState(initialPage);
   const { news, queryId } = usePaginatedNews(page);
+  const dispatch = useDispatch();
+  const onPageChange = useCallback(
+    (action: 'inc' | 'dec') => {
+      const newPageNumber = action === 'inc' ? page + 1 : page - 1;
+      dispatch(
+        patchPage((activePage) => {
+          if (activePage.name !== 'news') {
+            return;
+          }
+
+          return {
+            name: 'news',
+            params: {
+              page: newPageNumber,
+            },
+          };
+        }),
+      );
+      setPage(newPageNumber);
+    },
+    [page, dispatch],
+  );
 
   useLayoutEffect(() => {
     console.log('NEWSLIST RENDERED ON CLIENT');
@@ -13,10 +37,10 @@ export const NewsList = memo(() => {
   return (
     <div>
       <h2>NewsList Component</h2>
-      <button disabled={page === 1} onClick={() => setPage(page - 1)}>
+      <button disabled={page === 1} onClick={() => onPageChange('dec')}>
         Prev page
       </button>
-      <button onClick={() => setPage(page + 1)}>Next page</button>
+      <button onClick={() => onPageChange('inc')}>Next page</button>
       <br />
       <br />
       <div style={{ padding: 10, outline: '1px solid blue' }}>
@@ -30,7 +54,7 @@ export const NewsList = memo(() => {
           ))}
       </div>
 
-      {/* Checkout a component sources to know, how it works */}
+      {/* Checkout InitialData sources to know, how it works */}
       <InitialData queryOutput={news} queryId={queryId} />
     </div>
   );

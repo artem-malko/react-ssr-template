@@ -15,6 +15,9 @@ export type DiscriminateUnion<T, K extends keyof T, V extends T[K]> = T extends 
 
 /**
  * Returns a map of a discriminate from discriminateUnion to that discriminateUnion
+ *
+ * There is an example how you can use it:
+ * https://stackoverflow.com/questions/50125893/typescript-derive-map-from-discriminated-union
  */
 export type MapDiscriminatedUnion<T extends Record<K, string>, K extends keyof T> = {
   [V in T[K]]: DiscriminateUnion<T, K, V>;

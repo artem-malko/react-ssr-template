@@ -1,13 +1,12 @@
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 import { createNavigator } from './navigate';
-import { AnyAppState, Routes, AnyPage } from '../types';
-import { createURLCompiler } from '../compileURL';
+import { AnyAppState } from '../types';
+import { URLCompiler } from '../compileURL';
 
-export function createNavigationMiddleware<PageName extends string>(
-  routes: Routes<AnyPage<PageName>>,
+export function createNavigationMiddleware(
+  URLCompiler: URLCompiler,
 ): Middleware<Record<string, unknown>, AnyAppState, Dispatch> {
-  const compileURL = createURLCompiler(routes);
-  const navigate = createNavigator(compileURL);
+  const navigate = createNavigator(URLCompiler);
 
   return (middlewareAPI: MiddlewareAPI<Dispatch, AnyAppState>) =>
     (next: Dispatch) =>

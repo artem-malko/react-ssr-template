@@ -1,8 +1,7 @@
 import { AppState } from 'core/store/types';
 import express from 'express';
-import { createURLCompiler } from 'infrastructure/router/compileURL';
 import { Store } from 'redux';
-import { routes } from 'ui/main/routing';
+import { compileAppURL } from 'ui/main/routing';
 import { Html } from '../render/html';
 import { restoreStore } from '../store';
 import { AssetsData, getAssets } from '../utils/assets';
@@ -13,7 +12,6 @@ import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
 const { pipeToNodeWritable } = require('react-dom/server');
 
 const assetsPromise = getAssets();
-const compile = createURLCompiler(routes);
 
 export const createApplicationRouter: () => express.Handler = () => (req, res) => {
   res.set('X-Content-Type-Options', 'nosniff');
@@ -41,7 +39,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
   Promise.all<Store<AppState>, AssetsData>([storePromise, assetsPromise]).then(([store, assets]) => {
     const state = store.getState();
-    const compiledUrl = compile(state.appContext);
+    const compiledUrl = compileAppURL(state.appContext);
     const status = state.appContext.page.errorCode ? state.appContext.page.errorCode : 200;
 
     if (status === 200 && req.url !== '/' && compiledUrl !== req.url.replace(/\/$/, '')) {

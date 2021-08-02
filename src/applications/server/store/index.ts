@@ -26,7 +26,6 @@ export async function restoreStore(req: Request, _: Response) {
     initialState: undefined,
     middlewares,
     enhancers: [],
-    routes,
   });
 
   return Promise.resolve(store.dispatch(startup({ routerActions }))).then(() => store);

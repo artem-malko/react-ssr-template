@@ -1,14 +1,12 @@
+import { setQueryStringParams } from 'core/actions/appContext/setQueryStringParams';
+import { selectPage } from 'core/selectors';
+import { useAppSelector } from 'core/store/hooks';
+import { Page } from 'core/store/types';
 import React, { lazy, memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
-import { StaticComponent } from 'ui/components/staticComponent';
-import { Search } from 'ui/components/search';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppState } from 'core/store/types';
-import { openPage } from 'core/actions/appContext/openPage';
-import { historyPush } from 'infrastructure/router/actions';
-import { sequence } from 'infrastructure/signal';
-
-const NewsList = lazy(() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList'));
+import ErrorPage from 'ui/pages/error';
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -17,19 +15,15 @@ type Props = {
   renderCallback: () => void;
 };
 export const App = memo<Props>(({ renderCallback }) => {
+  const page = useAppSelector(selectPage);
+  const queryString = useAppSelector((s) => s.appContext.URLQueryParams);
   const dispatch = useDispatch();
-  const page = useSelector((state: AppState) => state.appContext.page);
-  const openErrorPage = useCallback(() => {
+  // @JUST_FOR_TEST for a demo of problems with react-redux in the strict mode
+  const patchQueryString = useCallback(() => {
     dispatch(
-      sequence(
-        openPage({
-          name: 'error',
-          params: {
-            code: 404,
-          },
-        }),
-        historyPush(),
-      ),
+      setQueryStringParams({
+        params: { test_strict_mode_attr: [new Date().toString()] },
+      }),
     );
   }, [dispatch]);
 
@@ -41,35 +35,49 @@ export const App = memo<Props>(({ renderCallback }) => {
         outline: '1px solid red',
       }}
     >
-      App component. This text is rendered before hacker news API will return any response
-      <br />
-      <br />
-      <Search />
-      <br />
-      <br />
-      <React.Suspense fallback={<Preloader />}>
-        <NewsList />
+      <div style={{ padding: '20px 0' }}>
+        Current page is: {JSON.stringify(page)}
+        <br />
+        QUeryString is: {JSON.stringify(queryString)}
+        <br />
+        <br />
+        <Link
+          title={'Link to the news page'}
+          page={{
+            name: 'news',
+            params: {
+              page: 1,
+            },
+          }}
+        />
+        <br />
+        <Link
+          title={'Link to the root page'}
+          page={{
+            name: 'root',
+          }}
+        />
+        <br />
+        <button onClick={patchQueryString}>Patch query string</button>
+      </div>
+      <React.Suspense fallback={<Preloader purpose="page" />}>
+        <PageSwitcher page={page} />
       </React.Suspense>
-      <br />
-      <StaticComponent />
-      <br /> The component above is rendered before hacker news API will return any response.
-      <br /> News API has a 4000 ms timeout on the server side before a real request.
-      <br /> Full HTML will be ready after NewList will fetch, checkout Network tab in your dev tools
-      <br /> You can switch to a prev behavior, when client should wait,
-      <br /> when all server side requests will be finished to send the first byte to client.
-      <br /> Open{' '}
-      <a href="http://localhost:4000?render=useOnComplete" target="_blank" rel="noreferrer">
-        http://localhost:4000?render=useOnComplete
-      </a>{' '}
-      to wait for the API response, and then send the first byte
-      <br /> By the way, NewList component will be loaded with React.lazy and 10000ms timeout.
-      <br /> This has been done to show you, that you can use SearchBar, even other React components are
-      still in a loading stage
-      <br />
-      <br />
-      <br /> Page is: {JSON.stringify(page)}
-      <br />
-      <button onClick={openErrorPage}>Open error page</button>
+      App component.
     </div>
   );
+});
+
+const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ 'ui/pages/root'));
+const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'ui/pages/news'));
+
+const PageSwitcher = memo<{ page: Page }>(({ page }) => {
+  switch (page.name) {
+    case 'root':
+      return <RootPage page={page} />;
+    case 'news':
+      return <NewsPage page={page} />;
+    default:
+      return <ErrorPage page={page} />;
+  }
 });

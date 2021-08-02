@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import { createURLParser } from '../parseURL';
 import { Routes } from '../types';
 import {
-  openPage,
-  RootPage,
-  rootPageRoute,
+  testsOnlyOpenPageAction,
+  TestsOnlyRootPage,
+  testsOnlyRootPageRoute,
   PageWithRequiredParams,
   pageWithRequiredParamsRoute,
   PageWithNotRequiredParams,
@@ -18,12 +18,12 @@ describe('parse URL', () => {
   it('returns the root page opening signal the empty URL', () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
-      } as Routes<RootPage>,
+        root: testsOnlyRootPageRoute,
+      } as Routes<TestsOnlyRootPage>,
       routerSignals,
     );
     const URL = '';
-    const result = [openPage({ name: 'root' })];
+    const result = [testsOnlyOpenPageAction({ name: 'root' })];
 
     expect(parseURL(URL)).to.deep.eq(result);
   });
@@ -31,12 +31,12 @@ describe('parse URL', () => {
   it('returns the root page opening signal for the correct root URL', () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
-      } as Routes<RootPage>,
+        root: testsOnlyRootPageRoute,
+      } as Routes<TestsOnlyRootPage>,
       routerSignals,
     );
     const URL = '/';
-    const result = [openPage({ name: 'root' })];
+    const result = [testsOnlyOpenPageAction({ name: 'root' })];
 
     expect(parseURL(URL)).to.deep.eq(result);
   });
@@ -44,12 +44,12 @@ describe('parse URL', () => {
   it('returns the root page opening signal for the root URL with trailing slashes', () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
-      } as Routes<RootPage>,
+        root: testsOnlyRootPageRoute,
+      } as Routes<TestsOnlyRootPage>,
       routerSignals,
     );
     const URL = '///';
-    const result = [openPage({ name: 'root' })];
+    const result = [testsOnlyOpenPageAction({ name: 'root' })];
 
     expect(parseURL(URL)).to.deep.eq(result);
   });
@@ -57,13 +57,13 @@ describe('parse URL', () => {
   it('returns the 404 page signal for any unsupported URL', () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
-      } as Routes<RootPage>,
+        root: testsOnlyRootPageRoute,
+      } as Routes<TestsOnlyRootPage>,
       routerSignals,
     );
     const URL = '/unsupported_url';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'error404',
         errorCode: 404,
       }),
@@ -75,14 +75,14 @@ describe('parse URL', () => {
   it('returns a page with required params opening signal for the correct URL', () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParams: pageWithRequiredParamsRoute,
-      } as Routes<RootPage | PageWithRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParams>,
       routerSignals,
     );
     const URL = '/page_with_required_params/100';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParams',
         params: {
           id: '100',
@@ -97,14 +97,14 @@ describe('parse URL', () => {
       The page path has no leading slash`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParams: pageWithRequiredParamsRoute,
-      } as Routes<RootPage | PageWithRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParams>,
       routerSignals,
     );
     const URL = 'page_with_required_params/100';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParams',
         params: {
           id: '100',
@@ -119,17 +119,17 @@ describe('parse URL', () => {
       The page path in route config has no leading slash`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParams: {
           ...pageWithRequiredParamsRoute,
           path: pageWithRequiredParamsRoute.path.substring(1),
         },
-      } as Routes<RootPage | PageWithRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParams>,
       routerSignals,
     );
     const URL = '/page_with_required_params/100';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParams',
         params: {
           id: '100',
@@ -144,9 +144,9 @@ describe('parse URL', () => {
       The page param depends on query string and the path too`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParamsWithQuery: pageWithRequiredParamsWithQueryRoute,
-      } as Routes<RootPage | PageWithRequiredParamsWithQuery>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParamsWithQuery>,
       routerSignals,
     );
     const URL = 'page_with_required_params_with_query/100?query_param=query_value';
@@ -159,7 +159,7 @@ describe('parse URL', () => {
           },
         },
       },
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParamsWithQuery',
         params: {
           id: '100_query_param_query_value',
@@ -174,9 +174,9 @@ describe('parse URL', () => {
       The page param depends on query string and the path too and query param has no value`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParamsWithQuery: pageWithRequiredParamsWithQueryRoute,
-      } as Routes<RootPage | PageWithRequiredParamsWithQuery>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParamsWithQuery>,
       routerSignals,
     );
     const URL = 'page_with_required_params_with_query/100?query_param';
@@ -189,7 +189,7 @@ describe('parse URL', () => {
           },
         },
       },
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParamsWithQuery',
         params: {
           id: '100_query_param_',
@@ -205,9 +205,9 @@ describe('parse URL', () => {
       and query param has multiple values`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithRequiredParamsWithQuery: pageWithRequiredParamsWithQueryRoute,
-      } as Routes<RootPage | PageWithRequiredParamsWithQuery>,
+      } as Routes<TestsOnlyRootPage | PageWithRequiredParamsWithQuery>,
       routerSignals,
     );
     const URL =
@@ -221,7 +221,7 @@ describe('parse URL', () => {
           },
         },
       },
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithRequiredParamsWithQuery',
         params: {
           id: '100_query_param_query_value1_query_value2',
@@ -236,14 +236,14 @@ describe('parse URL', () => {
       The not required param is not passed in the URL`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithNotRequiredParams: pageWithNotRequiredParamsRoute,
-      } as Routes<RootPage | PageWithNotRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithNotRequiredParams>,
       routerSignals,
     );
     const URL = '/page_with_not_required_params/100';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithNotRequiredParams',
         params: {
           id: '100',
@@ -259,14 +259,14 @@ describe('parse URL', () => {
       The not required param is passed in the URL`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithNotRequiredParams: pageWithNotRequiredParamsRoute,
-      } as Routes<RootPage | PageWithNotRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithNotRequiredParams>,
       routerSignals,
     );
     const URL = '/page_with_not_required_params/100/Ann';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithNotRequiredParams',
         params: {
           id: '100',
@@ -282,14 +282,14 @@ describe('parse URL', () => {
       The not required param is passed in the URL and it is decoded correctly`, () => {
     const parseURL = createURLParser(
       {
-        root: rootPageRoute,
+        root: testsOnlyRootPageRoute,
         pageWithNotRequiredParams: pageWithNotRequiredParamsRoute,
-      } as Routes<RootPage | PageWithNotRequiredParams>,
+      } as Routes<TestsOnlyRootPage | PageWithNotRequiredParams>,
       routerSignals,
     );
     const URL = '/page_with_not_required_params/100/caf%C3%A9';
     const result = [
-      openPage({
+      testsOnlyOpenPageAction({
         name: 'pageWithNotRequiredParams',
         params: {
           id: '100',

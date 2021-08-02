@@ -1,7 +1,7 @@
 import { openPage } from 'core/actions/appContext/openPage';
 import { HttpCode } from 'core/shared/httpCode';
 import { Route, RouteWithParams } from 'infrastructure/router/types';
-import { ErrorPage } from './types';
+import { ErrorPage } from '.';
 
 export const errorPageRoute: Route<RouteWithParams<{ code: string }>, ErrorPage> = {
   path: '/error/:code',

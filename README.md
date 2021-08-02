@@ -7,3 +7,5 @@ Just start with
 ```bash
 npm i && make dev
 ```
+
+If you want to see this project in action: http://158.101.223.0:5000/

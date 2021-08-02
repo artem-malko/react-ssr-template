@@ -13,8 +13,8 @@ export const StaticComponent = memo(() => {
     >
       <h2>StaticComponent Component</h2>
       This is an example static component without any data fetching.
-      <br />
-      This is a field from config networkTimeout: {config.hackerNewsAPIURL}
+      <h4>A config usage example</h4>
+      This is a field from the config hackerNewsAPIURL: {config.hackerNewsAPIURL}
     </div>
   );
 });

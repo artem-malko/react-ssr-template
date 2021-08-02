@@ -2,7 +2,6 @@ import { Middleware } from 'redux';
 import { startup } from './startup';
 import { configureStore } from 'core/store/configureStore';
 import { addStoreSubscribers } from '../utils/addStoreSubscribers';
-import { routes } from 'ui/main/routing';
 
 export function restoreStore() {
   const initialState = window.initialState;
@@ -19,7 +18,6 @@ export function restoreStore() {
     initialState,
     middlewares,
     enhancers: mutableEnhancers,
-    routes,
   });
 
   addStoreSubscribers(store);
