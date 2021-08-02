@@ -67,8 +67,8 @@ export type Route<
    * }
    *
    * As you can see, there is no any explicit connection between SpecificPage and the path args.
-   * By the way, if name will be required in the page type, but not required in the path,
-   * where will be incorect type in the signal args.
+   * By the way, if the name param will be required in the page type, but not required in the path,
+   * where will be an incorect type in the signal args.
    *
    * RoutePathParams is here to prevent such potential errors
    * and to make the explicit connection between path args and page params
@@ -84,7 +84,7 @@ export type Route<
 
 /**
  * This type allows to be ensure, what all pages from Page type has its own route config
- * Checkout from parseURL.spec.ts how Routes type can be used in your App
+ * Checkout parseURL.spec.ts to know, how Routes type can be used in your App
  */
 export type Routes<
   Page extends AnyPage<PageName>,

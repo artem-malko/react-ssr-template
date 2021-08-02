@@ -12,10 +12,7 @@ const rootPageIndexName = '/';
  * The main idea is to transform any supported URL (which is listed in the routes arg)
  * to a signal, which will be dispatched in a redux-store.
  * After that signal an appContext from the redux-store
- * will contain a page from route with parsed params.
- *
- * @TODO add strict rule, that the routes arg has to have the root page config
- * May be add a flag to route config, that route is for root page. Need to think about it.
+ * will contain a page from the route with parsed params.
  */
 export function createURLParser<PageName extends string>(
   routes: Routes<AnyPage<PageName>>,

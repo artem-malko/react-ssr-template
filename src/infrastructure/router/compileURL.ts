@@ -4,8 +4,8 @@ import { AnyPage, AnyAppContext, URLQueryParams, Routes, Route, RouteParams } fr
 import { stringifyParams } from './utils';
 
 /**
- * Compile url, which is based on appContext
- * The main idea is to transform AppContext version of a page to a path string
+ * Compile new url, which is based on the appContext
+ * The main idea is to transform the AppContext version of a page to a path string
  * From
  * ```ts
  * {
@@ -18,10 +18,10 @@ import { stringifyParams } from './utils';
  * To
  * /page/10
  *
- * If route config does not have its own `matchPageToPathParams` function,
+ * If a route config does not have its own `matchPageToPathParams` function,
  * simple stringifyParams will be called
  *
- * @TODO add strict rule, that the routes arg has to have the root page config
+ * @TODO default page path config
  */
 export function createURLCompiler<PageName extends string>(routes: Routes<AnyPage<PageName>>) {
   const routeConfigToPageNameMap = keysOf(routes).reduce<
