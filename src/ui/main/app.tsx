@@ -63,7 +63,10 @@ export const App = memo<Props>(({ renderCallback }) => {
       <React.Suspense fallback={<Preloader purpose="page" />}>
         <PageSwitcher page={page} />
       </React.Suspense>
-      App component.
+      <br />
+      <br />
+      Simple template for a website with SSR and React 18 with a brand new API —
+      https://github.com/reactwg/react-18/discussions
     </div>
   );
 });
