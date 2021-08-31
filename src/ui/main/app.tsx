@@ -73,6 +73,7 @@ export const App = memo<Props>(({ renderCallback }) => {
 
 const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ 'ui/pages/root'));
 const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'ui/pages/news'));
+const NewsItemPage = lazy(() => import(/* webpackChunkName: "newsItemPage" */ 'ui/pages/newsItem'));
 
 const PageSwitcher = memo<{ page: Page }>(({ page }) => {
   switch (page.name) {
@@ -80,6 +81,8 @@ const PageSwitcher = memo<{ page: Page }>(({ page }) => {
       return <RootPage page={page} />;
     case 'news':
       return <NewsPage page={page} />;
+    case 'newsItem':
+      return <NewsItemPage page={page} />;
     default:
       return <ErrorPage page={page} />;
   }

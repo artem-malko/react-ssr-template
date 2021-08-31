@@ -2,7 +2,7 @@ import { keysOf } from 'lib/lodash';
 import { match, MatchFunction } from 'path-to-regexp';
 import { Action } from 'redux';
 import { AnyPage, Route, RouteParams, Routes, URLQueryParams } from './types';
-import { patchLeadingSlashInPath } from './utils';
+import { normalizePath, patchLeadingSlashInPath, printRouterConfig } from './utils';
 
 const rootPageIndexName = '/';
 
@@ -49,22 +49,37 @@ function createURLPathParser<PageName extends string>(
     onError404Action: Action;
   },
 ) {
+  const mutableUniqNormalizedPathList: string[] = [];
   /**
    * routeIndices is used as a tiny performance improvement.
-   * path-to-regexp lib is used for path parsing. It could take much time and resources
+   * path-to-regexp lib is used for the path parsing. It could take much time and resources
    * to match received URL to every route from the routes config.
    * We can create a map of the first slug from every route to its full config
-   * and prepared match function.
+   * and prepared [match function](https://github.com/pillarjs/path-to-regexp#match).
+   *
    * This map can be used later as a fast filter to find possible route config
    */
   const routeIndices = keysOf(routes).reduce<
     Record<
       string,
-      Route<RouteParams<any>, AnyPage<PageName>> & {
-        match: MatchFunction;
-      }
+      /**
+       * It is an array, cause there are can be such paths:
+       * /items
+       * /items/:id
+       *
+       * So, routeIndices will be look like this:
+       * {
+       *   items: [{...itemsConfig, match: () => {}}, {...itemsIdConfig, match: () => {}}]
+       * }
+       */
+      Array<
+        Route<RouteParams<any>, AnyPage<PageName>> & {
+          match: MatchFunction;
+        }
+      >
     >
   >((mutableRes, pageName) => {
+    // Every path needs to have leading slash for the correct processing
     const routeConfig = patchLeadingSlashInPath<PageName, Route<RouteParams<any>, AnyPage<PageName>>>(
       routes[pageName],
     );
@@ -76,60 +91,103 @@ function createURLPathParser<PageName extends string>(
       throw new Error(`Path is empty for slugConfig: ${JSON.stringify(routeConfig)}`);
     }
 
-    if (mutableRes[mainSlugName]) {
+    /**
+     * Every path has to be uniq in the router config
+     * So, mutableNormalizedPathList is used as a store for all uniq paths
+     *
+     * Similar paths:
+     * /users/:id
+     * /users/:id?/:name
+     * /users/:id/:name?
+     * /users/:name
+     * /users/:anyOtherParamName
+     *
+     * These paths are similar cause URL-path /users/123 will match to all of them
+     * Paths /users/:name, /users/:id, /users/:id/:name? will be normalized to /users/:p
+     */
+    const normalizedPath = normalizePath(routeConfig.path);
+
+    // So, if similar path is found in mutableUniqNormalizedPathList
+    // it is an error!
+    if (mutableUniqNormalizedPathList.includes(normalizedPath)) {
       // @TODO add more specific error
       throw new Error(
-        `Current mainSlugName ${mainSlugName} is used for another slugConfig! Current slugConfig is: ${JSON.stringify(
+        `Current path ${
+          routeConfig.path
+        } is used for another slugConfig! Current slugConfig is: ${JSON.stringify(
           routeConfig,
-        )}, a slugConfig with the conflicting mainSlugName is: ${JSON.stringify(
-          mutableRes[mainSlugName],
-        )} `,
+        )}, a slugConfig with the conflicting path is: ${JSON.stringify(mutableRes[mainSlugName])} `,
       );
     }
 
-    mutableRes[mainSlugName] = {
+    mutableUniqNormalizedPathList.push(normalizedPath);
+
+    if (!mutableRes[mainSlugName]) {
+      mutableRes[mainSlugName] = [];
+    }
+
+    mutableRes[mainSlugName] = mutableRes[mainSlugName]!.concat({
       ...routeConfig,
       match: match(routeConfig.path, { decode: decodeURIComponent }),
-    };
+    });
 
     return mutableRes;
   }, {});
 
+  // istanbul ignore next
+  if (process.env.NODE_ENV === 'development') {
+    printRouterConfig(routes);
+  }
+
   /**
-   * Parse URL path and return action with payload, which is relevant for the first matched page in URL
+   * Parse URL path and return action with payload,
+   * which is relevant for the first matched page in URL
    */
   return (path: string, queryParams: URLQueryParams): Action | void => {
-    const mutablePathParts = path
+    const pathParts = path
       // Split by slashes
       .split(/\/+/)
+      // filter empty slugs like ///
       .filter((x) => !!x);
 
-    // If the path was just '/', we have to process such path as a root page
-    if (!mutablePathParts.length) {
-      mutablePathParts.push(rootPageIndexName);
+    // If the path was just '/', mutablePathParts became an empty array,
+    // we have to process such path as a root page
+    const mainSlug = pathParts[0] || rootPageIndexName;
+    const possibleMatchedConfigs = routeIndices[mainSlug];
+
+    // Unknown main slug — so, it is a 404 page
+    if (!possibleMatchedConfigs) {
+      return signals.onError404Action;
     }
 
-    for (let i = 0; i <= mutablePathParts.length; i++) {
-      const possibleMatchedConfig = routeIndices[mutablePathParts[i] as string];
+    // If the main slug is in the routeIndices,
+    // we can try to find a config, that will be matched to the full path
+    for (const possibleMatchedConfig of possibleMatchedConfigs) {
+      const matchPathResult = possibleMatchedConfig.match(`/${pathParts.join('/')}`);
 
-      if (possibleMatchedConfig) {
-        const matchPathResult = possibleMatchedConfig.match(`/${mutablePathParts.join('/')}`);
-
-        if (!matchPathResult) {
-          continue;
-        }
-
-        return possibleMatchedConfig.signal(
-          matchPathResult.params as Record<string, string>,
-          queryParams,
-        );
+      if (!matchPathResult) {
+        continue;
       }
+
+      return possibleMatchedConfig.signal(matchPathResult.params, queryParams);
     }
 
+    // No matched config found
     return signals.onError404Action;
   };
 }
 
+/**
+ * Parse a raw query string like param_1=value_1&param_2=value_2&param_2=value_3&param_3
+ * This query string will be parsed to:
+ * {
+ *   param_1: [value_1],
+ *   param_2: [value_2, value_3],
+ *   param_3: ['']
+ * }
+ *
+ * Every value will be decoded via decodeURIComponent
+ */
 function getQueryStringParams(URLQuery: string | undefined): URLQueryParams | undefined {
   if (!URLQuery) {
     return undefined;

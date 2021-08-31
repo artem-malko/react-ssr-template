@@ -24,6 +24,22 @@ describe('Routing compile URL', () => {
     expect(compileURL(appContext)).to.eq(result);
   });
 
+  it('returns / for any unknown page, prevent runtime errors', () => {
+    const compileURL = createURLCompiler({
+      root: testsOnlyRootPageRoute,
+    });
+
+    const appContext = {
+      page: {
+        name: 'root2' as 'root',
+      },
+      URLQueryParams: undefined,
+    };
+    const result = '/';
+
+    expect(compileURL(appContext)).to.eq(result);
+  });
+
   it('returns correct path for a page with params (usage of the default matchPageToPathParams)', () => {
     const compileURL = createURLCompiler({
       root: testsOnlyRootPageRoute,

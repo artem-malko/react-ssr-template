@@ -156,7 +156,11 @@ const prodConfig: webpack.Configuration = {
 
   optimization: {
     concatenateModules: true,
-    minimizer: [new TerserPlugin()],
+    minimizer: [
+      new TerserPlugin({
+        minify: TerserPlugin.esbuildMinify,
+      }),
+    ],
   },
 
   plugins: [

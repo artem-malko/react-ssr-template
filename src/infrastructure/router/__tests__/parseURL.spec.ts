@@ -54,7 +54,7 @@ describe('parse URL', () => {
     expect(parseURL(URL)).to.deep.eq(result);
   });
 
-  it('returns the 404 page signal for any unsupported URL', () => {
+  it('returns the 404 page signal for an unsupported URL with unknown main slug', () => {
     const parseURL = createURLParser(
       {
         root: testsOnlyRootPageRoute,
@@ -62,6 +62,25 @@ describe('parse URL', () => {
       routerSignals,
     );
     const URL = '/unsupported_url';
+    const result = [
+      testsOnlyOpenPageAction({
+        name: 'error404',
+        errorCode: 404,
+      }),
+    ];
+
+    expect(parseURL(URL)).to.deep.eq(result);
+  });
+
+  it('returns the 404 page signal for an unsupported URL with known main slug', () => {
+    const parseURL = createURLParser(
+      {
+        root: testsOnlyRootPageRoute,
+        pageWithRequiredParams: pageWithRequiredParamsRoute,
+      } as Routes<TestsOnlyRootPage>,
+      routerSignals,
+    );
+    const URL = '/page_with_required_params';
     const result = [
       testsOnlyOpenPageAction({
         name: 'error404',
@@ -299,5 +318,70 @@ describe('parse URL', () => {
     ];
 
     expect(parseURL(URL)).to.deep.eq(result);
+  });
+
+  describe('routes with similar prefix', () => {
+    const parseURL = createURLParser(
+      {
+        root: testsOnlyRootPageRoute,
+        items: {
+          path: '/items',
+          signal: () => {
+            return testsOnlyOpenPageAction({
+              name: 'items',
+            });
+          },
+        },
+        itemsById: {
+          path: '/items/:id',
+          signal: ({ id }) => {
+            return testsOnlyOpenPageAction({
+              name: 'itemsById',
+              params: {
+                id,
+              },
+            });
+          },
+        },
+      },
+      routerSignals,
+    );
+
+    it('return open items page for correct URL', () => {
+      const URL = '/items';
+      const result = [
+        testsOnlyOpenPageAction({
+          name: 'items',
+        }),
+      ];
+
+      expect(parseURL(URL)).to.deep.eq(result);
+    });
+
+    it('return open itemsById page for correct URL', () => {
+      const URL = '/items/100';
+      const result = [
+        testsOnlyOpenPageAction({
+          name: 'itemsById',
+          params: {
+            id: '100',
+          },
+        }),
+      ];
+
+      expect(parseURL(URL)).to.deep.eq(result);
+    });
+
+    it('return open 404 page for incorrect URL', () => {
+      const URL = '/items/100/200';
+      const result = [
+        testsOnlyOpenPageAction({
+          name: 'error404',
+          errorCode: 404,
+        }),
+      ];
+
+      expect(parseURL(URL)).to.deep.eq(result);
+    });
   });
 });
