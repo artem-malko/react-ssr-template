@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import { universalConfig } from './universal';
 import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
+import esbuild from 'esbuild';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -49,15 +50,12 @@ const clientConfig: webpack.Configuration = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: 'esbuild-loader',
             options: {
-              transpileOnly: true,
-              instance: 'main',
-              compilerOptions: {
-                module: 'esnext',
-                target: 'es6',
-                jsx: isProduction ? 'react-jsx' : 'react-jsxdev',
-              },
+              implementation: esbuild,
+              loader: 'tsx',
+              target: 'es6',
+              tsconfigRaw: require('../tsconfig.json'),
             },
           },
         ],

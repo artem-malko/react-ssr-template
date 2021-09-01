@@ -2,6 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import { universalConfig } from './universal';
 import { merge } from 'webpack-merge';
+import esbuild from 'esbuild';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -21,14 +22,12 @@ const serverConfig: webpack.Configuration = {
         exclude: /node_modules/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: 'esbuild-loader',
             options: {
-              transpileOnly: true,
-              compilerOptions: {
-                module: 'esnext',
-                target: 'es2018',
-                jsx: isProduction ? 'react-jsx' : 'react-jsxdev',
-              },
+              implementation: esbuild,
+              loader: 'tsx',
+              target: 'es2018',
+              tsconfigRaw: require('../tsconfig.json'),
             },
           },
         ],
