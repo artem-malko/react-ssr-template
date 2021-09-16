@@ -3,6 +3,7 @@ import webpack from 'webpack';
 import { universalConfig } from './universal';
 import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
+import type { TransformOptions as EsbuildOptions } from 'esbuild';
 import esbuild from 'esbuild';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
@@ -155,7 +156,7 @@ const prodConfig: webpack.Configuration = {
   optimization: {
     concatenateModules: true,
     minimizer: [
-      new TerserPlugin({
+      new TerserPlugin<EsbuildOptions>({
         minify: TerserPlugin.esbuildMinify,
       }),
     ],

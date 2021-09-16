@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { openPage } from 'core/actions/appContext/openPage';
+import { openPageAction } from 'core/actions/appContext/openPage';
 import { setQueryStringParams } from 'core/actions/appContext/setQueryStringParams';
 import { configureStore } from 'core/store/configureStore';
 import { logger } from '../utils/reduxLogger';
@@ -9,7 +9,7 @@ import { routes } from 'ui/main/routing';
 import { startup } from './startup';
 
 const parseURL = createURLParser(routes, {
-  onError404Action: openPage({
+  onError404Action: openPageAction({
     name: 'error',
     params: {
       code: 404,

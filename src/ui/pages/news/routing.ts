@@ -1,4 +1,4 @@
-import { openPage } from 'core/actions/appContext/openPage';
+import { openPage } from 'core/signals/page';
 import { Route, RouteWithoutParams, URLQueryParams } from 'infrastructure/router/types';
 import { NewsPage } from '.';
 

@@ -17,6 +17,7 @@
     "incremental": true,
     "inlineSourceMap": true,
     "inlineSources": true,
+    "isolatedModules": true,
     "alwaysStrict": true,
     "pretty": false,
     "jsx": "react-jsxdev",

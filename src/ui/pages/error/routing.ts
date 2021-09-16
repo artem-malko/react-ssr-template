@@ -1,5 +1,5 @@
-import { openPage } from 'core/actions/appContext/openPage';
 import { HttpCode } from 'core/shared/httpCode';
+import { openPage } from 'core/signals/page';
 import { Route, RouteWithParams } from 'infrastructure/router/types';
 import { ErrorPage } from '.';
 

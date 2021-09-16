@@ -1,4 +1,4 @@
-import { openPage } from 'core/actions/appContext/openPage';
+import { openPageAction } from 'core/actions/appContext/openPage';
 import { Page } from 'core/store/types';
 import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
@@ -29,7 +29,7 @@ export const Link = memo<{
         e.preventDefault();
       }
 
-      dispatch(sequence(openPage(page), historyPush()));
+      dispatch(sequence(openPageAction(page), historyPush()));
     },
     [dispatch, page, preventDefault],
   );

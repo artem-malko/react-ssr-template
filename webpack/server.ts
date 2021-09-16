@@ -26,7 +26,7 @@ const serverConfig: webpack.Configuration = {
             options: {
               implementation: esbuild,
               loader: 'tsx',
-              target: 'es2018',
+              target: 'node14',
               tsconfigRaw: require('../tsconfig.json'),
             },
           },

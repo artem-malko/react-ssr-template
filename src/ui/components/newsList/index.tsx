@@ -1,6 +1,9 @@
+import { openPageAction } from 'core/actions/appContext/openPage';
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
-import { memo, useCallback, useLayoutEffect, useState } from 'react';
+import { historyPush } from 'infrastructure/router/actions';
+import { sequence } from 'infrastructure/signal';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { InitialData } from 'ui/components/initialData';
 
@@ -30,7 +33,24 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
     [page, dispatch],
   );
 
-  useLayoutEffect(() => {
+  const onNewsItemClick = useCallback(
+    (id: number) => {
+      dispatch(
+        sequence(
+          openPageAction({
+            name: 'newsItem',
+            params: {
+              id,
+            },
+          }),
+          historyPush(),
+        ),
+      );
+    },
+    [dispatch],
+  );
+
+  useEffect(() => {
     console.log('NEWSLIST RENDERED ON CLIENT');
   }, []);
 
@@ -47,7 +67,12 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
         {news.isFetching && <div>Updating...</div>}
         {news.isSuccess &&
           news.data.map((item) => (
-            <div key={item.id}>
+            <div
+              key={item.id}
+              onClick={() => {
+                onNewsItemClick(parseInt(item.id, 10));
+              }}
+            >
               {item.title}
               <hr />
             </div>

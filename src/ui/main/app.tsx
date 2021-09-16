@@ -1,7 +1,7 @@
 import { setQueryStringParams } from 'core/actions/appContext/setQueryStringParams';
 import { selectPage } from 'core/selectors';
 import { useAppSelector } from 'core/store/hooks';
-import { Page } from 'core/store/types';
+import { AppState, Page } from 'core/store/types';
 import React, { lazy, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'ui/kit/link';
@@ -16,7 +16,6 @@ type Props = {
 };
 export const App = memo<Props>(({ renderCallback }) => {
   const page = useAppSelector(selectPage);
-  const queryString = useAppSelector((s) => s.appContext.URLQueryParams);
   const dispatch = useDispatch();
   // @JUST_FOR_TEST for a demo of problems with react-redux in the strict mode
   const patchQueryString = useCallback(() => {
@@ -38,7 +37,7 @@ export const App = memo<Props>(({ renderCallback }) => {
       <div style={{ padding: '20px 0' }}>
         Current page is: {JSON.stringify(page)}
         <br />
-        QUeryString is: {JSON.stringify(queryString)}
+        <QueryStringComp />
         <br />
         <br />
         <Link
@@ -86,4 +85,10 @@ const PageSwitcher = memo<{ page: Page }>(({ page }) => {
     default:
       return <ErrorPage page={page} />;
   }
+});
+
+const QueryStringComp = memo(() => {
+  const queryString = useAppSelector((s: AppState) => s.appContext.URLQueryParams);
+
+  return <div>QUeryString is: {JSON.stringify(queryString)}</div>;
 });

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import { getInitialDataFromDom } from 'ui/components/initialData';
 
 export const usePaginatedNews = (page = 1) => {
-  const queryId = 'paginated_news';
+  const queryId = 'paginatedNews';
 
   const news = useQuery<
     Array<{
@@ -25,7 +25,6 @@ export const usePaginatedNews = (page = 1) => {
     {
       staleTime: Infinity,
       initialData: () => getInitialDataFromDom(queryId),
-      // keepPreviousData: true,
     },
   );
 

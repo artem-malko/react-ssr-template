@@ -7,30 +7,22 @@ import {
   NOOP_ACTION,
 } from './constants';
 
-interface SignalDescriptor<P> {
-  type: typeof SIGNAL_ACTION;
-  payload: AnyAction;
-  name: string;
-  params: P;
-}
 /**
  * Wrap sequence or simple action with signal, which has it is own name and params
  *
  * @example
- * const signal = createSignal('signalName', (params: { id: string }) => sequence(action1(id), action2(id));
+ * const signal = createSignal(
+ *  'signalName',
+ *  (param1: { id: string }, param2: { name: string }) => sequence(action1(param2.name), action2(param1.id)
+ * );
  *
- * disaptch(signal({ id: 'uuid' }));
+ * disaptch(signal({ id: 'uuid', name: 'John' }));
  *
  */
-export function createSignal(name: string, getAction: () => AnyAction): () => SignalDescriptor<void>;
-export function createSignal<T extends any>(
-  name: string,
-  getAction: (params: T) => AnyAction,
-): (params: T) => SignalDescriptor<T>;
-export function createSignal<T extends any>(name: string, getAction: (params: T) => AnyAction) {
-  return (params: T) => ({
+export function createSignal<T extends any[]>(name: string, getAction: (...args: T) => AnyAction) {
+  return (...params: Parameters<typeof getAction>) => ({
     type: SIGNAL_ACTION,
-    payload: getAction(params),
+    payload: getAction(...params),
     name,
     params,
   });

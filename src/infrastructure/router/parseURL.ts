@@ -107,7 +107,7 @@ function createURLPathParser<PageName extends string>(
      */
     const normalizedPath = normalizePath(routeConfig.path);
 
-    // So, if similar path is found in mutableUniqNormalizedPathList
+    // So, if the similar path is found in mutableUniqNormalizedPathList
     // it is an error!
     if (mutableUniqNormalizedPathList.includes(normalizedPath)) {
       // @TODO add more specific error
