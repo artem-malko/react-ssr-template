@@ -57,7 +57,6 @@ const clientConfig: webpack.Configuration = {
               loader: 'tsx',
               target: 'es6',
               tsconfigRaw: require('../tsconfig.json'),
-              treeShaking: true,
             },
           },
         ],

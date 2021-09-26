@@ -158,3 +158,20 @@ prettier:
 .PHONY: tsc
 tsc:
 	@echo "\n${CYAN}Start typescript checker${RESET}\n" && node_modules/.bin/tsc --incremental --outDir ./.tsc_incremental_output
+
+
+## Docker
+
+# Build a docker image with NodeJS App inside
+.PHONY: build-nodejs-app-image
+build-nodejs-app-image:
+	docker build --build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) -t ghcr.io/artem-malko/react-ssr-template/node-app:latest .
+
+# Push a docker image with NodeJS App inside
+.PHONY: push-nodejs-app-image
+push-nodejs-app-image:
+	docker push ghcr.io/artem-malko/react-ssr-template/node-app:latest
+
+# Build and push a docker image with NodeJS App inside
+.PHONY: dockerize-nodejs-app
+dockerize-nodejs-app: build-nodejs-app-image push-nodejs-app-image
