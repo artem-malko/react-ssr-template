@@ -20,8 +20,6 @@ import { stringifyParams } from './utils';
  *
  * If a route config does not have its own `matchPageToPathParams` function,
  * simple stringifyParams will be called
- *
- * @TODO default page path config
  */
 export function createURLCompiler<PageName extends string>(routes: Routes<AnyPage<PageName>>) {
   /**
@@ -52,7 +50,6 @@ export function createURLCompiler<PageName extends string>(routes: Routes<AnyPag
     // It is not possible, actually
     // But we will check to prevent any runtime errors
     if (!routeConfigForPage) {
-      // @TODO add default redirect to createCompile params
       return '/';
     }
 

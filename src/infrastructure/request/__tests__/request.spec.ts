@@ -27,23 +27,6 @@ describe('Request', () => {
       requestMock.reset();
     });
 
-    it('Response with 200 status for success request', async () => {
-      requestMock.onGet('test200').reply(200);
-
-      await request('test200').then((response) => {
-        expect(response.status).to.be.eq(200);
-      });
-    });
-
-    it('Response with 200 status for success request with params', async () => {
-      requestMock.onGet('test200WithParams', { params: { param: 1 } }).reply(200);
-
-      await request('test200WithParams', { params: { param: 1 } }).then((response) => {
-        expect(response.status).to.be.eq(200);
-        expect(response.config.params).to.be.deep.eq({ param: 1 });
-      });
-    });
-
     it('Response with 500 status for error request', async () => {
       requestMock.onGet('test500').reply(500);
 

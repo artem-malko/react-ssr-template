@@ -1,7 +1,5 @@
-import { openPageAction } from 'core/actions/appContext/openPage';
+import { openPage } from 'core/signals/page';
 import { Page } from 'core/store/types';
-import { historyPush } from 'infrastructure/router/actions';
-import { sequence } from 'infrastructure/signal';
 import { HTMLAttributeAnchorTarget, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { compileAppURL } from 'ui/main/routing';
@@ -29,7 +27,7 @@ export const Link = memo<{
         e.preventDefault();
       }
 
-      dispatch(sequence(openPageAction(page), historyPush()));
+      dispatch(openPage(page));
     },
     [dispatch, page, preventDefault],
   );

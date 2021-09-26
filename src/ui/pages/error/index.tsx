@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import { HttpCode } from 'core/shared/httpCode';
 import { CommonPage } from 'core/store/types';
+import { HttpErrorCode } from 'core/types/http';
 
 export interface ErrorPage extends CommonPage {
   name: 'error';
   params: {
-    code: HttpCode;
+    code: HttpErrorCode;
   };
 }
 

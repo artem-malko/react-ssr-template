@@ -1,9 +1,9 @@
 import { ErrorPage } from 'ui/pages/error';
 import { RootPage } from 'ui/pages/root';
 import { AnyPage, URLQueryParams } from 'infrastructure/router/types';
-import { HttpCode } from 'core/shared/httpCode';
 import { NewsPage } from 'ui/pages/news';
 import { NewsItemPage } from 'ui/pages/newsItem';
+import { HttpErrorCode } from 'core/types/http';
 
 export type AppState = {
   appContext: AppContext;
@@ -15,7 +15,7 @@ export interface AppContext {
 }
 
 export interface CommonPage extends AnyPage<string> {
-  errorCode?: HttpCode;
+  errorCode?: HttpErrorCode;
 }
 
 export type Page = RootPage | ErrorPage | NewsPage | NewsItemPage;

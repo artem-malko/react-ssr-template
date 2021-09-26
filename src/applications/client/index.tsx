@@ -6,6 +6,13 @@ import { StrictMode } from 'react';
 import { ConfigContext } from 'config/react';
 import { getClientApplicationConfig } from 'config/generator/client';
 import { restoreStore } from './store';
+import { createServices } from 'core/services';
+import { createRequest } from 'infrastructure/request';
+import { ServiceContext } from 'core/services/shared/context';
+import { createWindowApi } from 'core/platform/window/client';
+import { createCookieAPI } from 'core/platform/cookie/client';
+import { createPlatformAPI } from 'core/platform';
+import { PlatformAPIContext } from 'core/platform/shared/context';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,30 +38,54 @@ const config = getClientApplicationConfig();
  * So, will be waiting for any ideas from the React team.
  */
 
+const requester = createRequest({
+  networkTimeout: config.networkTimeout,
+});
+const services = createServices({
+  requester,
+  config: {
+    hackerNewsAPIURL: config.hackerNewsAPIURL,
+  },
+});
+const platformAPI = createPlatformAPI({
+  envSpecificAPIs: {
+    window: createWindowApi(window),
+    cookies: createCookieAPI(),
+  },
+});
+
 if (location.search.includes('strict')) {
   restoreStore().then((store) => {
     root.render(
       <StrictMode>
-        <ReduxStoreProvider store={store}>
-          <ConfigContext.Provider value={config}>
-            <QueryClientProvider client={queryClient}>
-              <App renderCallback={() => console.log('WOOOW, renderered')} />
-            </QueryClientProvider>
-          </ConfigContext.Provider>
-        </ReduxStoreProvider>
+        <PlatformAPIContext.Provider value={platformAPI}>
+          <ServiceContext.Provider value={services}>
+            <ReduxStoreProvider store={store}>
+              <ConfigContext.Provider value={config}>
+                <QueryClientProvider client={queryClient}>
+                  <App renderCallback={() => console.log('WOOOW, renderered')} />
+                </QueryClientProvider>
+              </ConfigContext.Provider>
+            </ReduxStoreProvider>
+          </ServiceContext.Provider>
+        </PlatformAPIContext.Provider>
       </StrictMode>,
     );
   });
 } else {
   restoreStore().then((store) => {
     root.render(
-      <ReduxStoreProvider store={store}>
-        <ConfigContext.Provider value={config}>
-          <QueryClientProvider client={queryClient}>
-            <App renderCallback={() => console.log('WOOOW, renderered')} />
-          </QueryClientProvider>
-        </ConfigContext.Provider>
-      </ReduxStoreProvider>,
+      <PlatformAPIContext.Provider value={platformAPI}>
+        <ServiceContext.Provider value={services}>
+          <ReduxStoreProvider store={store}>
+            <ConfigContext.Provider value={config}>
+              <QueryClientProvider client={queryClient}>
+                <App renderCallback={() => console.log('WOOOW, renderered')} />
+              </QueryClientProvider>
+            </ConfigContext.Provider>
+          </ReduxStoreProvider>
+        </ServiceContext.Provider>
+      </PlatformAPIContext.Provider>,
     );
   });
 }

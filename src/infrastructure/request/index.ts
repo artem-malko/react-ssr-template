@@ -1,6 +1,6 @@
-import axios, { AxiosPromise, AxiosError, AxiosRequestConfig } from 'axios';
-import { Requester } from './types';
-import { patchUrl } from './utils';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AnyServiceParsedError, Requester } from './types';
+import { patchUrl, processAnyAPIError } from './utils';
 
 /**
  * A little wrapper for axios
@@ -8,19 +8,30 @@ import { patchUrl } from './utils';
 const createRequest = (params: { networkTimeout: number }): Requester => {
   const { networkTimeout } = params;
 
-  return <T>(url: string, requestConfig: Exclude<AxiosRequestConfig, 'url'> = {}): AxiosPromise<T> => {
+  return <T>(
+    url: string,
+    requestConfig: Exclude<AxiosRequestConfig, 'url'> & {
+      errorProcessingMiddleware?: (
+        originalError: AxiosError | Error,
+        parsedError: AnyServiceParsedError,
+      ) => void;
+    } = {},
+  ): Promise<T> => {
     const axiosConfig = {
       method: 'get' as const,
       withCredentials: true,
-      transformResponse: [(data: unknown) => data],
       timeout: networkTimeout,
       ...requestConfig,
       url: patchUrl(url),
     };
 
-    return axios.request(axiosConfig).catch((error: AxiosError) => {
-      throw error;
-    });
+    return (
+      axios
+        .request(axiosConfig)
+        // We need only response data, without any axios features
+        .then((response: AxiosResponse<T>) => response.data)
+        .catch((error: AxiosError) => processAnyAPIError(error, requestConfig.errorProcessingMiddleware))
+    );
   };
 };
 

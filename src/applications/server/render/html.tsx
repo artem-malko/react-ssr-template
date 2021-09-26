@@ -9,6 +9,10 @@ import { StrictMode } from 'react';
 import { ConfigContext } from 'config/react';
 import { AppState } from 'core/store/types';
 import { Store } from 'redux';
+import { Services } from 'core/services';
+import { ServiceContext } from 'core/services/shared/context';
+import { PlatformAPI } from 'core/platform';
+import { PlatformAPIContext } from 'core/platform/shared/context';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -16,9 +20,11 @@ type Props = {
   store: Store<AppState>;
   assets: AssetsData;
   polyfillsSourceCode: string;
+  services: Services;
+  platformAPI: PlatformAPI;
 };
 export function Html(props: Props) {
-  const { assets, polyfillsSourceCode, store } = props;
+  const { assets, polyfillsSourceCode, store, services, platformAPI } = props;
   const inlineScript = `
     var ${APPLICATION_CONFIG_VAR_NAME} = ${JSON.stringify(clientApplicationConfig)};\
     var initialState = ${JSON.stringify(store.getState())
@@ -75,13 +81,17 @@ export function Html(props: Props) {
       <body>
         <div id="app">
           <StrictMode>
-            <ReduxStoreProvider store={store}>
-              <ConfigContext.Provider value={serverApplicationConfig}>
-                <QueryClientProvider client={queryClient}>
-                  <App renderCallback={() => console.log('renderered')} />
-                </QueryClientProvider>
-              </ConfigContext.Provider>
-            </ReduxStoreProvider>
+            <PlatformAPIContext.Provider value={platformAPI}>
+              <ServiceContext.Provider value={services}>
+                <ReduxStoreProvider store={store}>
+                  <ConfigContext.Provider value={serverApplicationConfig}>
+                    <QueryClientProvider client={queryClient}>
+                      <App renderCallback={() => console.log('renderered')} />
+                    </QueryClientProvider>
+                  </ConfigContext.Provider>
+                </ReduxStoreProvider>
+              </ServiceContext.Provider>
+            </PlatformAPIContext.Provider>
           </StrictMode>
         </div>
         {/**

@@ -1,12 +1,15 @@
+import { usePlatformAPI } from 'core/platform/shared/context';
 import { useNewsItem } from 'core/queries/useNewsItem';
 import { memo, useEffect } from 'react';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
-  const { newsItem } = useNewsItem(newsItemId);
+  const newsItem = useNewsItem(newsItemId);
+  const platformAPI = usePlatformAPI();
 
   useEffect(() => {
     console.log('NEWSITEM RENDERED ON CLIENT');
-  }, []);
+    platformAPI.cookies.set('cookie', new Date().toString());
+  }, [platformAPI.cookies]);
 
   return (
     <div>

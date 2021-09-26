@@ -70,7 +70,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
             <div
               key={item.id}
               onClick={() => {
-                onNewsItemClick(parseInt(item.id, 10));
+                onNewsItemClick(item.id);
               }}
             >
               {item.title}

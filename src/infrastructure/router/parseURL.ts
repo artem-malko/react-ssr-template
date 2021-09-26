@@ -1,6 +1,6 @@
 import { keysOf } from 'lib/lodash';
 import { match, MatchFunction } from 'path-to-regexp';
-import { Action } from 'redux';
+import { AnyAction } from 'redux';
 import { AnyPage, Route, RouteParams, Routes, URLQueryParams } from './types';
 import { normalizePath, patchLeadingSlashInPath, printRouterConfig } from './utils';
 
@@ -14,16 +14,17 @@ const rootPageIndexName = '/';
  * After that signal an appContext from the redux-store
  * will contain a page from the route with parsed params.
  */
-export function createURLParser<PageName extends string>(
+export function createURLParser<PageName extends string = 'root'>(
   routes: Routes<AnyPage<PageName>>,
   signals: {
-    onError404Action: Action;
-    setQueryStringParams: (params: { params: URLQueryParams }) => Action;
+    onError404Action: AnyAction;
+    onError500Action: (error: Error) => AnyAction;
+    setQueryStringParams: (params: { params: URLQueryParams }) => AnyAction;
   },
 ) {
   const parsePath = createURLPathParser(routes, signals);
 
-  return (URL: string): Action[] => {
+  return (URL: string): AnyAction[] => {
     const URLParts = URL.split('?');
     const URLPath = URLParts[0] || '';
     const URLQuery = URLParts[1];
@@ -46,7 +47,8 @@ export function createURLParser<PageName extends string>(
 function createURLPathParser<PageName extends string>(
   routes: Routes<AnyPage<PageName>>,
   signals: {
-    onError404Action: Action;
+    onError404Action: AnyAction;
+    onError500Action: (error: Error) => AnyAction;
   },
 ) {
   const mutableUniqNormalizedPathList: string[] = [];
@@ -87,8 +89,10 @@ function createURLPathParser<PageName extends string>(
     const mainSlugName = routeConfig.path === '/' ? rootPageIndexName : routeConfig.path.split('/')[1];
 
     if (!mainSlugName) {
-      // @TODO add more specific error
-      throw new Error(`Path is empty for slugConfig: ${JSON.stringify(routeConfig)}`);
+      const err = new Error(`Path is empty for slugConfig: ${JSON.stringify(routeConfig)}`);
+      signals.onError500Action(err);
+
+      throw err;
     }
 
     /**
@@ -110,14 +114,15 @@ function createURLPathParser<PageName extends string>(
     // So, if the similar path is found in mutableUniqNormalizedPathList
     // it is an error!
     if (mutableUniqNormalizedPathList.includes(normalizedPath)) {
-      // @TODO add more specific error
-      throw new Error(
+      const err = new Error(
         `Current path ${
           routeConfig.path
         } is used for another slugConfig! Current slugConfig is: ${JSON.stringify(
           routeConfig,
         )}, a slugConfig with the conflicting path is: ${JSON.stringify(mutableRes[mainSlugName])} `,
       );
+      signals.onError500Action(err);
+      throw err;
     }
 
     mutableUniqNormalizedPathList.push(normalizedPath);
@@ -143,7 +148,7 @@ function createURLPathParser<PageName extends string>(
    * Parse URL path and return action with payload,
    * which is relevant for the first matched page in URL
    */
-  return (path: string, queryParams: URLQueryParams): Action | void => {
+  return (path: string, queryParams: URLQueryParams): AnyAction | void => {
     const pathParts = path
       // Split by slashes
       .split(/\/+/)

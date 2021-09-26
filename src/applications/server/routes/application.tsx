@@ -6,6 +6,12 @@ import { Html } from '../render/html';
 import { restoreStore } from '../store';
 import { AssetsData, getAssets } from '../utils/assets';
 import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
+import { createRequest } from 'infrastructure/request';
+import { createServices } from 'core/services';
+import { createWindowApi } from 'core/platform/window/server';
+import { createCookieAPI } from 'core/platform/cookie/server';
+import { serverApplicationConfig } from 'config/generator/server';
+import { createPlatformAPI } from 'core/platform';
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
 // And https://github.com/reactwg/react-18/discussions/37
@@ -53,14 +59,37 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
       }
       res.redirect(301, compiledUrl);
     } else {
+      const requester = createRequest({
+        networkTimeout: serverApplicationConfig.networkTimeout,
+      });
+      const services = createServices({
+        requester,
+        config: {
+          hackerNewsAPIURL: serverApplicationConfig.hackerNewsAPIURL,
+        },
+      });
+      const platformAPI = createPlatformAPI({
+        envSpecificAPIs: {
+          cookies: createCookieAPI(req, res),
+          window: createWindowApi(),
+        },
+      });
+
       const { startWriting, abort } = pipeToNodeWritable(
-        <Html polyfillsSourceCode={polyfillsSourceCode} assets={assets} store={store} />,
+        <Html
+          polyfillsSourceCode={polyfillsSourceCode}
+          assets={assets}
+          store={store}
+          services={services}
+          platformAPI={platformAPI}
+        />,
         res,
         {
           [methodName]() {
             // If something errored before we started streaming, we set the error code appropriately.
             res.status(didError ? 500 : 200);
             res.setHeader('Content-type', 'text/html');
+            console.log('res.cookie: ', res.getHeader('cookie'));
             res.write('<!DOCTYPE html>');
 
             startWriting();

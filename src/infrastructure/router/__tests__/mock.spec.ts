@@ -13,6 +13,11 @@ export const routerSignals = {
     name: 'error404',
     errorCode: 404,
   }),
+  onError500Action: () =>
+    testsOnlyOpenPageAction({
+      name: 'error500',
+      errorCode: 500,
+    }),
   setQueryStringParams: testsOnlySetQueryStringParams,
 };
 export type TestsOnlyRootPage = {
@@ -80,7 +85,6 @@ export const pageWithNotRequiredParamsRoute: Route<
 > = {
   path: '/page_with_not_required_params/:id/:name?',
   signal: ({ id, name }) => {
-    console.log;
     return testsOnlyOpenPageAction({
       name: 'pageWithNotRequiredParams',
       params: {

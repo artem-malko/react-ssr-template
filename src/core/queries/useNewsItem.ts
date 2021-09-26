@@ -1,24 +1,13 @@
-import axios from 'axios';
+import { FetchNewsItemResponse } from 'core/services/hackerNews/types';
+import { useServices } from 'core/services/shared/context';
 import { useQuery } from 'react-query';
 
-export const useNewsItem = (
-  newsItemId: number,
-  initialData?: {
-    title: string;
-    id: string;
-  },
-) => {
-  const queryId = 'newsItem';
-
-  const newsItem = useQuery<{
-    title: string;
-    id: string;
-  }>(
+export const useNewsItem = (newsItemId: number, initialData?: FetchNewsItemResponse) => {
+  const services = useServices();
+  const newsItem = useQuery<FetchNewsItemResponse>(
     ['newsItem', newsItemId],
     async () => {
-      return axios.get(`http://node-hnapi.herokuapp.com/item/${newsItemId}`).then((res) => {
-        return res.data;
-      });
+      return services.hackerNews.getNewsItem({ id: newsItemId });
     },
     {
       staleTime: Infinity,
@@ -26,5 +15,5 @@ export const useNewsItem = (
     },
   );
 
-  return { newsItem, queryId };
+  return newsItem;
 };
