@@ -53,23 +53,3 @@ export function debounce<T extends Function>(func: T, timeout: number): T {
 
   return debounced as any;
 }
-
-/**
- * Sort items by selected param
- */
-export function sortByParam<T extends Record<string, unknown>>(arr: T[], prop: keyof T): T[] {
-  if (!arr[0] || typeof arr[0][prop] !== 'number') {
-    return arr;
-  }
-
-  return ([] as T[]).concat(arr).sort((a, b) => {
-    const aProp = a[prop];
-    const bProp = b[prop];
-
-    if (typeof aProp !== 'number' || typeof bProp !== 'number') {
-      return 0;
-    }
-
-    return aProp - bProp;
-  });
-}

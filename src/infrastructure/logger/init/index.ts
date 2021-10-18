@@ -1,6 +1,6 @@
-import { BaseLogger } from 'pino';
+import BaseLogger from 'pino';
 
-let logger: BaseLogger;
+let logger: ReturnType<typeof BaseLogger>;
 
 if (process.env.APP_ENV === 'client') {
   logger = require('./client').default;

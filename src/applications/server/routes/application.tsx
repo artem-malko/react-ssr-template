@@ -89,7 +89,6 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             // If something errored before we started streaming, we set the error code appropriately.
             res.status(didError ? 500 : 200);
             res.setHeader('Content-type', 'text/html');
-            console.log('res.cookie: ', res.getHeader('cookie'));
             res.write('<!DOCTYPE html>');
 
             startWriting();

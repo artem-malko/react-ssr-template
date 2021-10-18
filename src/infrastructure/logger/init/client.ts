@@ -1,3 +1,3 @@
-import { BaseLogger } from 'pino';
+import BaseLogger from 'pino';
 
-export default {} as BaseLogger;
+export default {} as ReturnType<typeof BaseLogger>;

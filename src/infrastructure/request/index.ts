@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { AnyServiceParsedError, Requester } from './types';
 import { patchUrl, processAnyAPIError } from './utils';
 
@@ -27,9 +27,9 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
 
     return (
       axios
-        .request(axiosConfig)
+        .request<T>(axiosConfig)
         // We need only response data, without any axios features
-        .then((response: AxiosResponse<T>) => response.data)
+        .then((response) => response.data)
         .catch((error: AxiosError) => processAnyAPIError(error, requestConfig.errorProcessingMiddleware))
     );
   };

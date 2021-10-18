@@ -158,6 +158,12 @@ const prodConfig: webpack.Configuration = {
     minimizer: [
       new TerserPlugin<EsbuildOptions>({
         minify: TerserPlugin.esbuildMinify,
+        terserOptions: {
+          minify: true,
+          sourcemap: false,
+          legalComments: 'none',
+          treeShaking: true,
+        },
       }),
     ],
   },

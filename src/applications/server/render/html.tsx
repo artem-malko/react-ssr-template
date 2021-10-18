@@ -13,6 +13,7 @@ import { Services } from 'core/services';
 import { ServiceContext } from 'core/services/shared/context';
 import { PlatformAPI } from 'core/platform';
 import { PlatformAPIContext } from 'core/platform/shared/context';
+import { popoverContainerId } from 'ui/kit/popover/shared';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -77,8 +78,13 @@ export function Html(props: Props) {
     <html lang="en" dir="ltr" style={{ height: '100%' }}>
       <head>
         <meta charSet="utf-8" />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `html{line-height:1.15;-webkit-text-size-adjust:100%}body{margin:0;min-height:100vh;min-height:-webkit-fill-available;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Ubuntu,sans-serif;min-width:360px;width:100%}h1,h2,h3,h4{margin:0}@supports(-webkit-touch-callout:none){body{height:-webkit-fill-available}}body,button,html,input{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;line-height:1.15;margin:0}button,hr,input{overflow:visible}button,select{text-transform:none}[type=button],[type=submit],button{-webkit-appearance:button}fieldset{border:none;margin:0;padding:0}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}[hidden],template{display:none}`,
+          }}
+        />
       </head>
-      <body>
+      <body style={{ position: 'relative' }}>
         <div id="app">
           <StrictMode>
             <PlatformAPIContext.Provider value={platformAPI}>
@@ -94,6 +100,18 @@ export function Html(props: Props) {
             </PlatformAPIContext.Provider>
           </StrictMode>
         </div>
+        <div
+          id={popoverContainerId}
+          style={{
+            pointerEvents: 'none',
+            position: 'absolute',
+            width: '100vw',
+            minHeight: '100%',
+            top: 0,
+            left: 0,
+          }}
+        />
+
         {/**
          * Actually, there should be a hydration process for react-query like
          * <HydrateReactQuery state={state_from_render}><App /></HydrateReactQuery>
