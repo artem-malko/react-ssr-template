@@ -22,7 +22,6 @@ export function generateRequestId(): string {
 export function processAnyAPIError(
   error: AxiosError | Error,
   middleware?: (originalError: AxiosError | Error, parsedError: AnyServiceParsedError) => void,
-  // @TODO explain
 ): never {
   const parsedError = parseAnyAPIError(error);
 

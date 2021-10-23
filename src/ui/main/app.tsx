@@ -2,6 +2,8 @@ import { setQueryStringParams } from 'core/actions/appContext/setQueryStringPara
 import { selectPage } from 'core/selectors';
 import { useAppSelector } from 'core/store/hooks';
 import { AppState, Page } from 'core/store/types';
+import { historyPush } from 'infrastructure/router/actions';
+import { sequence } from 'infrastructure/signal';
 import React, { lazy, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'ui/kit/link';
@@ -20,9 +22,12 @@ export const App = memo<Props>(({ renderCallback }) => {
   // @JUST_FOR_TEST for a demo of problems with react-redux in the strict mode
   const patchQueryString = useCallback(() => {
     dispatch(
-      setQueryStringParams({
-        params: { test_strict_mode_attr: [new Date().toString()] },
-      }),
+      sequence(
+        setQueryStringParams({
+          params: { test_strict_mode_attr: [new Date().toString()] },
+        }),
+        historyPush(),
+      ),
     );
   }, [dispatch]);
 
