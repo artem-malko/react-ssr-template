@@ -39,7 +39,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
    * and giving it earlier may give you better rankings due to perf.
    */
   const useOnComplete = req.isSearchBot;
-  const methodName = forcedToUseOnComplete || useOnComplete ? 'onCompleteAll' : 'onReadyToStream';
+  const methodName = forcedToUseOnComplete || useOnComplete ? 'onCompleteAll' : 'onCompleteShell';
 
   const storePromise = restoreStore(req, res);
 
