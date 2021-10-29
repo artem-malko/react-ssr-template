@@ -48,7 +48,7 @@ server.use((req, _, next) => {
     // Artificially delay serving JS
     // to demonstrate streaming HTML.
     // I'd like to remove it from dev process
-    setTimeout(next, process.env.NODE_ENV !== 'production' ? 100 : 10000);
+    setTimeout(next, process.env.NODE_ENV !== 'production' ? 100 : 5000);
   } else {
     next();
   }

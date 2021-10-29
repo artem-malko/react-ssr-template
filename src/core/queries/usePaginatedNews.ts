@@ -12,7 +12,7 @@ export const usePaginatedNews = (page = 1) => {
       });
     },
     {
-      staleTime: 0,
+      staleTime: Infinity,
       useErrorBoundary: false,
     },
   );
