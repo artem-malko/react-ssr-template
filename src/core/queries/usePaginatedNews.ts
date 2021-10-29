@@ -1,28 +1,21 @@
-import { FetchNewsResponse } from 'core/services/hackerNews/types';
-import { useServices } from 'core/services/shared/context';
-import { useQuery } from 'react-query';
-import { getInitialDataFromDom } from 'ui/components/initialData';
+import { useAppQuery } from 'infrastructure/query/useAppQuery';
 
 export const usePaginatedNews = (page = 1) => {
-  const queryId = 'paginatedNews';
-  const services = useServices();
-  const news = useQuery<FetchNewsResponse>(
+  const news = useAppQuery(
     ['news', page],
-    async () => {
+    async ({ services }) => {
       // Simple fake latency for the requests from server side
-      const timeout = process.env.APP_ENV === 'server' ? 4000 : 400;
-      await new Promise((resolve) => setTimeout(resolve, timeout));
+      await new Promise((resolve) => setTimeout(resolve, page % 2 ? 4000 : 1000));
 
       return services.hackerNews.getNews({ page }).then((res) => {
-        // @WIP just to reduce data to render
-        return res.slice(0, 10);
+        return res;
       });
     },
     {
-      staleTime: Infinity,
-      initialData: () => getInitialDataFromDom(queryId),
+      staleTime: 0,
+      useErrorBoundary: false,
     },
   );
 
-  return { news, queryId };
+  return news;
 };

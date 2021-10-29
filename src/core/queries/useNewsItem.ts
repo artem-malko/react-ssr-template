@@ -1,12 +1,10 @@
 import { FetchNewsItemResponse } from 'core/services/hackerNews/types';
-import { useServices } from 'core/services/shared/context';
-import { useQuery } from 'react-query';
+import { useAppQuery } from 'infrastructure/query/useAppQuery';
 
 export const useNewsItem = (newsItemId: number, initialData?: FetchNewsItemResponse) => {
-  const services = useServices();
-  const newsItem = useQuery<FetchNewsItemResponse>(
+  const newsItem = useAppQuery(
     ['newsItem', newsItemId],
-    async () => {
+    async ({ services }) => {
       return services.hackerNews.getNewsItem({ id: newsItemId });
     },
     {

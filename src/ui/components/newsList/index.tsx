@@ -5,11 +5,10 @@ import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { InitialData } from 'ui/components/initialData';
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const [page, setPage] = useState(initialPage);
-  const { news, queryId } = usePaginatedNews(page);
+  const news = usePaginatedNews(page);
   const dispatch = useDispatch();
   const onPageChange = useCallback(
     (action: 'inc' | 'dec') => {
@@ -66,7 +65,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       <div style={{ padding: 10, outline: '1px solid blue' }}>
         {news.isFetching && <div>Updating...</div>}
         {news.isSuccess &&
-          news.data.map((item) => (
+          news.data.slice(0, 10).map((item) => (
             <div
               key={item.id}
               onClick={() => {
@@ -77,10 +76,8 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               <hr />
             </div>
           ))}
+        {news.isError && <div>ERROR: {news.error.code}</div>}
       </div>
-
-      {/* Checkout InitialData sources to know, how it works */}
-      <InitialData queryOutput={news} queryId={queryId} />
     </div>
   );
 });

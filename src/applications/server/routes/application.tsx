@@ -1,6 +1,8 @@
-import { AppState } from 'core/store/types';
 import express from 'express';
+import { Writable } from 'stream';
 import { Store } from 'redux';
+import { QueryClient } from 'react-query';
+import { AppState } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
 import { Html } from '../render/html';
 import { restoreStore } from '../store';
@@ -12,12 +14,18 @@ import { createWindowApi } from 'core/platform/window/server';
 import { createCookieAPI } from 'core/platform/cookie/server';
 import { serverApplicationConfig } from 'config/generator/server';
 import { createPlatformAPI } from 'core/platform';
+import { getFullPath } from '../render/utils';
+import { DehydrateQueryWritable } from 'infrastructure/query/queryDehydrator';
+import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
+
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
 // And https://github.com/reactwg/react-18/discussions/37
-const { pipeToNodeWritable } = require('react-dom/server');
+const { renderToPipeableStream } = require('react-dom/server');
 
 const assetsPromise = getAssets();
+
+const SERVER_RENDER_ABORT_TIMEOUT = 5000;
 
 export const createApplicationRouter: () => express.Handler = () => (req, res) => {
   res.set('X-Content-Type-Options', 'nosniff');
@@ -25,6 +33,12 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   res.set('X-Frame-Options', 'deny');
 
   const polyfillsSourceCode = getAllPolyfillsSourceCode(req);
+
+  // @TODO
+  res.socket?.on('error', (error) => {
+    // Log fatal errors
+    console.error('Fatal', error);
+  });
 
   let didError = false;
 
@@ -75,34 +89,67 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         },
       });
 
-      const { startWriting, abort } = pipeToNodeWritable(
+      // @EXPERIMENT_REACT_bootstrapScripts
+      const publicPath = serverApplicationConfig.publicPath;
+      const reactPath = getFullPath({
+        pathMapping: assets.pathMapping,
+        chunkName: 'react',
+        resourceType: 'js',
+        publicPath,
+      });
+
+      const queryClient = new QueryClient({
+        defaultOptions: defaultQueryOptions,
+      });
+
+      const pipeableStream = renderToPipeableStream(
         <Html
           polyfillsSourceCode={polyfillsSourceCode}
           assets={assets}
           store={store}
           services={services}
           platformAPI={platformAPI}
+          queryClient={queryClient}
         />,
-        res,
         {
+          // @EXPERIMENT_REACT_bootstrapScripts
+          bootstrapScripts: [reactPath],
           [methodName]() {
             // If something errored before we started streaming, we set the error code appropriately.
             res.status(didError ? 500 : 200);
             res.setHeader('Content-type', 'text/html');
             res.write('<!DOCTYPE html>');
 
-            startWriting();
+            let stream: Writable;
+
+            if (methodName === 'onCompleteShell') {
+              stream = pipeableStream.pipe(new DehydrateQueryWritable(res, queryClient));
+            } else {
+              stream = pipeableStream.pipe(res);
+            }
+
+            /**
+             * Abort current pipeableStream and switch to client rendering
+             * if enough time passes but server rendering has not been finished yet
+             */
+            const abortTimeoutId = setTimeout(() => {
+              pipeableStream.abort();
+            }, SERVER_RENDER_ABORT_TIMEOUT);
+
+            stream.once('finish', () => {
+              clearTimeout(abortTimeoutId);
+              res.end();
+            });
           },
+
           // @TODO looks quite silly, need to refactor it
-          onError(x: any) {
+          onError(error: Error) {
             didError = true;
-            console.error(x);
+            console.error(error);
+            pipeableStream.abort();
           },
         },
       );
-
-      // Abandon and switch to client rendering if enough time passes.
-      setTimeout(abort, 5000);
     }
   });
 };

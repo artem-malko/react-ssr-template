@@ -23,9 +23,10 @@ type Props = {
   polyfillsSourceCode: string;
   services: Services;
   platformAPI: PlatformAPI;
+  queryClient: QueryClient;
 };
 export function Html(props: Props) {
-  const { assets, polyfillsSourceCode, store, services, platformAPI } = props;
+  const { assets, polyfillsSourceCode, store, services, platformAPI, queryClient } = props;
   const inlineScript = `
     var ${APPLICATION_CONFIG_VAR_NAME} = ${JSON.stringify(clientApplicationConfig)};\
     var initialState = ${JSON.stringify(store.getState())
@@ -35,12 +36,13 @@ export function Html(props: Props) {
       .replace(/</g, '\\u003c')};\
     ${props.assets.inlineContent}
   `;
-  const reactPath = getFullPath({
-    pathMapping: assets.pathMapping,
-    chunkName: 'react',
-    resourceType: 'js',
-    publicPath,
-  });
+  // @EXPERIMENT_REACT_bootstrapScripts
+  // const reactPath = getFullPath({
+  //   pathMapping: assets.pathMapping,
+  //   chunkName: 'react',
+  //   resourceType: 'js',
+  //   publicPath,
+  // });
   const appPath = getFullPath({
     pathMapping: assets.pathMapping,
     chunkName: 'app',
@@ -65,16 +67,9 @@ export function Html(props: Props) {
     resourceType: 'js',
     publicPath,
   });
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        suspense: true,
-      },
-    },
-  });
-  // const dehydratedQueryClientState = dehydrate(queryClient);
 
   return (
+    // @TODO add correct lang
     <html lang="en" dir="ltr" style={{ height: '100%' }}>
       <head>
         <meta charSet="utf-8" />
@@ -112,25 +107,14 @@ export function Html(props: Props) {
           }}
         />
 
-        {/**
-         * Actually, there should be a hydration process for react-query like
-         * <HydrateReactQuery state={state_from_render}><App /></HydrateReactQuery>
-         * <script
-         *  dangerouslySetInnerHTML={{ __html: `var prefetched_data = ${JSON.stringify(state_from_render}`)}}
-         * />
-         *
-         * But, with the React 18 streaming API we can not get it from the render process,
-         * cause current HTML component will be send by chuncks.
-         *
-         * So, will be waiting for any ideas from the React team.
-         */}
         <script dangerouslySetInnerHTML={{ __html: inlineScript }} />
         <script dangerouslySetInnerHTML={{ __html: polyfillsSourceCode }} />
-        <script src={reactPath} />
-        <script src={appPath} />
-        <script src={infrastructurePath} />
-        <script src={libPath} />
-        <script src={vendorPath} />
+        {/* @EXPERIMENT_REACT_bootstrapScripts React is fetched by react itself via bootstrapScripts */}
+        {/* <script src={reactPath} async /> */}
+        <script src={appPath} async />
+        <script src={infrastructurePath} async />
+        <script src={libPath} async />
+        <script src={vendorPath} async />
       </body>
     </html>
   );

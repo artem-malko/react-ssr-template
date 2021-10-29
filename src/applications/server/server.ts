@@ -72,6 +72,10 @@ server.get('/robots.txt', (_req, res) => {
   res.sendFile(path.resolve(process.cwd(), 'build', 'public') + '/robots.txt');
 });
 
+server.get('/favicon.ico', (_req, res) => {
+  res.sendFile(path.resolve(process.cwd(), 'build', 'public') + '/favicon.ico');
+});
+
 /**
  * Application route handler
  *

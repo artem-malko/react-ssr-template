@@ -21,6 +21,12 @@ export default memo<{ page: NewsPage }>(({ page }) => {
       <React.Suspense fallback={<Preloader purpose="NewsList" />}>
         <NewsList initialPage={page.params.page} />
       </React.Suspense>
+      <br />
+      This is a news list for the next page
+      <br />
+      <React.Suspense fallback={<Preloader purpose="NewsList" />}>
+        <NewsList initialPage={page.params.page + 1} />
+      </React.Suspense>
       <div style={{ padding: '20px 0' }} />
       <StaticComponent />
       <div style={{ padding: '20px 0' }} />
