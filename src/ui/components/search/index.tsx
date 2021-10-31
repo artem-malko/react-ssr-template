@@ -1,10 +1,13 @@
+import { useStyles } from 'infrastructure/css/hook';
 import { memo, useState } from 'react';
+import { styles } from './index.css';
 
 export const Search = memo(() => {
+  const css = useStyles(styles);
   const [value, setValue] = useState('');
 
   return (
-    <div style={{ padding: '10px 20px', outline: '1px solid violet', background: 'rgba(0,0,0,0.1)' }}>
+    <div className={css('root')}>
       <h2>Search Component</h2>
       Try to input something before NewList will be ready. As you can see, Search component is ready to
       work, even other components are still in loading stage

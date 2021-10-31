@@ -31,15 +31,6 @@ const container = document.getElementById('app');
 
 const config = getClientApplicationConfig();
 
-/**
- * Actually, there should be a rehydration process for react-query like
- * <RehydrateReactQuery state={state_from_html}><App /></RehydrateReactQuery>
- *
- * But, with the React 18 streaming API we can not get it from HTML,
- * cause we can not prepare in on the server side.
- * So, will be waiting for any ideas from the React team.
- */
-
 const requester = createRequest({
   networkTimeout: config.networkTimeout,
 });
@@ -72,6 +63,7 @@ const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
   </PlatformAPIContext.Provider>
 );
 
+// @TODO just for a strict mode testing
 if (location.search.includes('strict')) {
   restoreStore().then((store) => {
     (ReactDOM as any).hydrateRoot(

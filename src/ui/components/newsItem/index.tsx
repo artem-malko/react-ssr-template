@@ -1,8 +1,11 @@
 import { usePlatformAPI } from 'core/platform/shared/context';
 import { useNewsItem } from 'core/queries/useNewsItem';
+import { useStyles } from 'infrastructure/css/hook';
 import { memo, useEffect } from 'react';
+import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
+  const css = useStyles(styles);
   const newsItem = useNewsItem(newsItemId);
   const platformAPI = usePlatformAPI();
 
@@ -12,7 +15,7 @@ export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   }, [platformAPI.cookies]);
 
   return (
-    <div>
+    <div className={css('root')}>
       <h2>NewsITEM Component</h2>
       {newsItem.isFetching && <div>Updating...</div>}
       {newsItem.isSuccess && (
