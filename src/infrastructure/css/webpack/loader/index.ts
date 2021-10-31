@@ -65,7 +65,7 @@ const DEFAULT_QUERY_VALUES: LoaderParams = {
   resolveModules: [],
 };
 
-const loader = function (this: LoaderContext<any>, source: any) {
+const loader = function (this: LoaderContext<LoaderParams>, source: string) {
   const { resource } = this;
   const callback = this.async();
 
