@@ -5,7 +5,7 @@ import { getHashDigest } from 'loader-utils';
 import { storeInstance } from '../store';
 import { generateCss } from '../../generator';
 import { STYLE_DESCRIPTOR } from '../shared';
-import { Style } from '../../provider/types';
+import { Style } from '../../types';
 
 const ConcatSource = sources.ConcatSource;
 

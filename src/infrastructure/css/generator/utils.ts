@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { prefix } from 'inline-style-prefixer';
-import { Style } from '../provider/types';
+import { Style } from '../types';
 
 /* istanbul ignore next */
 const convert = require('bidi-css-js').default ? require('bidi-css-js').default : require('bidi-css-js');

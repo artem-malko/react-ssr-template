@@ -1,5 +1,6 @@
 import { createContext, Component } from 'react';
-import { CSSProviderStoreInterface, Styles } from './types';
+import { Styles } from '../types';
+import { CSSProviderStoreInterface } from './types';
 
 /* istanbul ignore next */
 const cssStub =

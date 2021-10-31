@@ -1,4 +1,5 @@
-import { CSSProviderStoreInterface, Style } from './types';
+import { Style } from '../types';
+import { CSSProviderStoreInterface } from './types';
 
 export class CSSClientProviderStore implements CSSProviderStoreInterface {
   public addStyles(_selector: string, stylesDescriptor: Style, usedModifiers?: string[]) {

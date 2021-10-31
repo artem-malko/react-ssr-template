@@ -1,4 +1,4 @@
-import { Style } from '../provider/types';
+import { Style } from '../types';
 import { cssify } from './utils';
 
 // @TODO_someday generate different styles by user agent!

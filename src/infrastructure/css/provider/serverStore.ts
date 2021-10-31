@@ -1,5 +1,6 @@
-import { CSSProviderStoreInterface, Style } from './types';
+import { CSSProviderStoreInterface } from './types';
 import { murmurhash2 } from '../stringHash';
+import { Style } from '../types';
 
 export class CSSServerProviderStore implements CSSProviderStoreInterface {
   private _hasStyles = false;
