@@ -33,7 +33,7 @@ export const useAppQuery = <TResult, TError extends AnyServiceParsedError>(
    * The data will be there after react-component, which uses current query,
    * was rendered and was streamed to a client
    *
-   * For more info checkout queryDehydrator.ts
+   * For more info checkout ReactStreamRenderEnhancer
    */
   const queryId = hashQueryKey(key);
   const dehydratedQueryState = getDehydratedQueryStateFromDom(queryId);

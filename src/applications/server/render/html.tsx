@@ -3,7 +3,6 @@ import { Provider as ReduxStoreProvider } from 'react-redux';
 import { APPLICATION_CONFIG_VAR_NAME } from 'config/generator/shared';
 import { App } from 'ui/main/app';
 import { AssetsData } from '../utils/assets';
-import { getFullPath } from './utils';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { StrictMode } from 'react';
 import { ConfigContext } from 'config/react';
@@ -14,6 +13,9 @@ import { ServiceContext } from 'core/services/shared/context';
 import { PlatformAPI } from 'core/platform';
 import { PlatformAPIContext } from 'core/platform/shared/context';
 import { popoverContainerId } from 'ui/kit/popover/shared';
+import { CSSProviderStoreInterface } from 'infrastructure/css/provider/types';
+import { CSSProvider } from 'infrastructure/css/provider';
+import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -24,9 +26,11 @@ type Props = {
   services: Services;
   platformAPI: PlatformAPI;
   queryClient: QueryClient;
+  cssProviderStore: CSSProviderStoreInterface;
 };
 export function Html(props: Props) {
-  const { assets, polyfillsSourceCode, store, services, platformAPI, queryClient } = props;
+  const { assets, polyfillsSourceCode, store, services, platformAPI, queryClient, cssProviderStore } =
+    props;
   const inlineScript = `
     var ${APPLICATION_CONFIG_VAR_NAME} = ${JSON.stringify(clientApplicationConfig)};\
     var initialState = ${JSON.stringify(store.getState())
@@ -34,6 +38,7 @@ export function Html(props: Props) {
       .replace(/\u2028|\u2029/g, (c) => (c === '\u2028' ? '\\u2028' : '\\u2029'))
       // https://github.com/reduxjs/redux/blob/master/docs/recipes/ServerRendering.md#security-considerations
       .replace(/</g, '\\u003c')};\
+    var pathMapping = ${JSON.stringify(assets.pathMapping)};\
     ${props.assets.inlineContent}
   `;
   // @EXPERIMENT_REACT_bootstrapScripts
@@ -43,25 +48,25 @@ export function Html(props: Props) {
   //   resourceType: 'js',
   //   publicPath,
   // });
-  const appPath = getFullPath({
+  const appPath = getFullPathForStaticResource({
     pathMapping: assets.pathMapping,
     chunkName: 'app',
     resourceType: 'js',
     publicPath,
   });
-  const vendorPath = getFullPath({
+  const vendorPath = getFullPathForStaticResource({
     pathMapping: assets.pathMapping,
     chunkName: 'vendor',
     resourceType: 'js',
     publicPath,
   });
-  const infrastructurePath = getFullPath({
+  const infrastructurePath = getFullPathForStaticResource({
     pathMapping: assets.pathMapping,
     chunkName: 'infrastructure',
     resourceType: 'js',
     publicPath,
   });
-  const libPath = getFullPath({
+  const libPath = getFullPathForStaticResource({
     pathMapping: assets.pathMapping,
     chunkName: 'lib',
     resourceType: 'js',
@@ -87,7 +92,9 @@ export function Html(props: Props) {
                 <ReduxStoreProvider store={store}>
                   <ConfigContext.Provider value={serverApplicationConfig}>
                     <QueryClientProvider client={queryClient}>
-                      <App renderCallback={() => console.log('renderered')} />
+                      <CSSProvider cssProviderStore={cssProviderStore}>
+                        <App renderCallback={() => console.log('renderered')} />
+                      </CSSProvider>
                     </QueryClientProvider>
                   </ConfigContext.Provider>
                 </ReduxStoreProvider>

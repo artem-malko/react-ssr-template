@@ -1,12 +1,15 @@
 import { openPageAction } from 'core/actions/appContext/openPage';
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
+import { useStyles } from 'infrastructure/css/hook';
 import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { styles } from './index.css';
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
+  const css = useStyles(styles);
   const [page, setPage] = useState(initialPage);
   const news = usePaginatedNews(page);
   const dispatch = useDispatch();
@@ -54,7 +57,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   }, []);
 
   return (
-    <div>
+    <div className={css('root', ['_sd'])}>
       <h2>NewsList Component</h2>
       <button disabled={page === 1} onClick={() => onPageChange('dec')}>
         Prev page
@@ -62,7 +65,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       <button onClick={() => onPageChange('inc')}>Next page</button>
       <br />
       <br />
-      <div style={{ padding: 10, outline: '1px solid blue' }}>
+      <div className={css('list')}>
         {news.isFetching && <div>Updating...</div>}
         {news.isSuccess &&
           news.data.slice(0, 10).map((item) => (

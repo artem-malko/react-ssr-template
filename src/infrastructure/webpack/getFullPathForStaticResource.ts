@@ -2,6 +2,13 @@ interface Params {
   pathMapping: { [chunkName: string]: string[] };
   chunkName: string;
   resourceType: 'css' | 'js';
+  publicPath: string;
+}
+export function getFullPathForStaticResource(params: Params): string {
+  const { publicPath, ...extractFileNameParams } = params;
+  const assetFileName = extractFileNameByResourceType(extractFileNameParams);
+
+  return `${publicPath}${assetFileName}`;
 }
 
 /**
@@ -10,7 +17,11 @@ interface Params {
  *
  * Can be usefull, if the same file has `.css` and `.js` versions
  */
-export function extractFileNameByResourceType(params: Params) {
+function extractFileNameByResourceType(params: {
+  pathMapping: { [chunkName: string]: string[] };
+  chunkName: string;
+  resourceType: 'css' | 'js';
+}) {
   const { pathMapping, chunkName, resourceType } = params;
   const assetsList = pathMapping[chunkName];
 

@@ -16,10 +16,15 @@ import { PlatformAPIContext } from 'core/platform/shared/context';
 import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
 import { Store } from 'redux';
 import { AppState } from 'core/store/types';
+import { CSSClientProviderStore } from 'infrastructure/css/provider/clientStore';
+import { CSSProvider } from 'infrastructure/css/provider';
+import { afterAppRendered } from './utils/afterAppRendered';
 
 const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,
 });
+
+const cssProviderStore = new CSSClientProviderStore();
 
 // @TODO_AFTER_REACT_18_RELEASE remove as any
 const container = document.getElementById('app');
@@ -57,7 +62,9 @@ const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
       <ReduxStoreProvider store={store}>
         <ConfigContext.Provider value={config}>
           <QueryClientProvider client={queryClient}>
-            <App renderCallback={() => console.log('WOOOW, renderered')} />
+            <CSSProvider cssProviderStore={cssProviderStore}>
+              <App renderCallback={() => afterAppRendered(config)} />
+            </CSSProvider>
           </QueryClientProvider>
         </ConfigContext.Provider>
       </ReduxStoreProvider>
@@ -79,3 +86,7 @@ if (location.search.includes('strict')) {
     (ReactDOM as any).hydrateRoot(container, <Application store={store} />);
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('ONLOSD');
+});

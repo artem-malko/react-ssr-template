@@ -1,3 +1,5 @@
+import { generateCss } from 'infrastructure/css/generator';
+import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { Query, QueryClient } from 'react-query';
 import { Writable } from 'stream';
 
@@ -13,22 +15,27 @@ function dehydrateQuery(query: Query) {
 }
 
 /**
- * This is a writeble Wrapper, which allows to insert into the stream
- * dehydratedQuery state exact at the right timing
- * right after react rendered  a component with query usage
+ * This is a writeble Wrapper, which allows to insert into the stream:
+ * 1. dehydratedQuery state exact at the right timing
+ *    right after react rendered  a component with query usage
+ *
+ * 2. generated css right after react rendered  a component with styles
  */
-export class DehydrateQueryWritable extends Writable {
+export class ReactStreamRenderEnhancer extends Writable {
   private queryClient: QueryClient;
   // Used to check, that query was dehydrated
   private queryStorage: { [key: string]: boolean };
   // Used to check, that query was dehydrated
   private queriesCache: string[];
   private _writable: Writable;
+  // generateCss(cssProviderStore.getStyles()
+  private cssProviderStore: CSSServerProviderStore;
 
-  constructor(writable: Writable, queryClient: QueryClient) {
+  constructor(writable: Writable, queryClient: QueryClient, cssProviderStore: CSSServerProviderStore) {
     super();
     this._writable = writable;
     this.queryClient = queryClient;
+    this.cssProviderStore = cssProviderStore;
     this.queryStorage = {};
     this.queriesCache = [];
   }
@@ -67,6 +74,12 @@ export class DehydrateQueryWritable extends Writable {
           })}</script>`,
         );
       }
+    }
+
+    if (this.cssProviderStore.hasStyles()) {
+      const styles = this.cssProviderStore.getStyles();
+      this._writable.write('<style>' + generateCss(styles) + '</style>');
+      this.cssProviderStore.clearStore();
     }
 
     // Finally write whatever React tried to write.

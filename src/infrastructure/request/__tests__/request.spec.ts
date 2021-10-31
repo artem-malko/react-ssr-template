@@ -31,7 +31,7 @@ describe('Request', () => {
       requestMock.onGet('test500').reply(500);
 
       await request('test500').catch((error) => {
-        expect(error.response.status).to.be.eq(500);
+        expect(error.code).to.be.eq(500);
       });
     });
 
@@ -51,11 +51,11 @@ describe('Request', () => {
       });
     });
 
-    it('Error code is ECONNABORTED for timeout Error', async () => {
+    it('Error code is ECONNABORTED (599) for timeout Error', async () => {
       requestMock.onGet('testTimeoutError').timeoutOnce();
 
       await request('testTimeoutError').catch((error) => {
-        expect(error.code).to.be.eq('ECONNABORTED');
+        expect(error.code).to.be.eq(599);
       });
     });
   });

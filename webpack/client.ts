@@ -5,6 +5,7 @@ import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 import esbuild from 'esbuild';
+import { CSSInJSPlugin } from '../src/infrastructure/css/webpack/plugin';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -48,13 +49,35 @@ const clientConfig: webpack.Configuration = {
     rules: [
       {
         test: /\.ts(x)?$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|css\.ts/,
         use: [
           {
             loader: 'esbuild-loader',
             options: {
               implementation: esbuild,
               loader: 'tsx',
+              target: 'es6',
+              tsconfigRaw: require('../tsconfig.json'),
+            },
+          },
+        ],
+      },
+      {
+        test: /css\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: path.resolve(__dirname, '..', 'src/infrastructure/css/webpack/loader/index.ts'),
+            options: {
+              resolveModules: universalConfig.resolve!.modules,
+            },
+          },
+          {
+            loader: 'esbuild-loader',
+            options: {
+              implementation: esbuild,
+              format: 'cjs',
+              loader: 'ts',
               target: 'es6',
               tsconfigRaw: require('../tsconfig.json'),
             },
@@ -129,6 +152,8 @@ const clientConfig: webpack.Configuration = {
     new webpack.EnvironmentPlugin({
       APP_ENV: 'client',
     }),
+
+    new CSSInJSPlugin(),
 
     // Store connection between chunks and bundles and their names
     new StatsWriterPlugin({

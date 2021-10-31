@@ -11,7 +11,7 @@ export const getDehydratedQueryStateFromDom = (queryId: string) => {
 
   /**
    * dehydratedQueryState is in the dom via DehydrateQueryWritable
-   * For more info checkout queryDehydrator.ts
+   * For more info checkout ReactStreamRenderEnhancer
    */
   const dehydratedQueryState = (window as any)[queryId];
 

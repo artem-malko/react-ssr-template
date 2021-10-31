@@ -1,5 +1,4 @@
 import express from 'express';
-import { Writable } from 'stream';
 import { Store } from 'redux';
 import { QueryClient } from 'react-query';
 import { AppState } from 'core/store/types';
@@ -14,9 +13,10 @@ import { createWindowApi } from 'core/platform/window/server';
 import { createCookieAPI } from 'core/platform/cookie/server';
 import { serverApplicationConfig } from 'config/generator/server';
 import { createPlatformAPI } from 'core/platform';
-import { getFullPath } from '../render/utils';
-import { DehydrateQueryWritable } from 'infrastructure/query/queryDehydrator';
 import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
+import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
+import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
+import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
 
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
@@ -91,7 +91,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
       // @EXPERIMENT_REACT_bootstrapScripts
       const publicPath = serverApplicationConfig.publicPath;
-      const reactPath = getFullPath({
+      const reactPath = getFullPathForStaticResource({
         pathMapping: assets.pathMapping,
         chunkName: 'react',
         resourceType: 'js',
@@ -101,6 +101,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
       const queryClient = new QueryClient({
         defaultOptions: defaultQueryOptions,
       });
+      const cssProviderStore = new CSSServerProviderStore();
 
       const pipeableStream = renderToPipeableStream(
         <Html
@@ -110,6 +111,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
           services={services}
           platformAPI={platformAPI}
           queryClient={queryClient}
+          cssProviderStore={cssProviderStore}
         />,
         {
           // @EXPERIMENT_REACT_bootstrapScripts
@@ -120,13 +122,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             res.setHeader('Content-type', 'text/html');
             res.write('<!DOCTYPE html>');
 
-            let stream: Writable;
-
-            if (methodName === 'onCompleteShell') {
-              stream = pipeableStream.pipe(new DehydrateQueryWritable(res, queryClient));
-            } else {
-              stream = pipeableStream.pipe(res);
-            }
+            const stream = pipeableStream.pipe(
+              new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
+            );
 
             /**
              * Abort current pipeableStream and switch to client rendering
