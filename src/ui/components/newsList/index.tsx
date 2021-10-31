@@ -57,7 +57,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   }, []);
 
   return (
-    <div className={css('root', ['_sd'])}>
+    <div className={css('root')}>
       <h2>NewsList Component</h2>
       <button disabled={page === 1} onClick={() => onPageChange('dec')}>
         Prev page
