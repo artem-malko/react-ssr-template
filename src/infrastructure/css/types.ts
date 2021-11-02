@@ -65,81 +65,85 @@ export type Style =
       ]: string | number | Style;
     }
   // 3.
-  | {
-      [selector in PseudoClasses]: BaseStyle;
-    }
+  | PseudoClassesProps
+  // | {
+  //     [selector in PseudoClasses]: BaseStyle;
+  //   }
   // 4.
-  | {
-      [selector in PseudoElements]: BaseStyle;
-    }
+  | PseudoElementsProps
+  // | {
+  //     [selector in PseudoElements]: BaseStyle;
+  //   }
   // 5.
   | {
-      [key: `@keyframes${string}`]: {
+      [key: `@keyframes ${string}`]: {
         [key in `${number}%` | 'from' | 'to']?: BaseStyle;
       };
     };
 
-type PseudoClasses =
-  | ':active'
-  | ':any (en-US)'
-  | ':any-link'
-  | ':checked'
-  | ':default'
-  | ':defined'
-  | ':dir()'
-  | ':disabled'
-  | ':empty'
-  | ':enabled'
-  | ':first'
-  | ':first-child'
-  | ':first-of-type'
-  | ':fullscreen'
-  | ':focus'
-  | ':hover'
-  | ':indeterminate'
-  | ':in-range'
-  | ':invalid'
-  | ':lang()'
-  | ':last-child'
-  | ':last-of-type'
-  | ':left'
-  | ':link'
-  | ':not()'
-  | ':nth-child()'
-  | ':nth-last-child()'
-  | ':nth-last-of-type()'
-  | ':nth-of-type()'
-  | ':only-child'
-  | ':only-of-type'
-  | ':optional'
-  | ':out-of-range'
-  | ':read-only'
-  | ':read-write'
-  | ':required'
-  | ':right'
-  | ':root'
-  | ':scope (en-US)'
-  | ':target'
-  | ':valid'
-  | ':visited';
-
-type PseudoElements =
-  | ':after'
-  | ':before'
-  | ':cue'
-  | ':first-letter'
-  | ':first-line'
-  | ':selection'
-  | ':slotted'
-  | ':backdrop'
-  | ':placeholder'
-  | ':marker'
-  | ':spelling-error (en-US)'
-  | ':grammar-error';
-
 type ForbiddenCSSPropertyNames =
   // Disable all margin* padding* from TS autocomplete
   `${string}${'Left' | 'Inline' | 'Block' | 'Right' | 'BlockStart' | 'BlockEnd'}`;
+
+interface PseudoElementsProps {
+  ':after': BaseStyle;
+  ':before': BaseStyle;
+  ':cue': BaseStyle;
+  ':first-letter': BaseStyle;
+  ':first-line': BaseStyle;
+  ':selection': BaseStyle;
+  ':slotted': BaseStyle;
+  ':backdrop': BaseStyle;
+  ':placeholder': BaseStyle;
+  ':marker': BaseStyle;
+  ':spelling-error': BaseStyle;
+  ':grammar-error': BaseStyle;
+}
+
+interface PseudoClassesProps {
+  ':active': BaseStyle;
+  ':any': BaseStyle;
+  ':any-link': BaseStyle;
+  ':checked': BaseStyle;
+  ':default': BaseStyle;
+  ':defined': BaseStyle;
+  ':dir()': BaseStyle;
+  ':disabled': BaseStyle;
+  ':empty': BaseStyle;
+  ':enabled': BaseStyle;
+  ':first': BaseStyle;
+  ':first-child': BaseStyle;
+  ':first-of-type': BaseStyle;
+  ':fullscreen': BaseStyle;
+  ':focus': BaseStyle;
+  ':hover': BaseStyle;
+  ':indeterminate': BaseStyle;
+  ':in-range': BaseStyle;
+  ':invalid': BaseStyle;
+  ':lang()': BaseStyle;
+  ':last-child': BaseStyle;
+  ':last-of-type': BaseStyle;
+  ':left': BaseStyle;
+  ':link': BaseStyle;
+  ':not()': BaseStyle;
+  ':nth-child()': BaseStyle;
+  ':nth-last-child()': BaseStyle;
+  ':nth-last-of-type()': BaseStyle;
+  ':nth-of-type()': BaseStyle;
+  ':only-child': BaseStyle;
+  ':only-of-type': BaseStyle;
+  ':optional': BaseStyle;
+  ':out-of-range': BaseStyle;
+  ':read-only': BaseStyle;
+  ':read-write': BaseStyle;
+  ':required': BaseStyle;
+  ':right': BaseStyle;
+  ':root': BaseStyle;
+  ':scope': BaseStyle;
+  ':target': BaseStyle;
+  ':valid': BaseStyle;
+  ':visited': BaseStyle;
+}
 
 /**
  * Style description for https://www.npmjs.com/package/bidi-css-js
@@ -276,3 +280,61 @@ type AdditionalBIDICSSProperties = {
    */
   borderEndEndRadius: React.CSSProperties['borderBottomRightRadius'];
 };
+
+export type PseudoClasses =
+  | ':active'
+  | ':any'
+  | ':any-link'
+  | ':checked'
+  | ':default'
+  | ':defined'
+  | ':dir()'
+  | ':disabled'
+  | ':empty'
+  | ':enabled'
+  | ':first'
+  | ':first-child'
+  | ':first-of-type'
+  | ':fullscreen'
+  | ':focus'
+  | ':hover'
+  | ':indeterminate'
+  | ':in-range'
+  | ':invalid'
+  | ':lang()'
+  | ':last-child'
+  | ':last-of-type'
+  | ':left'
+  | ':link'
+  | ':not()'
+  | ':nth-child()'
+  | ':nth-last-child()'
+  | ':nth-last-of-type()'
+  | ':nth-of-type()'
+  | ':only-child'
+  | ':only-of-type'
+  | ':optional'
+  | ':out-of-range'
+  | ':read-only'
+  | ':read-write'
+  | ':required'
+  | ':right'
+  | ':root'
+  | ':scope'
+  | ':target'
+  | ':valid'
+  | ':visited';
+
+export type PseudoElements =
+  | ':after'
+  | ':before'
+  | ':cue'
+  | ':first-letter'
+  | ':first-line'
+  | ':selection'
+  | ':slotted'
+  | ':backdrop'
+  | ':placeholder'
+  | ':marker'
+  | ':spelling-error'
+  | ':grammar-error';

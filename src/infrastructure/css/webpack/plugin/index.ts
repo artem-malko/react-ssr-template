@@ -5,7 +5,7 @@ import { getHashDigest } from 'loader-utils';
 import { storeInstance } from '../store';
 import { generateCss } from '../../generator';
 import { STYLE_DESCRIPTOR } from '../shared';
-import { Style } from '../../types';
+import { Style, Styles } from '../../types';
 
 const ConcatSource = sources.ConcatSource;
 
@@ -15,9 +15,7 @@ export class CSSInJSPlugin {
     compiler.hooks.thisCompilation.tap(this.constructor.name, (compilation: Compilation) => {
       compilation.hooks.finishModules.tapAsync(this.constructor.name, (modules, callback) => {
         for (const module of modules) {
-          const styleDescriptor: {
-            [hash: string]: Style;
-          } = module.buildInfo && module.buildInfo[STYLE_DESCRIPTOR];
+          const styleDescriptor: Styles<string> = module.buildInfo && module.buildInfo[STYLE_DESCRIPTOR];
 
           if (styleDescriptor) {
             Object.entries(styleDescriptor).forEach(([className, style]) => {

@@ -2,7 +2,9 @@ import { useContext, useMemo } from 'react';
 import { Styles } from './types';
 import { CSSProviderContext } from './provider';
 
-export const useStyles = <ClassNames extends string>(styles: Styles<ClassNames>) => {
+export const useStyles = <ClassNames extends string, StyleDescriptor extends Styles<ClassNames>>(
+  styles: StyleDescriptor,
+) => {
   const { css } = useContext(CSSProviderContext);
   // It depends on styles, but it is ok to not add styles to useMemo dependencies
   // because styles will be passed here only one time.
@@ -23,7 +25,6 @@ export const useStaticInlineStyle = (styles?: AllowedInlineStyle) => {
   return useMemo(() => styles, []);
 };
 
-// @TODO we can add any theme or whatever else
-export const createStyles = <ClassNames extends string>(
-  styles: Styles<ClassNames>,
-): Styles<ClassNames> => styles;
+export const createStyles = <ClassNames extends string, StyleDescriptor extends Styles<ClassNames>>(
+  styles: StyleDescriptor,
+): StyleDescriptor => styles;

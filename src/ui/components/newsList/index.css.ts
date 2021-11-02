@@ -5,6 +5,16 @@ export const styles = createStyles({
     paddingTop: '32px',
     margin: 0,
     boxSizing: 'border-box',
+
+    _big: {
+      paddingTop: 50,
+    },
+
+    '@media screen and (max-width: 1024px)': {
+      _tablet: {
+        display: 'inline',
+      },
+    },
   },
 
   list: {

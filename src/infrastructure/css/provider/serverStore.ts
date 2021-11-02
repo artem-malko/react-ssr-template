@@ -1,6 +1,6 @@
 import { CSSProviderStoreInterface } from './types';
 import { murmurhash2 } from '../stringHash';
-import { Style } from '../types';
+import { Style, Styles } from '../types';
 
 export class CSSServerProviderStore implements CSSProviderStoreInterface {
   private _hasStyles = false;
@@ -8,9 +8,7 @@ export class CSSServerProviderStore implements CSSProviderStoreInterface {
     [hash: string]: boolean;
   } = {};
 
-  protected mutableProccesedStyles: {
-    [hash: string]: Style;
-  } = {};
+  protected mutableProccesedStyles: Styles<string> = {};
 
   public generateHash(selector: string, style: Style): string {
     let hash = `_${murmurhash2(JSON.stringify(style))}`;
