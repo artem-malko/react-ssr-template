@@ -34,7 +34,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
             };
           }),
           showToastAction({
-            id: newPageNumber.toString() + new Date().toString(),
+            id: newPageNumber.toString() + Math.random(),
             title: 'New page: ' + newPageNumber + 'This toast is shown from signal',
             type: 'success',
           }),
@@ -94,8 +94,8 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       <button
         onClick={() =>
           showToast({
-            id: new Date().toString(),
-            title: 'title',
+            id: Math.random().toString(),
+            title: `title with just a random number ${Math.random()}`,
             type: 'default',
           })
         }

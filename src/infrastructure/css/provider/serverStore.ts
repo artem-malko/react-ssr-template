@@ -12,8 +12,8 @@ export class CSSServerProviderStore implements CSSProviderStoreInterface {
     [hash: string]: Style;
   } = {};
 
-  public generateHash(selector: string, stylesDescriptor: Style): string {
-    let hash = `_${murmurhash2(JSON.stringify(stylesDescriptor))}`;
+  public generateHash(selector: string, style: Style): string {
+    let hash = `_${murmurhash2(JSON.stringify(style))}`;
 
     if (process.env.NODE_ENV === 'development') {
       hash = `${selector}_${hash}`;
@@ -22,13 +22,13 @@ export class CSSServerProviderStore implements CSSProviderStoreInterface {
     return hash;
   }
 
-  public addStyles(selector: string, stylesDescriptor: Style, usedModifiers?: string[]) {
-    const hash = this.generateHash(selector, stylesDescriptor);
+  public addStyles(selector: string, style: Style, usedModifiers?: string[]) {
+    const hash = this.generateHash(selector, style);
 
     if (!this._mutableProccesedStylesCache[hash]) {
       this._mutableProccesedStylesCache[hash] = true;
 
-      this.mutableProccesedStyles[hash] = stylesDescriptor;
+      this.mutableProccesedStyles[hash] = style;
 
       this._hasStyles = true;
     }

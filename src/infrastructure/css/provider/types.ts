@@ -3,7 +3,7 @@ import { Style } from '../types';
 export interface CSSProviderStoreInterface {
   addStyles: (
     selector: string,
-    styleDescriptor: Style,
+    style: Style,
     modifiers?: string[],
   ) => {
     hash: string;

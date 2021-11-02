@@ -28,7 +28,11 @@ function modifyStyles(styleObject: React.CSSProperties, dir: 'ltr' | 'rtl') {
 }
 
 /**
- * Convert marginTop, '10px' to margin-top:10px
+ * Convert
+ * marginTop: '10px' to margin-top:10px
+ * marginTop: 0 to margin-top:0
+ * marginTop: 10 to margin-top:10px
+ * opacity: 1 to opacity:1
  */
 function cssifyDeclaration(property: string, value: string | number): string {
   if (typeof value === 'number') {
@@ -42,7 +46,6 @@ function cssifyDeclaration(property: string, value: string | number): string {
   return `${kebabifyStyleName(property)}:${value}`;
 }
 
-// @TODO_someday margin: undefined —» в пустую строку
 /**
  * Convert object React.CSSProperties to css-string
  * {
@@ -109,6 +112,7 @@ function cssifyObject(stylesObject: React.CSSProperties, dir: 'ltr' | 'rtl'): st
       continue;
     }
 
+    // Undefined can not be a value
     if (typeof value !== 'string' && typeof value !== 'number') {
       continue;
     }
@@ -162,7 +166,7 @@ function cssifyKeyFrames(keyframesStyles: { [key: string]: React.CSSProperties }
 // combine similar mq
 const mutableCssifyCache: { [key: string]: string } = {};
 export function cssify(
-  styleDescriptor: Style,
+  styleObject: Style,
   hash: string,
   dir: 'ltr' | 'rtl',
   cacheModificator = '',
@@ -175,13 +179,18 @@ export function cssify(
   }
 
   const ownStylesProps: React.CSSProperties = {};
-  const stringifiedChildren = Object.keys(styleDescriptor).reduce<string>(
+  /**
+   * We will iterate over all style Object properties to cssify it recursively
+   */
+  const stringifiedChildren = Object.keys(styleObject).reduce<string>(
     (result, stylePropertyOrSelector) => {
-      const style = (styleDescriptor as any)[stylePropertyOrSelector];
+      const style = (styleObject as any)[stylePropertyOrSelector];
 
-      // Handle @media
-      // @media selector can contain all types of selectors
-      // so, just call cssify on all @media selector content
+      /**
+       * Handle @media
+       * @media selector can contain all types of selectors
+       * so, just call cssify on all @media selector content
+       */
       if (stylePropertyOrSelector.includes('@media') || stylePropertyOrSelector.includes('@supports')) {
         result += `${stylePropertyOrSelector.replace(/:(\s)/g, ':')}{${cssify(
           style,
@@ -192,14 +201,20 @@ export function cssify(
         return result;
       }
 
-      // Handle @keyframes
+      /**
+       * Handle @keyframes
+       * @keyframes are special, cause @keyframes can contain only one level of css
+       * So, there is special flow for them
+       */
       if (stylePropertyOrSelector.includes('@keyframes')) {
         result += `${stylePropertyOrSelector}{${cssifyKeyFrames(style, dir)}}`;
         return result;
       }
 
-      // Handle nested selector
-      // Only one level nesting is supported
+      /**
+       * Handle nested selector
+       * Only one level of nesting is supported
+       */
       if (stylePropertyOrSelector.includes('&')) {
         result += `${stylePropertyOrSelector
           .replace('&', `.${hash}`)
@@ -207,8 +222,10 @@ export function cssify(
         return result;
       }
 
-      // Handle pseudo classes and pseudo selectors
-      // Only one level nesting is supported
+      /**
+       * Handle pseudo classes and pseudo selectors
+       * Only one level nesting is supported
+       */
       if (stylePropertyOrSelector.startsWith(':')) {
         result += `.${hash}${stylePropertyOrSelector}{${cssifyObject(style, dir)}}`;
         return result;
