@@ -1,8 +1,9 @@
+import { SearchBotName } from 'core/types/http';
 import dns from 'dns';
 import { Request, Response, NextFunction } from 'express';
 
 const botAgentsMap: {
-  [key: string]: 'google' | 'yandex' | 'bing' | 'mail';
+  [key: string]: SearchBotName;
 } = {
   Googlebot: 'google',
   Mediapartners: 'google',

@@ -18,6 +18,8 @@ import { getDehydratedQueryStateFromDom } from './getDehydratedQueryStateFromDom
  * 1. Add an appliaction services to a queryFunction args
  * 2. dehydrate a query state on client side in case of a stream rendering
  */
+/** @TODO may be change type of the error?
+ * What if an Error will be thrown during response parse? */
 export const useAppQuery = <TResult, TError extends AnyServiceParsedError>(
   key: QueryKey,
   queryFunction: (params: {
@@ -42,8 +44,8 @@ export const useAppQuery = <TResult, TError extends AnyServiceParsedError>(
     hydrate(queryClient, dehydratedQueryState);
   }
 
-  const patchedQueryFunction = (context: QueryFunctionContext<QueryKey>) =>
+  const queryFunctionWithServices = (context: QueryFunctionContext<QueryKey>) =>
     queryFunction({ services, context });
 
-  return useQuery<TResult, TError>(key, patchedQueryFunction, options);
+  return useQuery<TResult, TError>(key, queryFunctionWithServices, options);
 };

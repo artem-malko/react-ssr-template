@@ -226,7 +226,7 @@ export function cssify(
         return result;
       }
 
-      // Store all properties from high level
+      // Store all properties from the high level
       // eslint-disable-next-line functional/immutable-data
       (ownStylesProps as any)[stylePropertyOrSelector] = style;
       return result;

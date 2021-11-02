@@ -1,5 +1,5 @@
 interface Params {
-  pathMapping: { [chunkName: string]: string[] };
+  staticResourcesPathMapping: { [chunkName: string]: string[] };
   chunkName: string;
   resourceType: 'css' | 'js';
   publicPath: string;
@@ -12,18 +12,18 @@ export function getFullPathForStaticResource(params: Params): string {
 }
 
 /**
- * pathMapping — is an assetsByChunkName mapping from webpack
+ * staticResourcesPathMapping — is an assetsByChunkName mapping from webpack
  * This function will extract certain file with selected resourceType
  *
  * Can be usefull, if the same file has `.css` and `.js` versions
  */
 function extractFileNameByResourceType(params: {
-  pathMapping: { [chunkName: string]: string[] };
+  staticResourcesPathMapping: { [chunkName: string]: string[] };
   chunkName: string;
   resourceType: 'css' | 'js';
 }) {
-  const { pathMapping, chunkName, resourceType } = params;
-  const assetsList = pathMapping[chunkName];
+  const { staticResourcesPathMapping, chunkName, resourceType } = params;
+  const assetsList = staticResourcesPathMapping[chunkName];
 
   if (!assetsList) {
     if (process.env.NODE_ENV === 'development') {

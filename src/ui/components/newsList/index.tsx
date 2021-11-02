@@ -6,6 +6,8 @@ import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
+import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
@@ -13,22 +15,30 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const [page, setPage] = useState(initialPage);
   const news = usePaginatedNews(page);
   const dispatch = useDispatch();
+  const { showToast } = useToast();
   const onPageChange = useCallback(
     (action: 'inc' | 'dec') => {
       const newPageNumber = action === 'inc' ? page + 1 : page - 1;
       dispatch(
-        patchPage((activePage) => {
-          if (activePage.name !== 'news') {
-            return;
-          }
+        sequence(
+          patchPage((activePage) => {
+            if (activePage.name !== 'news') {
+              return;
+            }
 
-          return {
-            name: 'news',
-            params: {
-              page: newPageNumber,
-            },
-          };
-        }),
+            return {
+              name: 'news',
+              params: {
+                page: newPageNumber,
+              },
+            };
+          }),
+          showToastAction({
+            id: newPageNumber.toString() + new Date().toString(),
+            title: 'New page: ' + newPageNumber + 'This toast is shown from signal',
+            type: 'success',
+          }),
+        ),
       );
       setPage(newPageNumber);
     },
@@ -81,6 +91,17 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
           ))}
         {news.isError && <div>ERROR: {news.error.code}</div>}
       </div>
+      <button
+        onClick={() =>
+          showToast({
+            id: new Date().toString(),
+            title: 'title',
+            type: 'default',
+          })
+        }
+      >
+        Show example toast via hook
+      </button>
     </div>
   );
 });

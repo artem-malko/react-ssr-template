@@ -1,5 +1,6 @@
 import { useConfig } from 'config/react';
-import { memo, useCallback, useRef, useState } from 'react';
+import { SessionContext } from 'core/session/context';
+import { memo, useCallback, useContext, useRef, useState } from 'react';
 import { Alignment, Placement, Popover } from 'ui/kit/popover';
 
 export const StaticComponent = memo(() => {
@@ -31,6 +32,7 @@ export const StaticComponent = memo(() => {
     },
     [toggle],
   );
+  const session = useContext(SessionContext);
 
   return (
     <div
@@ -45,6 +47,8 @@ export const StaticComponent = memo(() => {
       This is a field from the config hackerNewsAPIURL: {config.hackerNewsAPIURL}
       <br />
       <br />
+      <h4>Session content</h4>
+      <div>{session.userAgent}</div>
       <br />
       <br />
       <h2>An example of useOutsideClick</h2>

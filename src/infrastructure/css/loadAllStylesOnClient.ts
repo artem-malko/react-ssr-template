@@ -15,7 +15,7 @@ export function loadAllStylesOnClient(params: { fileName: string }): void {
   linkEl.setAttribute('href', href);
 
   'requestIdleCallback' in window
-    ? (window as any).requestIdleCallback(() => {
+    ? window.requestIdleCallback(() => {
         document.body.appendChild(linkEl);
       })
     : window.setTimeout(() => {

@@ -6,10 +6,10 @@ export const afterAppRendered = (config: ApplicationConfig) => {
   loadAllStylesOnClient({
     fileName: getFullPathForStaticResource({
       chunkName: 'stylesLtr',
-      pathMapping: (window as any).pathMapping,
+      staticResourcesPathMapping: window.__staticResourcesPathMapping,
       publicPath: config.publicPath,
       resourceType: 'css',
     }),
   });
-  console.log('WOOOW, renderered');
+  console.log('WOOOW, App renderered!');
 };

@@ -19,6 +19,10 @@ import { AppState } from 'core/store/types';
 import { CSSClientProviderStore } from 'infrastructure/css/provider/clientStore';
 import { CSSProvider } from 'infrastructure/css/provider';
 import { afterAppRendered } from './utils/afterAppRendered';
+import { SessionContext } from 'core/session/context';
+import { createClientSessionObject } from './utils/createClientSessionObject';
+import { ToastController } from 'ui/kit/toast/infrastructure/controller';
+import { ToastControllerContext } from 'ui/kit/toast/infrastructure/context';
 
 const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,
@@ -46,26 +50,32 @@ const platformAPI = createPlatformAPI({
     cookies: createCookieAPI(),
   },
 });
+const session = createClientSessionObject();
+const toastController = new ToastController();
 
 const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
   <PlatformAPIContext.Provider value={platformAPI}>
-    <ServiceContext.Provider value={services}>
-      <ReduxStoreProvider store={store}>
-        <ConfigContext.Provider value={config}>
-          <QueryClientProvider client={queryClient}>
-            <CSSProvider cssProviderStore={cssProviderStore}>
-              <App renderCallback={() => afterAppRendered(config)} />
-            </CSSProvider>
-          </QueryClientProvider>
-        </ConfigContext.Provider>
-      </ReduxStoreProvider>
-    </ServiceContext.Provider>
+    <SessionContext.Provider value={session}>
+      <ServiceContext.Provider value={services}>
+        <ReduxStoreProvider store={store}>
+          <ConfigContext.Provider value={config}>
+            <QueryClientProvider client={queryClient}>
+              <CSSProvider cssProviderStore={cssProviderStore}>
+                <ToastControllerContext.Provider value={toastController}>
+                  <App renderCallback={() => afterAppRendered(config)} />
+                </ToastControllerContext.Provider>
+              </CSSProvider>
+            </QueryClientProvider>
+          </ConfigContext.Provider>
+        </ReduxStoreProvider>
+      </ServiceContext.Provider>
+    </SessionContext.Provider>
   </PlatformAPIContext.Provider>
 );
 
 // @TODO just for a strict mode testing
 if (location.search.includes('strict')) {
-  restoreStore().then((store) => {
+  restoreStore({ toastController }).then((store) => {
     (ReactDOM as any).hydrateRoot(
       container,
       <StrictMode>
@@ -74,11 +84,11 @@ if (location.search.includes('strict')) {
     );
   });
 } else {
-  restoreStore().then((store) => {
+  restoreStore({ toastController }).then((store) => {
     (ReactDOM as any).hydrateRoot(container, <Application store={store} />);
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('ONLOSD');
+  console.log('DOMContentLoaded');
 });

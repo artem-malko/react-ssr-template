@@ -16,6 +16,8 @@ import { popoverContainerId } from 'ui/kit/popover/shared';
 import { CSSProviderStoreInterface } from 'infrastructure/css/provider/types';
 import { CSSProvider } from 'infrastructure/css/provider';
 import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
+import { SessionContext } from 'core/session/context';
+import { Session } from 'core/session/types';
 
 const publicPath = serverApplicationConfig.publicPath;
 
@@ -27,18 +29,28 @@ type Props = {
   platformAPI: PlatformAPI;
   queryClient: QueryClient;
   cssProviderStore: CSSProviderStoreInterface;
+  session: Session;
 };
 export function Html(props: Props) {
-  const { assets, polyfillsSourceCode, store, services, platformAPI, queryClient, cssProviderStore } =
-    props;
+  const {
+    assets,
+    polyfillsSourceCode,
+    store,
+    services,
+    platformAPI,
+    queryClient,
+    cssProviderStore,
+    session,
+  } = props;
   const inlineScript = `
     var ${APPLICATION_CONFIG_VAR_NAME} = ${JSON.stringify(clientApplicationConfig)};\
-    var initialState = ${JSON.stringify(store.getState())
+    var __initialReduxState = ${JSON.stringify(store.getState())
       // http://timelessrepo.com/json-isnt-a-javascript-subset
       .replace(/\u2028|\u2029/g, (c) => (c === '\u2028' ? '\\u2028' : '\\u2029'))
       // https://github.com/reduxjs/redux/blob/master/docs/recipes/ServerRendering.md#security-considerations
       .replace(/</g, '\\u003c')};\
-    var pathMapping = ${JSON.stringify(assets.pathMapping)};\
+    var __staticResourcesPathMapping = ${JSON.stringify(assets.pathMapping)};\
+    var __session = ${JSON.stringify(session)};\
     ${props.assets.inlineContent}
   `;
   // @EXPERIMENT_REACT_bootstrapScripts
@@ -49,25 +61,25 @@ export function Html(props: Props) {
   //   publicPath,
   // });
   const appPath = getFullPathForStaticResource({
-    pathMapping: assets.pathMapping,
+    staticResourcesPathMapping: assets.pathMapping,
     chunkName: 'app',
     resourceType: 'js',
     publicPath,
   });
   const vendorPath = getFullPathForStaticResource({
-    pathMapping: assets.pathMapping,
+    staticResourcesPathMapping: assets.pathMapping,
     chunkName: 'vendor',
     resourceType: 'js',
     publicPath,
   });
   const infrastructurePath = getFullPathForStaticResource({
-    pathMapping: assets.pathMapping,
+    staticResourcesPathMapping: assets.pathMapping,
     chunkName: 'infrastructure',
     resourceType: 'js',
     publicPath,
   });
   const libPath = getFullPathForStaticResource({
-    pathMapping: assets.pathMapping,
+    staticResourcesPathMapping: assets.pathMapping,
     chunkName: 'lib',
     resourceType: 'js',
     publicPath,
@@ -88,17 +100,19 @@ export function Html(props: Props) {
         <div id="app">
           <StrictMode>
             <PlatformAPIContext.Provider value={platformAPI}>
-              <ServiceContext.Provider value={services}>
-                <ReduxStoreProvider store={store}>
-                  <ConfigContext.Provider value={serverApplicationConfig}>
-                    <QueryClientProvider client={queryClient}>
-                      <CSSProvider cssProviderStore={cssProviderStore}>
-                        <App renderCallback={() => console.log('renderered')} />
-                      </CSSProvider>
-                    </QueryClientProvider>
-                  </ConfigContext.Provider>
-                </ReduxStoreProvider>
-              </ServiceContext.Provider>
+              <SessionContext.Provider value={session}>
+                <ServiceContext.Provider value={services}>
+                  <ReduxStoreProvider store={store}>
+                    <ConfigContext.Provider value={serverApplicationConfig}>
+                      <QueryClientProvider client={queryClient}>
+                        <CSSProvider cssProviderStore={cssProviderStore}>
+                          <App renderCallback={() => console.log('renderered')} />
+                        </CSSProvider>
+                      </QueryClientProvider>
+                    </ConfigContext.Provider>
+                  </ReduxStoreProvider>
+                </ServiceContext.Provider>
+              </SessionContext.Provider>
             </PlatformAPIContext.Provider>
           </StrictMode>
         </div>

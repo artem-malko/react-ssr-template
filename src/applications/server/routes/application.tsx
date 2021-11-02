@@ -17,6 +17,7 @@ import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
 import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
+import { createServerSessionObject } from '../utils/createServerSessionObject';
 
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
@@ -92,7 +93,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
       // @EXPERIMENT_REACT_bootstrapScripts
       const publicPath = serverApplicationConfig.publicPath;
       const reactPath = getFullPathForStaticResource({
-        pathMapping: assets.pathMapping,
+        staticResourcesPathMapping: assets.pathMapping,
         chunkName: 'react',
         resourceType: 'js',
         publicPath,
@@ -112,6 +113,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
           platformAPI={platformAPI}
           queryClient={queryClient}
           cssProviderStore={cssProviderStore}
+          session={createServerSessionObject(req)}
         />,
         {
           // @EXPERIMENT_REACT_bootstrapScripts

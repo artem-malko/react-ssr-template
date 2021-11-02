@@ -2,13 +2,17 @@ import { setQueryStringParams } from 'core/actions/appContext/setQueryStringPara
 import { selectPage } from 'core/selectors';
 import { useAppSelector } from 'core/store/hooks';
 import { AppState, Page } from 'core/store/types';
+import { useStyles } from 'infrastructure/css/hook';
 import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import React, { lazy, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
+import { Toasts } from 'ui/kit/toast/toasts';
 import ErrorPage from 'ui/pages/error';
+import { styles as globalStyles } from 'ui/styles/global.css';
+import { styles } from './appStyles.css';
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -17,6 +21,8 @@ type Props = {
   renderCallback: () => void;
 };
 export const App = memo<Props>(({ renderCallback }) => {
+  useStyles(globalStyles)(':global');
+  const css = useStyles(styles);
   const page = useAppSelector(selectPage);
   const dispatch = useDispatch();
   // @JUST_FOR_TEST for a demo of problems with react-redux in the strict mode
@@ -39,6 +45,9 @@ export const App = memo<Props>(({ renderCallback }) => {
         outline: '1px solid red',
       }}
     >
+      <div className={css('toastsContainer')}>
+        <Toasts />
+      </div>
       <div style={{ padding: '20px 0' }}>
         Current page is: {JSON.stringify(page)}
         <br />

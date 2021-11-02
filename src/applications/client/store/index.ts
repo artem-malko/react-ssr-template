@@ -2,10 +2,13 @@ import { Middleware } from 'redux';
 import { startup } from './startup';
 import { configureStore } from 'core/store/configureStore';
 import { addStoreSubscribers } from '../utils/addStoreSubscribers';
+import { ToastController } from 'ui/kit/toast/infrastructure/controller';
+import { createToastsMiddleware } from 'ui/kit/toast/infrastructure/middleware';
 
-export function restoreStore() {
-  const initialState = window.initialState;
-  const middlewares: Middleware[] = [];
+export function restoreStore(params: { toastController: ToastController }) {
+  const { toastController } = params;
+  const initialState = window.__initialReduxState;
+  const middlewares: Middleware[] = [createToastsMiddleware(toastController)];
   const mutableEnhancers = [];
 
   if (process.env.NODE_ENV === 'development') {

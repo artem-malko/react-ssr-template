@@ -171,24 +171,6 @@ type AdditionalBIDICSSProperties = {
    * right in ltr, left in rtl
    */
   insetInlineEnd: React.CSSProperties['right'];
-  /**
-   * @depricated
-   * This property is not part of the official spec and only included for convinience
-   * because insetInlineStart is so cumbersome.
-   * If you`d like to keep 100% compatibility with the spec, avoid usind this property
-   *
-   * left in ltr, right in rtl
-   */
-  start: React.CSSProperties['left'];
-  /**
-   * @depricated
-   * This property is not part of the official spec and only included for convinience
-   * because insetInlineEnd is so cumbersome.
-   * If you`d like to keep 100% compatibility with the spec, avoid usind this property
-   *
-   * right in ltr, left in rtl
-   */
-  end: React.CSSProperties['right'];
 
   /**
    * borderLeft in ltr, borderRight in rtl

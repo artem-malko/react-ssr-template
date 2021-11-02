@@ -1,16 +1,14 @@
 // Global object / window variables
 interface Window {
-  initialState: any;
+  __initialReduxState: any;
   __REDUX_DEVTOOLS_EXTENSION__: any;
   __cfg: any;
   onunhandledrejection: (error: PromiseRejectionEvent) => void;
 
-  MSStream: any;
-
-  initErrorsStack?: Error[];
-  pathMapping: {
+  __staticResourcesPathMapping: {
     [asset: string]: string[];
   };
+  __session: object;
 }
 
 declare namespace Express {

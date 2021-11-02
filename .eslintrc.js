@@ -47,7 +47,7 @@ module.exports = {
       {
         assumeTypes: true,
         ignoreImmediateMutation: true,
-        ignorePattern: ['^mutable', '^_mutable', '^classNames'],
+        ignorePattern: ['ef.current', '^mutable', '^_mutable', '^classNames'],
         ignoreAccessorPattern: [
           '*.displayName',
           '**.mutable*.**',
