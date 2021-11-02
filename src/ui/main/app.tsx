@@ -49,6 +49,8 @@ export const App = memo<Props>(({ renderCallback }) => {
         <Toasts />
       </div>
       <div style={{ padding: '20px 0' }}>
+        React Version is: <strong>18.0.0-alpha-a0d991fe6-20211031</strong>
+        <br />
         Current page is: {JSON.stringify(page)}
         <br />
         <QueryStringComp />
