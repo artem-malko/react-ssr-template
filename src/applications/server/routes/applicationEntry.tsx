@@ -1,9 +1,8 @@
 import express from 'express';
 import { Store } from 'redux';
-import { QueryClient } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppState } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
-import { Html } from '../render/html';
 import { restoreStore } from '../store';
 import { AssetsData, getAssets } from '../utils/assets';
 import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
@@ -11,13 +10,23 @@ import { createRequest } from 'infrastructure/request';
 import { createServices } from 'core/services';
 import { createWindowApi } from 'core/platform/window/server';
 import { createCookieAPI } from 'core/platform/cookie/server';
-import { serverApplicationConfig } from 'config/generator/server';
+import { clientApplicationConfig, serverApplicationConfig } from 'config/generator/server';
 import { createPlatformAPI } from 'core/platform';
 import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
 import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
 import { createServerSessionObject } from '../utils/createServerSessionObject';
+import { StrictMode } from 'react';
+import { PlatformAPIContext } from 'core/platform/shared/context';
+import { SessionContext } from 'core/session/context';
+import { ServiceContext } from 'core/services/shared/context';
+import { Provider as ReduxStoreProvider } from 'react-redux';
+import { ConfigContext } from 'config/react';
+import { CSSProvider } from 'infrastructure/css/provider';
+import { Application } from 'applications/application';
+import { ApplicationContainerId } from 'config/constants';
+import { generateHead } from '../utils/generateHead';
 
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
@@ -103,18 +112,36 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         defaultOptions: defaultQueryOptions,
       });
       const cssProviderStore = new CSSServerProviderStore();
+      const session = createServerSessionObject(req);
 
       const pipeableStream = renderToPipeableStream(
-        <Html
-          polyfillsSourceCode={polyfillsSourceCode}
-          assets={assets}
-          store={store}
-          services={services}
-          platformAPI={platformAPI}
-          queryClient={queryClient}
-          cssProviderStore={cssProviderStore}
-          session={createServerSessionObject(req)}
-        />,
+        <StrictMode>
+          <PlatformAPIContext.Provider value={platformAPI}>
+            <SessionContext.Provider value={session}>
+              <ServiceContext.Provider value={services}>
+                <ReduxStoreProvider store={store}>
+                  <ConfigContext.Provider value={serverApplicationConfig}>
+                    <QueryClientProvider client={queryClient}>
+                      <CSSProvider cssProviderStore={cssProviderStore}>
+                        <Application
+                          polyfillsSourceCode={polyfillsSourceCode}
+                          publicPath={publicPath}
+                          assets={{
+                            inlineContent: assets.inlineContent,
+                            pathMapping: assets.pathMapping,
+                          }}
+                          store={store}
+                          session={session}
+                          clientApplicationConfig={clientApplicationConfig}
+                        />
+                      </CSSProvider>
+                    </QueryClientProvider>
+                  </ConfigContext.Provider>
+                </ReduxStoreProvider>
+              </ServiceContext.Provider>
+            </SessionContext.Provider>
+          </PlatformAPIContext.Provider>
+        </StrictMode>,
         {
           // @EXPERIMENT_REACT_bootstrapScripts
           bootstrapScripts: [reactPath],
@@ -123,6 +150,11 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             res.status(didError ? 500 : 200);
             res.setHeader('Content-type', 'text/html');
             res.write('<!DOCTYPE html>');
+            // We will send main shell like html>head>body before react starts to stream
+            // to allow adding styles and scripts to the existed dom
+            res.write(
+              `<html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative"><div id="${ApplicationContainerId}">`,
+            );
 
             const stream = pipeableStream.pipe(
               new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),

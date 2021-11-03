@@ -5,7 +5,7 @@ import { serverApplicationConfig } from 'config/generator/server';
 import { clientIp } from './middlewares/clientIP';
 import { isSearchBot } from './middlewares/searchBots';
 import { createRouterErrorHandlerMiddleware } from './middlewares/routerErrorHandler';
-import { createApplicationRouter } from './routes/application';
+import { createApplicationRouter } from './routes/applicationEntry';
 import { UAParser } from './middlewares/uaParser';
 import { utilityRouter } from './routes/utility';
 

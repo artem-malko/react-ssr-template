@@ -6,9 +6,15 @@ interface Window {
   onunhandledrejection: (error: PromiseRejectionEvent) => void;
 
   __staticResourcesPathMapping: {
-    [asset: string]: string[];
+    pathMapping: {
+      [asset: string]: string[];
+    };
+    inlineContent: string;
   };
   __session: object;
+  __polyfillsSourceCode: {
+    code: string;
+  };
 }
 
 declare namespace Express {

@@ -1,6 +1,8 @@
 import { CookieOptions } from 'express';
 import { CookieAttributes } from 'js-cookie';
 
+export const ApplicationContainerId = '__application';
+
 // @TODO fix it
 export const baseDomain = 'example.com';
 

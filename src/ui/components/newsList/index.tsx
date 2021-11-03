@@ -9,9 +9,12 @@ import { useDispatch } from 'react-redux';
 import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
+const { useId } = require('react');
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const css = useStyles(styles);
+  // Just to try a new hook)
+  const id = useId();
   const [page, setPage] = useState(initialPage);
   const news = usePaginatedNews(page);
   const dispatch = useDispatch();
@@ -63,11 +66,11 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   );
 
   useEffect(() => {
-    console.log('NEWSLIST RENDERED ON CLIENT');
-  }, []);
+    console.log('NEWSLIST RENDERED ON CLIENT! ID from useId(): ', id);
+  }, [id]);
 
   return (
-    <div className={css('root', ['_big', '_tablet'])}>
+    <div className={css('root', ['_big', '_tablet'])} id={id}>
       <h2>NewsList Component</h2>
       <button disabled={page === 1} onClick={() => onPageChange('dec')}>
         Prev page

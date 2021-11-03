@@ -28,7 +28,6 @@ export class ReactStreamRenderEnhancer extends Writable {
   // Used to check, that query was dehydrated
   private queriesCache: string[];
   private _writable: Writable;
-  // generateCss(cssProviderStore.getStyles()
   private cssProviderStore: CSSServerProviderStore;
 
   constructor(writable: Writable, queryClient: QueryClient, cssProviderStore: CSSServerProviderStore) {
@@ -41,6 +40,10 @@ export class ReactStreamRenderEnhancer extends Writable {
   }
 
   public _write(chunk: any, encoding: BufferEncoding, next?: (error: Error | null | undefined) => void) {
+    if (this._writable.destroyed) {
+      return;
+    }
+
     const queryClientCache = this.queryClient.getQueryCache().getAll();
 
     /**
@@ -68,17 +71,59 @@ export class ReactStreamRenderEnhancer extends Writable {
         this.queryStorage[readyQuery.queryHash] = true;
         this.queriesCache.push(readyQuery.queryHash);
 
+        const randomScriptId = `_${(Math.random() * 1000000).toFixed()}`;
+        const randomScriptElementVarName = `__script_${(Math.random() * 1000000).toFixed()}`;
+        const queryHash = JSON.stringify(readyQuery.queryHash);
+        const queryData = JSON.stringify({
+          queries: [dehydrateQuery(readyQuery)],
+        });
+        const scriptContent = JSON.stringify(`window[${queryHash}] = ${queryData}`);
+
+        /**
+         * This script executes right before the next chunk
+         * so nothing else can observe it. Including React.
+         * This script creates style element, adds queryData and removes itself from the dom
+         * So, hydration won't be broken.
+         */
         this._writable.write(
-          `<script>window[${JSON.stringify(readyQuery.queryHash)}] = ${JSON.stringify({
-            queries: [dehydrateQuery(readyQuery)],
-          })}</script>`,
+          `<script id="${randomScriptId}">
+            var ${randomScriptElementVarName} = document.createElement('script');
+            ${randomScriptElementVarName}.innerHTML = ${scriptContent};
+          document.body.appendChild(${randomScriptElementVarName});
+          document.getElementById("${randomScriptId}").remove();
+          </script>`,
         );
       }
     }
 
+    /**
+     * This should pick up any new styles that hasn't been previously
+     * written to this stream.
+     */
     if (this.cssProviderStore.hasStyles()) {
       const styles = this.cssProviderStore.getStyles();
-      this._writable.write('<style>' + generateCss(styles) + '</style>');
+      const randomScriptId = `_${(Math.random() * 1000000).toFixed()}`;
+      const randomStyleElementVarName = `__style_${(Math.random() * 1000000).toFixed()}`;
+
+      /**
+       * This script executes right after inserting it to the dom
+       * so nothing else can observe it. Including React.
+       * This script creates style element, adds css-rules and removes itself from the dom
+       * So, hydration won't be broken, cause head tag was streamed before the application
+       *
+       * Write it before the HTML to ensure that the CSS is available and
+       * blocks display before the HTML that shows it.
+       */
+      this._writable.write(`<script id="${randomScriptId}">
+      var ${randomStyleElementVarName} = document.createElement('style');
+      ${randomStyleElementVarName}.innerHTML = '${generateCss(styles)}';
+      document.head.appendChild(${randomStyleElementVarName});
+      document.getElementById("${randomScriptId}").remove();
+      </script>`);
+
+      /**
+       * We have to clear store, to prevent generating already sent styles
+       */
       this.cssProviderStore.clearStore();
     }
 

@@ -9,8 +9,4 @@ export interface Session {
   isTablet: boolean;
   isSearchBot?: boolean;
   searchBotName?: SearchBotName;
-  screen: {
-    width: number;
-    height: number;
-  };
 }

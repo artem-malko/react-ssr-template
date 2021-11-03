@@ -13,5 +13,11 @@ export class ToastController {
 
   public subscribeToAdd = (subscriber: Subscriber) => {
     this.mutableSubscribers.push(subscriber);
+
+    const subscriberIndex = this.mutableSubscribers.length - 1;
+
+    return () => {
+      this.mutableSubscribers.splice(subscriberIndex, 1);
+    };
   };
 }

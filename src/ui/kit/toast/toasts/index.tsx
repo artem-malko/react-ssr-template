@@ -25,11 +25,14 @@ export const Toasts = memo<{ gap?: number }>(({ gap = 20 }) => {
    * Rerender on each new toast in toastController
    */
   useEffect(() => {
-    toastController.subscribeToAdd((toast) => {
+    const unsubscribe = toastController.subscribeToAdd((toast) => {
       toastsRef.current = toastsRef.current.concat(toast);
 
       rerender(Math.random());
     });
+    return () => {
+      unsubscribe();
+    };
   }, [toastController]);
 
   /**

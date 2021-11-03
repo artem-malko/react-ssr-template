@@ -8,10 +8,6 @@ export const defaultSession: Session = {
   isAndroid: false,
   isMobile: false,
   isTablet: false,
-  screen: {
-    width: 1366,
-    height: 768,
-  },
 };
 
 export const SessionContext = createContext<Session>(defaultSession);

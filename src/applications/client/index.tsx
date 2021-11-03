@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import { Provider as ReduxStoreProvider } from 'react-redux';
-import { App } from 'ui/main/app';
+import { Application } from 'applications/application';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { FC, StrictMode } from 'react';
 import { ConfigContext } from 'config/react';
@@ -23,6 +23,7 @@ import { SessionContext } from 'core/session/context';
 import { createClientSessionObject } from './utils/createClientSessionObject';
 import { ToastController } from 'ui/kit/toast/infrastructure/controller';
 import { ToastControllerContext } from 'ui/kit/toast/infrastructure/context';
+import { ApplicationContainerId } from 'config/constants';
 
 const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,
@@ -30,8 +31,7 @@ const queryClient = new QueryClient({
 
 const cssProviderStore = new CSSClientProviderStore();
 
-// @TODO_AFTER_REACT_18_RELEASE remove as any
-const container = document.getElementById('app');
+const container = document.getElementById(ApplicationContainerId);
 
 const config = getClientApplicationConfig();
 
@@ -53,7 +53,7 @@ const platformAPI = createPlatformAPI({
 const session = createClientSessionObject();
 const toastController = new ToastController();
 
-const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
+const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => (
   <PlatformAPIContext.Provider value={platformAPI}>
     <SessionContext.Provider value={session}>
       <ServiceContext.Provider value={services}>
@@ -62,7 +62,15 @@ const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
             <QueryClientProvider client={queryClient}>
               <CSSProvider cssProviderStore={cssProviderStore}>
                 <ToastControllerContext.Provider value={toastController}>
-                  <App renderCallback={() => afterAppRendered(config)} />
+                  <Application
+                    assets={window.__staticResourcesPathMapping}
+                    polyfillsSourceCode={window.__polyfillsSourceCode.code}
+                    publicPath={config.publicPath}
+                    session={session}
+                    store={store}
+                    clientApplicationConfig={config}
+                    onRender={() => afterAppRendered(config)}
+                  />
                 </ToastControllerContext.Provider>
               </CSSProvider>
             </QueryClientProvider>
@@ -75,17 +83,19 @@ const Application: FC<{ store: Store<AppState> }> = ({ store }) => (
 
 // @TODO just for a strict mode testing
 if (location.search.includes('strict')) {
+  // @TODO_AFTER_REACT_18_RELEASE remove as any
   restoreStore({ toastController }).then((store) => {
     (ReactDOM as any).hydrateRoot(
       container,
       <StrictMode>
-        <Application store={store} />
+        <ApplicationWithProviders store={store} />
       </StrictMode>,
     );
   });
 } else {
+  // @TODO_AFTER_REACT_18_RELEASE remove as any
   restoreStore({ toastController }).then((store) => {
-    (ReactDOM as any).hydrateRoot(container, <Application store={store} />);
+    (ReactDOM as any).hydrateRoot(container, <ApplicationWithProviders store={store} />);
   });
 }
 

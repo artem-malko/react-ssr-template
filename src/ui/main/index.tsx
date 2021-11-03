@@ -13,6 +13,7 @@ import { Toasts } from 'ui/kit/toast/toasts';
 import ErrorPage from 'ui/pages/error';
 import { styles as globalStyles } from 'ui/styles/global.css';
 import { styles } from './appStyles.css';
+import { version } from 'react';
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -20,7 +21,7 @@ import { styles } from './appStyles.css';
 type Props = {
   renderCallback: () => void;
 };
-export const App = memo<Props>(({ renderCallback }) => {
+export const Main = memo<Props>(({ renderCallback }) => {
   useStyles(globalStyles)(':global');
   const css = useStyles(styles);
   const page = useAppSelector(selectPage);
@@ -30,7 +31,7 @@ export const App = memo<Props>(({ renderCallback }) => {
     dispatch(
       sequence(
         setQueryStringParams({
-          params: { test_strict_mode_attr: [new Date().toString()] },
+          params: { test_mode_attr: [new Date().toString()] },
         }),
         historyPush(),
       ),
@@ -49,7 +50,7 @@ export const App = memo<Props>(({ renderCallback }) => {
         <Toasts />
       </div>
       <div style={{ padding: '20px 0' }}>
-        React Version is: <strong>18.0.0-alpha-a0d991fe6-20211031</strong>
+        React Version is: <strong>{version}</strong>
         <br />
         Current page is: {JSON.stringify(page)}
         <br />
