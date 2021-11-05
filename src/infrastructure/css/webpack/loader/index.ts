@@ -10,8 +10,8 @@ import NativeModule from 'module';
 
 // Replacement for loader.exec
 // https://github.com/webpack/webpack.js.org/issues/1268#issuecomment-313513988
-const exec = (
-  loaderContext: LoaderContext<any>,
+const exec = <T>(
+  loaderContext: LoaderContext<T>,
   code: string,
   filename: string,
   // paths from resolve section in webpack config
@@ -69,12 +69,8 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
   const { resource } = this;
   const callback = this.async();
 
+  // @TODO enable cache!
   this.cacheable(false);
-
-  // Impossible situation
-  if (!callback) {
-    return;
-  }
 
   if (!resource.includes('css.ts')) {
     callback(null, source);
