@@ -1,3 +1,4 @@
+import { Writable } from 'stream';
 import express from 'express';
 import { Store } from 'redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -62,8 +63,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
    * However, that also delays when you start giving content to the bot,
    * and giving it earlier may give you better rankings due to perf.
    */
-  const useOnComplete = req.isSearchBot;
-  const methodName = forcedToUseOnComplete || useOnComplete ? 'onCompleteAll' : 'onCompleteShell';
+  const onCompleteAll = req.isSearchBot;
+  const reactSSRMethodName =
+    forcedToUseOnComplete || onCompleteAll ? 'onCompleteAll' : 'onCompleteShell';
 
   const storePromise = restoreStore(req, res);
 
@@ -145,7 +147,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         {
           // @EXPERIMENT_REACT_bootstrapScripts
           bootstrapScripts: [reactPath],
-          [methodName]() {
+          [reactSSRMethodName]() {
             // If something errored before we started streaming, we set the error code appropriately.
             res.status(didError ? 500 : 200);
             res.setHeader('Content-type', 'text/html');
@@ -156,9 +158,15 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
               `<html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative"><div id="${ApplicationContainerId}">`,
             );
 
-            const stream = pipeableStream.pipe(
-              new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
-            );
+            /**
+             * onCompleteAll will be used for search bots only in the future
+             * They can not execute any JS, so, there is no any reason to send
+             * dehydrated data and critical css (which is in a JS wrapper)
+             */
+            const stream: Writable =
+              reactSSRMethodName === 'onCompleteAll'
+                ? pipeableStream.pipe(res)
+                : pipeableStream.pipe(new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore));
 
             /**
              * Abort current pipeableStream and switch to client rendering

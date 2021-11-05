@@ -24,7 +24,7 @@ export function handleLogFromClient(
     requestedUrl: req.get('Referer'),
   };
 
-  if (!isObject(req.body) || typeof req.body.type !== 'string') {
+  if (!isObject(req.body)) {
     logger.error({
       level: 'error',
       message: 'incorrect log message',

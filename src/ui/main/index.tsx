@@ -7,7 +7,7 @@ import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import React, { lazy, memo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'ui/kit/link';
+import { AppLink } from 'ui/kit/appLink';
 import { Preloader } from 'ui/kit/preloader';
 import { Toasts } from 'ui/kit/toast/toasts';
 import ErrorPage from 'ui/pages/error';
@@ -57,7 +57,7 @@ export const Main = memo<Props>(({ renderCallback }) => {
         <QueryStringComp />
         <br />
         <br />
-        <Link
+        <AppLink
           title={'Link to the news page'}
           page={{
             name: 'news',
@@ -67,7 +67,7 @@ export const Main = memo<Props>(({ renderCallback }) => {
           }}
         />
         <br />
-        <Link
+        <AppLink
           title={'Link to the root page'}
           page={{
             name: 'root',

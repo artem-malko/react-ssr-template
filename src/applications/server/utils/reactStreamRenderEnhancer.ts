@@ -1,3 +1,4 @@
+import { SSRGeneratedStyleTagIdsArrayName } from 'infrastructure/css/constants';
 import { generateCss } from 'infrastructure/css/generator';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { Query, QueryClient } from 'react-query';
@@ -29,6 +30,7 @@ export class ReactStreamRenderEnhancer extends Writable {
   private queriesCache: string[];
   private _writable: Writable;
   private cssProviderStore: CSSServerProviderStore;
+  private boostrapCodeHasBeenWritten = false;
 
   constructor(writable: Writable, queryClient: QueryClient, cssProviderStore: CSSServerProviderStore) {
     super();
@@ -42,6 +44,18 @@ export class ReactStreamRenderEnhancer extends Writable {
   public _write(chunk: any, encoding: BufferEncoding, next?: (error: Error | null | undefined) => void) {
     if (this._writable.destroyed) {
       return;
+    }
+
+    /**
+     * Add a bootstrap for all scripts below
+     */
+    if (!this.boostrapCodeHasBeenWritten) {
+      this.boostrapCodeHasBeenWritten = true;
+      this._writable.write(
+        wrapWithImmediateScript(
+          `if (!window['${SSRGeneratedStyleTagIdsArrayName}']){window['${SSRGeneratedStyleTagIdsArrayName}']=[]}`,
+        ),
+      );
     }
 
     const queryClientCache = this.queryClient.getQueryCache().getAll();
@@ -71,8 +85,7 @@ export class ReactStreamRenderEnhancer extends Writable {
         this.queryStorage[readyQuery.queryHash] = true;
         this.queriesCache.push(readyQuery.queryHash);
 
-        const randomScriptId = `_${(Math.random() * 1000000).toFixed()}`;
-        const randomScriptElementVarName = `__script_${(Math.random() * 1000000).toFixed()}`;
+        const randomScriptElementVarName = generateRandomId('__script');
         const queryHash = JSON.stringify(readyQuery.queryHash);
         const queryData = JSON.stringify({
           queries: [dehydrateQuery(readyQuery)],
@@ -86,12 +99,11 @@ export class ReactStreamRenderEnhancer extends Writable {
          * So, hydration won't be broken.
          */
         this._writable.write(
-          `<script id="${randomScriptId}">
+          wrapWithImmediateScript(`
             var ${randomScriptElementVarName} = document.createElement('script');
             ${randomScriptElementVarName}.innerHTML = ${scriptContent};
-          document.body.appendChild(${randomScriptElementVarName});
-          document.getElementById("${randomScriptId}").remove();
-          </script>`,
+            document.body.appendChild(${randomScriptElementVarName});
+          `),
         );
       }
     }
@@ -102,8 +114,8 @@ export class ReactStreamRenderEnhancer extends Writable {
      */
     if (this.cssProviderStore.hasStyles()) {
       const styles = this.cssProviderStore.getStyles();
-      const randomScriptId = `_${(Math.random() * 1000000).toFixed()}`;
-      const randomStyleElementVarName = `__style_${(Math.random() * 1000000).toFixed()}`;
+      const randomStyleElementVarName = generateRandomId('__style');
+      const randomStyleIdName = generateRandomId('__style_id');
 
       /**
        * This script executes right after inserting it to the dom
@@ -114,12 +126,16 @@ export class ReactStreamRenderEnhancer extends Writable {
        * Write it before the HTML to ensure that the CSS is available and
        * blocks display before the HTML that shows it.
        */
-      this._writable.write(`<script id="${randomScriptId}">
-      var ${randomStyleElementVarName} = document.createElement('style');
-      ${randomStyleElementVarName}.innerHTML = '${generateCss(styles)}';
-      document.head.appendChild(${randomStyleElementVarName});
-      document.getElementById("${randomScriptId}").remove();
-      </script>`);
+      this._writable.write(
+        wrapWithImmediateScript(`
+        window['${SSRGeneratedStyleTagIdsArrayName}'].push('${randomStyleIdName}');
+        var ${randomStyleElementVarName} = document.createElement('style');
+        ${randomStyleElementVarName}.innerHTML = '${generateCss(styles)}';
+        ${randomStyleElementVarName}.setAttribute('media', 'hidden');
+        ${randomStyleElementVarName}.setAttribute('id', '${randomStyleIdName}');
+        document.head.appendChild(${randomStyleElementVarName});
+      `),
+      );
 
       /**
        * We have to clear store, to prevent generating already sent styles
@@ -129,6 +145,16 @@ export class ReactStreamRenderEnhancer extends Writable {
 
     // Finally write whatever React tried to write.
     this._writable.write(chunk, encoding, next);
+
+    /**
+     * Note: React can write fractional HTML chunks so it's not safe
+     * to always inject HTML anywhere in a write call.
+     * The above technique relies on the fact
+     * that React won't render anything in between writing. We assume that no
+     * more link tags or script tags will be collected between fractional writes.
+     * It is not safe to write things after React
+     * since there can be another write call coming after it.
+     */
   }
 
   /**
@@ -141,4 +167,18 @@ export class ReactStreamRenderEnhancer extends Writable {
       (this._writable as any).flush();
     }
   }
+}
+
+/**
+ * Creates script, which executes right before the next chunk
+ * so nothing else can observe it. Including React.
+ */
+function wrapWithImmediateScript(code: string) {
+  const randomScriptId = generateRandomId();
+
+  return `<script id="${randomScriptId}">${code}document.getElementById("${randomScriptId}").remove();</script>`;
+}
+
+function generateRandomId(prefix?: string) {
+  return `${prefix || ''}_${(Math.random() * 1000000).toFixed()}`;
 }

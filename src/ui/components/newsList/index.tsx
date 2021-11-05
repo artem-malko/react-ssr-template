@@ -98,7 +98,14 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
         onClick={() =>
           showToast({
             id: Math.random().toString(),
-            title: `title with just a random number ${Math.random()}`,
+            title: (
+              <div>
+                title with just a random number ${Math.random()} title with just a random number $
+                {Math.random()} title with just a random number <strong>${Math.random()}</strong> title
+                with just a random number ${Math.random()} title with just a random number $
+                {Math.random()} title with just a random number ${Math.random()}
+              </div>
+            ),
             type: 'default',
           })
         }

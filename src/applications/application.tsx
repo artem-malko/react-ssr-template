@@ -70,6 +70,12 @@ export const Application = memo<{
       resourceType: 'js',
       publicPath,
     });
+    const cssPath = getFullPathForStaticResource({
+      staticResourcesPathMapping: assets.pathMapping,
+      chunkName: 'stylesLtr',
+      resourceType: 'css',
+      publicPath,
+    });
 
     return (
       <>
@@ -92,6 +98,10 @@ export const Application = memo<{
         <script src={infrastructurePath} async />
         <script src={libPath} async />
         <script src={vendorPath} async />
+        {/* Insert link to a stylesheet for searchbots and other users without JS */}
+        <noscript>
+          <link href={cssPath} rel="stylesheet" />
+        </noscript>
       </>
     );
   },
