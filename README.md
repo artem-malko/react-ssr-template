@@ -27,7 +27,13 @@ Work In Progress
 * [eslint](https://eslint.org/) to find mistakes in the code.
 * [prettier](https://prettier.io/) to forget about code style.
 
-I've tried to add as many comments as I could. So, all interesting places have dozens of comments to describe, what's happening there. I do apologize for my english)
+I've tried to add as many comments in the source code as I could. So, all interesting places have dozens of comments to describe, what's happening there. I do apologize for my english)
+
+If you want to figure out, how it works, just start from:
+* https://github.com/artem-malko/react-ssr-template/blob/main/src/applications/server/index.ts for a server-side part of the application.
+* https://github.com/artem-malko/react-ssr-template/blob/main/src/applications/client/index.tsx for a client-side part of the application.
+
+But I recommend you to start from https://github.com/reactwg/react-18/discussions cause, there a lot of useful information, which can help you to work with current repo.
 
 Fell free to ask me anything in the [issues](https://github.com/artem-malko/react-ssr-template/issues/new).
 
