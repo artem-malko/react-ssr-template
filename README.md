@@ -1,8 +1,8 @@
-# react-ssr-template
+# React application with Server Side Rendering template
 
-Simple template for a website with SSR and React 18 with a brand new API — https://github.com/reactwg/react-18/discussions
+Simple template for a website with SSR (with streams) and React 18 with a brand new API — https://github.com/reactwg/react-18/discussions 🔥🔥🔥
 
-Just start with
+🚀 Just start with
 
 ```bash
 npm i && make dev
@@ -10,7 +10,7 @@ npm i && make dev
 
 If you want to see this project in action: http://158.101.223.0:5000/
 
-Work In Progress
+🚧 🛠️ Work In Progress 🛠️ 🚧
 
 ## Technologies
 
