@@ -2,6 +2,7 @@ import { CommonPage } from 'core/store/types';
 import React, { lazy, memo } from 'react';
 import { Search } from 'ui/components/search';
 import { StaticComponent } from 'ui/components/staticComponent';
+import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
 
 const NewsList = lazy(() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList'));
@@ -32,9 +33,9 @@ export default memo<{ page: NewsPage }>(({ page }) => {
       <br /> You can switch to a prev behavior, when client should wait,
       <br /> when all server side requests will be finished to send the first byte to client.
       <br /> Open{' '}
-      <a href="/news?p=1&render=useOnComplete" target="_blank" rel="noreferrer">
+      <Link href="/news?p=1&render=useOnComplete" doNotPreventDefault target="_blank">
         useOnComplete
-      </a>{' '}
+      </Link>{' '}
       to wait for the API response, and then send the first byte
       <br /> By the way, NewList component will be loaded with React.lazy and 10000ms timeout.
       <br /> This has been done to show you, that you can use SearchBar, even other React components are

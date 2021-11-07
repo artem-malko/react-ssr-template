@@ -129,7 +129,7 @@ const PagesPopup = memo(() => {
       <ul>
         {links.map((link) => (
           <li key={link.title} onClick={() => hidePopupById(pagesPopupId)}>
-            {link.page.name} — <Link page={link.page}>{link.title}</Link>
+            {link.page.name} — <Link page={link.page}>URL is {link.title}</Link>
           </li>
         ))}
       </ul>

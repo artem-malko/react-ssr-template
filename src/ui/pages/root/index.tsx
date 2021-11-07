@@ -15,6 +15,9 @@ export default memo<{ page: RootPage }>(() => {
           React 18 with a brand new API
         </Link>
       </h1>
+      <p>
+        Start your journey with clicking to «<strong>Show page list</strong>» on the top of the page
+      </p>
     </>
   );
 });
