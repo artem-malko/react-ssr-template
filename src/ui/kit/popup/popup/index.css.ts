@@ -30,8 +30,6 @@ export const styles = createStyles({
     top: '50%',
     left: '50%',
     transform: 'translateX(-50%) translateY(-50%)',
-    background: colors.white.base(),
-    borderRadius: 4,
     overflow: 'auto',
     maxHeight: '100%',
     maxWidth: '100%',
@@ -41,26 +39,5 @@ export const styles = createStyles({
       width: '95%',
       height: '95%',
     },
-  },
-
-  closeWrapper: {
-    position: 'sticky',
-    top: 0,
-    display: 'flex',
-    justifyContent: 'flex-end',
-  },
-
-  closeButton: {
-    position: 'absolute',
-    padding: 2,
-    fontSize: '22px',
-    lineHeight: '22px',
-    cursor: 'pointer',
-    background: 'radial-gradient(ellipse at center, rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%)',
-    pointerEvents: 'auto',
-  },
-
-  popupBody: {
-    height: '100%',
   },
 });

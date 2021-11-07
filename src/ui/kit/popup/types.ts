@@ -5,12 +5,9 @@ export type Popup = {
   options?: {
     closeOnEscape?: boolean;
     closeOnOverlayClick?: boolean;
-    hideCloseButton?: boolean;
     minWidth?: string;
-    width?: string;
     maxWidth?: string;
     minHeight?: string;
-    height?: string;
     maxHeight?: string;
   };
 };

@@ -7,7 +7,6 @@ import { Popup as PopupType } from '../types';
 import { styles } from './index.css';
 import { noop } from 'lib/lodash';
 import { useOutsideClick } from 'ui/hooks/useOutsideClick';
-import { ZIndexLayout } from 'ui/kit/zIndex';
 
 export const Popup = memo(() => {
   const css = useStyles(styles);
@@ -96,10 +95,8 @@ export const Popup = memo(() => {
   const popupMods = isMobile ? ['_mobile' as const] : [];
   const mutableInlineStyles = {
     minHeight: popupToRender?.options?.minHeight,
-    height: popupToRender?.options?.height,
     maxHeight: popupToRender?.options?.maxHeight,
     minWidth: popupToRender?.options?.minWidth,
-    width: popupToRender?.options?.width,
     maxWidth: popupToRender?.options?.maxWidth,
   };
 
@@ -111,20 +108,7 @@ export const Popup = memo(() => {
         <Fade isShown={!!popupToRender} key={popupToRender?.id}>
           {!!popupToRender && (
             <div className={css('popup', popupMods)} style={mutableInlineStyles}>
-              <ZIndexLayout
-                top={
-                  !popupToRender.options?.hideCloseButton ? (
-                    <div className={css('closeWrapper')}>
-                      <div onClick={hideCurrentPopup} className={css('closeButton')}>
-                        ✖️
-                      </div>
-                    </div>
-                  ) : (
-                    <></>
-                  )
-                }
-                base={<div className={css('popupBody')}>{popupToRender.body}</div>}
-              />
+              {popupToRender.body}
             </div>
           )}
         </Fade>

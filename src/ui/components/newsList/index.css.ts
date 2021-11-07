@@ -2,9 +2,7 @@ import { createStyles } from 'infrastructure/css/hook';
 
 export const styles = createStyles({
   root: {
-    paddingTop: '32px',
-    margin: 0,
-    boxSizing: 'border-box',
+    paddingTop: 32,
 
     _big: {
       paddingTop: 50,
@@ -12,13 +10,12 @@ export const styles = createStyles({
 
     '@media screen and (max-width: 1024px)': {
       _tablet: {
-        display: 'inline',
+        paddingTop: 40,
       },
     },
   },
 
   list: {
     padding: 10,
-    outline: '1px solid blue',
   },
 });

@@ -1,33 +1,107 @@
-import { useCallback, memo, HTMLAttributeAnchorTarget } from 'react';
+import { useCallback, memo, HTMLAttributeAnchorTarget, PropsWithChildren } from 'react';
 import { styles } from './index.css';
 import { dt, DATA_T_ATTRIBUTE_NAME } from 'tests/dom/dt';
 import { useStyles } from 'infrastructure/css/hook';
 import { AllowedInlineStyle } from 'infrastructure/css/types';
+import { Page } from 'core/store/types';
+import { compileAppURL } from 'ui/main/routing';
+import { useDispatch } from 'react-redux';
+import { openPage } from 'core/signals/page';
 
-type Props = {
-  href: string | undefined;
-  theme?: 'default';
+type GeneralProps = {
   target?: HTMLAttributeAnchorTarget;
   tabIndex?: number;
   inlineStyles?: AllowedInlineStyle;
+  doNotPreventDefault?: boolean;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
   [DATA_T_ATTRIBUTE_NAME]?: string;
 };
+
+type Props =
+  | (GeneralProps & {
+      page?: never;
+      href?: string;
+      theme?: 'default';
+    })
+  | (GeneralProps & {
+      page: Page;
+    });
 export const Link = memo<React.PropsWithChildren<Props>>((props) => {
-  const { href, children, theme = 'default', tabIndex, inlineStyles, target, onClick } = props;
+  if ('page' in props && !!props.page) {
+    return <AppLink {...props} />;
+  }
+
+  return <BaseLink {...props} />;
+});
+
+Link.displayName = 'Link';
+
+const AppLink = memo<
+  PropsWithChildren<
+    GeneralProps & {
+      page: Page;
+    }
+  >
+>((props) => {
+  const href = compileAppURL({
+    page: props.page,
+    URLQueryParams: {},
+  });
+
+  const dispatch = useDispatch();
+  const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!props.doNotPreventDefault) {
+      e.preventDefault();
+    }
+
+    if (props.onClick) {
+      props.onClick(e);
+    }
+
+    dispatch(openPage(props.page));
+  };
+
+  return (
+    <BaseLink {...props} href={href} onClick={onClick}>
+      {props.children}
+    </BaseLink>
+  );
+});
+AppLink.displayName = 'AppLink';
+
+const BaseLink = memo<
+  PropsWithChildren<
+    GeneralProps & {
+      href?: string;
+      theme?: 'default';
+    }
+  >
+>((props) => {
+  const {
+    href,
+    children,
+    theme = 'default',
+    tabIndex,
+    inlineStyles,
+    target,
+    onClick,
+    doNotPreventDefault,
+  } = props;
   const css = useStyles(styles);
   const dtValue = props[DATA_T_ATTRIBUTE_NAME];
   const onClickHandler = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
-      if (onClick) {
+      if (!doNotPreventDefault) {
         event.preventDefault();
+      }
+
+      if (onClick) {
         onClick(event);
       }
     },
-    [onClick],
+    [onClick, doNotPreventDefault],
   );
-
-  if (!href) {
+  if (!props.href) {
     return (
       <span
         className={css('link', [`_t_${theme}`, '_no_link'])}
@@ -54,5 +128,4 @@ export const Link = memo<React.PropsWithChildren<Props>>((props) => {
     </a>
   );
 });
-
-Link.displayName = 'Link';
+BaseLink.displayName = 'BaseLink';

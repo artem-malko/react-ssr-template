@@ -1,11 +1,10 @@
-import { openPageAction } from 'core/actions/appContext/openPage';
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
 import { useStyles } from 'infrastructure/css/hook';
-import { historyPush } from 'infrastructure/router/actions';
 import { sequence } from 'infrastructure/signal';
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'ui/kit/link';
 import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
@@ -38,7 +37,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
           }),
           showToastAction({
             id: newPageNumber.toString() + Math.random(),
-            title: 'New page: ' + newPageNumber + 'This toast is shown from signal',
+            title: 'New page: ' + newPageNumber + '. This toast is shown from signal',
             type: 'success',
           }),
         ),
@@ -46,23 +45,6 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       setPage(newPageNumber);
     },
     [page, dispatch],
-  );
-
-  const onNewsItemClick = useCallback(
-    (id: number) => {
-      dispatch(
-        sequence(
-          openPageAction({
-            name: 'newsItem',
-            params: {
-              id,
-            },
-          }),
-          historyPush(),
-        ),
-      );
-    },
-    [dispatch],
   );
 
   useEffect(() => {
@@ -78,19 +60,25 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       <button onClick={() => onPageChange('inc')}>Next page</button>
       <br />
       <br />
+
       <div className={css('list')}>
         {news.isFetching && <div>Updating...</div>}
         {news.isSuccess &&
           news.data.slice(0, 10).map((item) => (
-            <div
-              key={item.id}
-              onClick={() => {
-                onNewsItemClick(item.id);
+            <Link
+              page={{
+                name: 'newsItem',
+                params: {
+                  id: item.id,
+                },
               }}
+              key={item.id}
             >
-              {item.title}
-              <hr />
-            </div>
+              <div>
+                {item.title}
+                <hr />
+              </div>
+            </Link>
           ))}
         {news.isError && <div>ERROR: {news.error.code}</div>}
       </div>

@@ -3,14 +3,29 @@ import { colors, midTransitionDuration } from 'ui/styles/shared';
 
 export const styles = createStyles({
   item: {
-    padding: '10px',
-    boxSizing: 'border-box',
+    position: 'relaitve',
     width: '100%',
     background: colors.white.base(),
     border: `2px solid ${colors.violet.base()}`,
     borderRadius: '2px',
     transition: `opacity ease ${midTransitionDuration}ms`,
     pointerEvents: 'auto',
+  },
+
+  close: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    padding: 2,
+    fontSize: '22px',
+    lineHeight: '22px',
+    cursor: 'pointer',
+    background: 'radial-gradient(ellipse at center, rgba(255,255,255,1) 80%,rgba(255,255,255,0) 100%)',
+    pointerEvents: 'auto',
+  },
+
+  body: {
+    padding: 4,
   },
 
   bar: {

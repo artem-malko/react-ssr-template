@@ -1,4 +1,4 @@
-import React, { lazy, memo } from 'react';
+import { lazy, memo, Suspense } from 'react';
 import { selectPage } from 'core/selectors';
 import { useAppSelector } from 'core/store/hooks';
 import { Page } from 'core/store/types';
@@ -37,12 +37,15 @@ export const Main = memo<Props>(({ renderCallback }) => {
           </>
         }
         base={
-          <>
-            <DevMenu />
-            <React.Suspense fallback={<Preloader purpose="page" />}>
+          <div style={{ padding: 10 }}>
+            <div style={{ margin: '-10px -10px 0', position: 'sticky', top: 0 }}>
+              <DevMenu />
+            </div>
+
+            <Suspense fallback={<Preloader purpose="page" />}>
               <Page page={page} />
-            </React.Suspense>
-          </>
+            </Suspense>
+          </div>
         }
       />
     </div>

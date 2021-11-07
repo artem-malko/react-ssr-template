@@ -67,10 +67,15 @@ export const ToastItem = memo<Props>((props) => {
       onMouseLeave={startTimer}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      {toast.title}, {toast.type}
-      <div style={{ padding: '20px' }} onClick={onClose}>
-        close
+      <div className={css('close')} onClick={onClose}>
+        ✖️
       </div>
+      <div className={css('body')}>
+        {toast.title}
+        <br />
+        toast type is: <strong>{toast.type}</strong>
+      </div>
+
       <div
         className={css('bar')}
         ref={barElRef}

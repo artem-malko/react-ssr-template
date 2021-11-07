@@ -2,11 +2,12 @@ import { memo, useCallback, useRef, useState } from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { Page } from 'core/store/types';
 import { useStyles } from 'infrastructure/css/hook';
-import { AppLink } from 'ui/kit/appLink';
+import { Link } from 'ui/kit/link';
 import { Popover } from 'ui/kit/popover';
 import { usePopup } from 'ui/kit/popup/infrastructure/hook';
 import { ProjectInfo } from '../projectInfo';
 import { styles } from './index.css';
+import { BasePopup } from 'ui/kit/popup/basePopup';
 
 const pagesPopupId = 'pages';
 
@@ -28,7 +29,11 @@ export const DevMenu = memo(() => {
           onClick={() => {
             addPopup({
               id: pagesPopupId,
-              body: <PagesPopup />,
+              body: (
+                <BasePopup popupId={pagesPopupId}>
+                  <PagesPopup />
+                </BasePopup>
+              ),
             });
           }}
         >
@@ -39,12 +44,16 @@ export const DevMenu = memo(() => {
           onClick={() => {
             addPopup({
               id: 'scenario',
-              body: <ScenarioPopup />,
+              body: (
+                <BasePopup popupId="scenario">
+                  <ScenarioPopup />
+                </BasePopup>
+              ),
               options: {
                 closeOnOverlayClick: true,
                 closeOnEscape: true,
-                height: '300px',
-                width: '300px',
+                minHeight: '300px',
+                minWidth: '300px',
               },
             });
           }}
@@ -55,7 +64,13 @@ export const DevMenu = memo(() => {
           <div ref={popoverParentRef} onClick={() => setIsShown(true)}>
             Show project info
           </div>
-          <Popover hide={hide} targetEl={popoverParentRef.current} isShown={isShown} width={500}>
+          <Popover
+            hide={hide}
+            targetEl={popoverParentRef.current}
+            isShown={isShown}
+            width={200}
+            alignment="center"
+          >
             <ProjectInfo />
           </Popover>
         </div>
@@ -114,7 +129,7 @@ const PagesPopup = memo(() => {
       <ul>
         {links.map((link) => (
           <li key={link.title} onClick={() => hidePopupById(pagesPopupId)}>
-            {link.page.name} — <AppLink page={link.page}>{link.title}</AppLink>
+            {link.page.name} — <Link page={link.page}>{link.title}</Link>
           </li>
         ))}
       </ul>
@@ -128,7 +143,8 @@ const ScenarioPopup = memo(() => {
   return (
     <div
       style={{
-        height: '100%',
+        width: '400px',
+        height: '400px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -146,11 +162,14 @@ const ScenarioPopup = memo(() => {
         onClick={() => {
           addPopup({
             id: 'modal',
-            body: <ModalPopup popupId="modal" />,
+            body: (
+              <BasePopup popupId="modal" hideCloseButton>
+                <ModalPopup popupId="modal" />
+              </BasePopup>
+            ),
             options: {
-              hideCloseButton: true,
-              height: '250px',
-              width: '250px',
+              minHeight: '250px',
+              minWidth: '250px',
             },
           });
         }}
@@ -167,6 +186,9 @@ const ModalPopup = memo<{ popupId: string }>(({ popupId }) => {
   return (
     <div
       style={{
+        minWidth: '250px',
+        minHeight: '250px',
+        width: '100%',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
