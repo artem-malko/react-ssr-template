@@ -24,6 +24,8 @@ import { createClientSessionObject } from './utils/createClientSessionObject';
 import { ToastController } from 'ui/kit/toast/infrastructure/controller';
 import { ToastControllerContext } from 'ui/kit/toast/infrastructure/context';
 import { ApplicationContainerId } from 'config/constants';
+import { PopupController } from 'ui/kit/popup/infrastructure/controller';
+import { PopupControllerContext } from 'ui/kit/popup/infrastructure/context';
 
 const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,
@@ -52,6 +54,7 @@ const platformAPI = createPlatformAPI({
 });
 const session = createClientSessionObject();
 const toastController = new ToastController();
+const popupController = new PopupController();
 
 const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => (
   <PlatformAPIContext.Provider value={platformAPI}>
@@ -62,15 +65,17 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
             <QueryClientProvider client={queryClient}>
               <CSSProvider cssProviderStore={cssProviderStore}>
                 <ToastControllerContext.Provider value={toastController}>
-                  <Application
-                    assets={window.__staticResourcesPathMapping}
-                    polyfillsSourceCode={window.__polyfillsSourceCode.code}
-                    publicPath={config.publicPath}
-                    session={session}
-                    store={store}
-                    clientApplicationConfig={config}
-                    onRender={() => afterAppRendered(config)}
-                  />
+                  <PopupControllerContext.Provider value={popupController}>
+                    <Application
+                      assets={window.__staticResourcesPathMapping}
+                      polyfillsSourceCode={window.__polyfillsSourceCode.code}
+                      publicPath={config.publicPath}
+                      session={session}
+                      store={store}
+                      clientApplicationConfig={config}
+                      onRender={() => afterAppRendered(config)}
+                    />
+                  </PopupControllerContext.Provider>
                 </ToastControllerContext.Provider>
               </CSSProvider>
             </QueryClientProvider>
@@ -84,7 +89,7 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
 // @TODO just for a strict mode testing
 if (location.search.includes('strict')) {
   // @TODO_AFTER_REACT_18_RELEASE remove as any
-  restoreStore({ toastController }).then((store) => {
+  restoreStore({ toastController, popupController }).then((store) => {
     (ReactDOM as any).hydrateRoot(
       container,
       <StrictMode>
@@ -94,7 +99,7 @@ if (location.search.includes('strict')) {
   });
 } else {
   // @TODO_AFTER_REACT_18_RELEASE remove as any
-  restoreStore({ toastController }).then((store) => {
+  restoreStore({ toastController, popupController }).then((store) => {
     (ReactDOM as any).hydrateRoot(container, <ApplicationWithProviders store={store} />);
   });
 }

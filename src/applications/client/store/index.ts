@@ -4,11 +4,19 @@ import { configureStore } from 'core/store/configureStore';
 import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 import { ToastController } from 'ui/kit/toast/infrastructure/controller';
 import { createToastsMiddleware } from 'ui/kit/toast/infrastructure/middleware';
+import { PopupController } from 'ui/kit/popup/infrastructure/controller';
+import { createPopupMiddleware } from 'ui/kit/popup/infrastructure/middleware';
 
-export function restoreStore(params: { toastController: ToastController }) {
-  const { toastController } = params;
+export function restoreStore(params: {
+  toastController: ToastController;
+  popupController: PopupController;
+}) {
+  const { toastController, popupController } = params;
   const initialState = window.__initialReduxState;
-  const middlewares: Middleware[] = [createToastsMiddleware(toastController)];
+  const middlewares: Middleware[] = [
+    createToastsMiddleware(toastController),
+    createPopupMiddleware(popupController),
+  ];
   const mutableEnhancers = [];
 
   if (process.env.NODE_ENV === 'development') {

@@ -1,4 +1,3 @@
-import { SSRGeneratedStyleTagIdsArrayName } from 'infrastructure/css/constants';
 import { generateCss } from 'infrastructure/css/generator';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { Query, QueryClient } from 'react-query';
@@ -30,7 +29,6 @@ export class ReactStreamRenderEnhancer extends Writable {
   private queriesCache: string[];
   private _writable: Writable;
   private cssProviderStore: CSSServerProviderStore;
-  private boostrapCodeHasBeenWritten = false;
 
   constructor(writable: Writable, queryClient: QueryClient, cssProviderStore: CSSServerProviderStore) {
     super();
@@ -44,18 +42,6 @@ export class ReactStreamRenderEnhancer extends Writable {
   public _write(chunk: any, encoding: BufferEncoding, next?: (error: Error | null | undefined) => void) {
     if (this._writable.destroyed) {
       return;
-    }
-
-    /**
-     * Add a bootstrap for all scripts below
-     */
-    if (!this.boostrapCodeHasBeenWritten) {
-      this.boostrapCodeHasBeenWritten = true;
-      this._writable.write(
-        wrapWithImmediateScript(
-          `if (!window['${SSRGeneratedStyleTagIdsArrayName}']){window['${SSRGeneratedStyleTagIdsArrayName}']=[]}`,
-        ),
-      );
     }
 
     const queryClientCache = this.queryClient.getQueryCache().getAll();
@@ -128,10 +114,8 @@ export class ReactStreamRenderEnhancer extends Writable {
        */
       this._writable.write(
         wrapWithImmediateScript(`
-        window['${SSRGeneratedStyleTagIdsArrayName}'].push('${randomStyleIdName}');
         var ${randomStyleElementVarName} = document.createElement('style');
         ${randomStyleElementVarName}.innerHTML = '${generateCss(styles)}';
-        ${randomStyleElementVarName}.setAttribute('media', 'hidden');
         ${randomStyleElementVarName}.setAttribute('id', '${randomStyleIdName}');
         document.head.appendChild(${randomStyleElementVarName});
       `),

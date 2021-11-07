@@ -94,16 +94,14 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
           ))}
         {news.isError && <div>ERROR: {news.error.code}</div>}
       </div>
+      <br />
       <button
         onClick={() =>
           showToast({
             id: Math.random().toString(),
             title: (
               <div>
-                title with just a random number ${Math.random()} title with just a random number $
-                {Math.random()} title with just a random number <strong>${Math.random()}</strong> title
-                with just a random number ${Math.random()} title with just a random number $
-                {Math.random()} title with just a random number ${Math.random()}
+                This is a toast from hook! You can use any <strong>JSX Here</strong>
               </div>
             ),
             type: 'default',

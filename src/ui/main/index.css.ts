@@ -4,7 +4,7 @@ const toastContainerMaxWith = 420;
 const toastContainerSideGap = 10;
 
 export const styles = createStyles({
-  toastsContainer: {
+  toastContainer: {
     position: 'fixed',
     top: '10px',
     insetInlineEnd: toastContainerSideGap,
@@ -18,5 +18,25 @@ export const styles = createStyles({
       top: 0,
       insetInlineEnd: 0,
     },
+  },
+
+  popupContainer: {
+    position: 'fixed',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    pointerEvents: 'none',
+
+    '& > *': {
+      pointerEvents: 'auto',
+    },
+  },
+
+  projectInfo: {
+    position: 'fixed',
+    bottom: 0,
+    left: 0,
+    width: '100%',
   },
 });

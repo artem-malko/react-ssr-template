@@ -1,12 +1,13 @@
-# React application with Server Side Rendering template
+# React application with Server Side Rendering
 
 Simple template for a website with SSR (with streams) and React 18 with a brand new API — https://github.com/reactwg/react-18/discussions 🔥🔥🔥
 
 🚀 Just start with
 
 ```bash
-npm i && make dev
+npm i --force && make dev
 ```
+`--force` flag is used, cause react-query depends on react 17 and below.
 
 If you want to see this project in action: http://158.101.223.0:5000/
 

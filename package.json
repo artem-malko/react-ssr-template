@@ -47,7 +47,7 @@
     "pino-pretty": "7.2.0",
     "react": "18.0.0-alpha-ee069065d-20211105",
     "react-dom": "18.0.0-alpha-ee069065d-20211105",
-    "react-query": "3.31.0",
+    "react-query": "3.32.1",
     "react-redux": "7.2.6",
     "redux": "4.1.2",
     "redux-logger": "3.0.6",

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type Styles<ClassNames extends string> = { [name in ClassNames]: Style };
 
 /**
@@ -338,3 +340,12 @@ export type PseudoElements =
   | ':marker'
   | ':spelling-error'
   | ':grammar-error';
+
+type AllowedInlineStyleProperties =
+  | 'width'
+  | 'height'
+  | 'transition'
+  | 'color'
+  | 'background'
+  | 'fontSize';
+export type AllowedInlineStyle = Pick<React.CSSProperties, AllowedInlineStyleProperties>;
