@@ -7,6 +7,8 @@ import { Link } from '../link';
 
 /**
  * This is a wrapper around kit/Link which will create a link to any page inside the application
+ *
+ * @TODO move to a Link component?
  */
 export const AppLink = memo<
   PropsWithChildren<{

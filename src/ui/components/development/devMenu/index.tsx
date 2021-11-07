@@ -59,21 +59,23 @@ export const DevMenu = memo(() => {
             <ProjectInfo />
           </Popover>
         </div>
-        <div className={css('link')}>
-          <input
-            type="checkbox"
-            id="qdt"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              const targetInput = e.nativeEvent.target as HTMLInputElement;
-              if (targetInput.checked) {
-                setIsQueryDevToolsUsed(true);
-              } else {
-                setIsQueryDevToolsUsed(false);
-              }
-            }}
-          />
-          <label htmlFor="qdt">&nbsp;Enable React-Query devtools</label>
-        </div>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className={css('link')}>
+            <input
+              type="checkbox"
+              id="qdt"
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                const targetInput = e.nativeEvent.target as HTMLInputElement;
+                if (targetInput.checked) {
+                  setIsQueryDevToolsUsed(true);
+                } else {
+                  setIsQueryDevToolsUsed(false);
+                }
+              }}
+            />
+            <label htmlFor="qdt">&nbsp;Enable React-Query devtools</label>
+          </div>
+        )}
       </div>
       {isQueryDevToolsUsed && <ReactQueryDevtools initialIsOpen={false} />}
     </>
