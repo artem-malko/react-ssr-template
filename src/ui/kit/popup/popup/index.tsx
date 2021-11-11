@@ -57,7 +57,7 @@ export const Popup = memo(() => {
     popupToRender.onClose ? popupToRender.onClose() : noop();
   }, [popupToRender]);
 
-  // Block scroll for the page, if any popup is opened
+  // Block scroll of the page, if any popup is opened
   useLayoutEffect(() => {
     if (popupToRender) {
       // eslint-disable-next-line functional/immutable-data
@@ -75,6 +75,8 @@ export const Popup = memo(() => {
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        // @TODO we need to test it.
+        e.stopPropagation();
         hideCurrentPopup();
       }
     };

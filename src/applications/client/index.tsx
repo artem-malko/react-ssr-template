@@ -103,7 +103,3 @@ if (location.search.includes('strict')) {
     (ReactDOM as any).hydrateRoot(container, <ApplicationWithProviders store={store} />);
   });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded');
-});
