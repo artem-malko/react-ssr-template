@@ -8,6 +8,10 @@ import { styles } from './index.css';
 import { noop } from 'lib/lodash';
 import { useOutsideClick } from 'ui/hooks/useOutsideClick';
 
+/**
+ * This is just a controller for any popup
+ * There is no any UI for a popup body, you have to create it by yourself
+ */
 export const Popup = memo(() => {
   const css = useStyles(styles);
   const [, rerender] = useState(0);

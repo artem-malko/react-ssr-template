@@ -14,13 +14,13 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const css = useStyles(styles);
   // Just to try a new hook)
   const id = useId();
-  const [page, setPage] = useState(initialPage);
-  const news = usePaginatedNews(page);
+  const [pageNumber, setPageNumber] = useState(initialPage);
+  const news = usePaginatedNews(pageNumber);
   const dispatch = useDispatch();
   const { showToast } = useToast();
   const onPageChange = useCallback(
     (action: 'inc' | 'dec') => {
-      const newPageNumber = action === 'inc' ? page + 1 : page - 1;
+      const newPageNumber = action === 'inc' ? pageNumber + 1 : pageNumber - 1;
       dispatch(
         sequence(
           patchPage((activePage) => {
@@ -42,9 +42,9 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
           }),
         ),
       );
-      setPage(newPageNumber);
+      setPageNumber(newPageNumber);
     },
-    [page, dispatch],
+    [pageNumber, dispatch],
   );
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   return (
     <div className={css('root', ['_big', '_tablet'])} id={id}>
       <h2>NewsList Component</h2>
-      <button disabled={page === 1} onClick={() => onPageChange('dec')}>
+      <button disabled={pageNumber === 1} onClick={() => onPageChange('dec')}>
         Prev page
       </button>
       <button onClick={() => onPageChange('inc')}>Next page</button>
