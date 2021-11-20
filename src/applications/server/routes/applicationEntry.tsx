@@ -117,6 +117,8 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         const cssProviderStore = new CSSServerProviderStore();
         const session = createServerSessionObject(req);
 
+        let timeoutId: NodeJS.Timeout | undefined = undefined;
+
         const pipeableStream = renderToPipeableStream(
           <StrictMode>
             <PlatformAPIContext.Provider value={platformAPI}>
@@ -171,16 +173,11 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                       new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
                     );
 
-              /**
-               * Abort current pipeableStream and switch to client rendering
-               * if enough time passes but server rendering has not been finished yet
-               */
-              const abortTimeoutId = setTimeout(() => {
-                pipeableStream.abort();
-              }, SERVER_RENDER_ABORT_TIMEOUT);
-
               stream.once('finish', () => {
-                clearTimeout(abortTimeoutId);
+                if (timeoutId) {
+                  clearTimeout(timeoutId);
+                }
+
                 res.end();
               });
             },
@@ -193,6 +190,14 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             },
           },
         );
+
+        /**
+         * Abort current pipeableStream and switch to client rendering
+         * if enough time passes but server rendering has not been finished yet
+         */
+        timeoutId = setTimeout(() => {
+          pipeableStream.abort();
+        }, SERVER_RENDER_ABORT_TIMEOUT);
       }
     },
   );
