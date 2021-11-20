@@ -187,6 +187,10 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
               didError = true;
               console.error(error);
               pipeableStream.abort();
+
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+              }
             },
           },
         );
