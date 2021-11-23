@@ -30,8 +30,11 @@ export function getAllPolyfillsSourceCode(req: Request) {
   }, '');
 }
 
+/**
+ * Reads a source code of a polyfill by its chunk name
+ */
 function getChunkSourceCode(chunkName: PolyfillList) {
-  const assetsByChunkName = require('./stats.json').assetsByChunkName;
+  const assetsByChunkName = require(`./stats.json`).assetsByChunkName;
   const sourceCodePath = path.resolve(`./build/public/${assetsByChunkName[chunkName]}`);
   return fs.readFileSync(sourceCodePath, { encoding: 'utf8' });
 }

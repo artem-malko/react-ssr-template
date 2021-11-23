@@ -1,35 +1,39 @@
 import fs from 'fs';
 
-interface NamedChunkGroups {
-  [chunkName: string]: {
-    name: string;
-    chunks: string[];
-    assets: Array<{ name: string }>;
-  };
-}
 export interface AssetsList {
   [chunkName: string]: string[];
 }
+
 interface StatsData {
   assetsByChunkName: AssetsList;
-  namedChunkGroups: NamedChunkGroups;
 }
 export interface AssetsData {
-  namedChunkGroups: NamedChunkGroups;
   pathMapping: AssetsList;
   inlineContent: string;
 }
 
-export function getAssets(): Promise<AssetsData> {
-  const statsData = require('./stats.json') as StatsData;
+/**
+ * Reads stats.json with all stats about current client build
+ * Reads webpack runtime chunk
+ */
+export function readAssetsInfo(): Promise<AssetsData> {
+  const statsData = require(`./stats.json`) as StatsData;
   const pathMapping: AssetsList = statsData.assetsByChunkName;
   const webpackRuntimePath = `${process.cwd()}/build/public/${pathMapping['runtime']}`;
 
   return Promise.all([readFileContent(webpackRuntimePath)]).then(([webpackRuntimeCode]) => ({
-    namedChunkGroups: statsData.namedChunkGroups,
     pathMapping,
     inlineContent: `${webpackRuntimeCode}`,
   }));
+}
+
+/**
+ * Reads a file with all deps for each page
+ */
+export function readPageDependenciesStats(): Promise<{ [pageChunkName: string]: string[] }> {
+  const statsData = require(`./page_dependencies.json`) as { [pageChunkName: string]: string[] };
+
+  return Promise.resolve(statsData);
 }
 
 function readFileContent(filePath: string) {

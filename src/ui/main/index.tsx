@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense } from 'react';
+import { lazy, memo, Suspense, useContext } from 'react';
 import { selectPage } from 'core/selectors';
 import { useAppSelector } from 'core/store/hooks';
 import { Page } from 'core/store/types';
@@ -11,6 +11,7 @@ import { styles } from './index.css';
 import { Popup } from 'ui/kit/popup/popup';
 import { ZIndexLayout } from 'ui/kit/zIndex';
 import { DevMenu } from 'ui/components/development/devMenu';
+import { PageDependenciesManagerContext } from 'infrastructure/dependencyManager/context';
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -57,6 +58,13 @@ const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'ui/pages/
 const NewsItemPage = lazy(() => import(/* webpackChunkName: "newsItemPage" */ 'ui/pages/newsItem'));
 
 const Page = memo<{ page: Page }>(({ page }) => {
+  /**
+   * We have to set the current page's chunkName to preload all of its deps
+   * during the first client render
+   */
+  const setPageChunkName = useContext(PageDependenciesManagerContext);
+  setPageChunkName(`${page.name}Page`);
+
   switch (page.name) {
     case 'root':
       return <RootPage page={page} />;

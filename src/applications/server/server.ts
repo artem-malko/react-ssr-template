@@ -44,11 +44,11 @@ server.use(isSearchBot);
 
 // @JUST_FOR_TEST JUST FOR TEST
 server.use((req, _, next) => {
-  if (req.url.includes('newsList')) {
+  if (req.url.includes('newsList.')) {
     // Artificially delay serving JS
     // to demonstrate streaming HTML.
     // I'd like to remove it from dev process
-    setTimeout(next, process.env.NODE_ENV !== 'production' ? 100 : 2500);
+    setTimeout(next, process.env.NODE_ENV !== 'production' ? 1000 : 2500);
   } else {
     next();
   }

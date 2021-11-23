@@ -6,6 +6,8 @@ import TerserPlugin from 'terser-webpack-plugin';
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 import esbuild from 'esbuild';
 import { CSSInJSPlugin } from '../src/infrastructure/css/webpack/plugin';
+import { PageDependenciesManagerPlugin } from '../src/infrastructure/dependencyManager/webpack/plugin';
+import { ASSETS_STATS_FILE_NAME } from '../src/infrastructure/webpack/stats';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -155,10 +157,11 @@ const clientConfig: webpack.Configuration = {
 
     new CSSInJSPlugin(),
 
+    new PageDependenciesManagerPlugin(),
+
     // Store connection between chunks and bundles and their names
     new StatsWriterPlugin({
-      filename: '../stats.json',
-      fields: ['assetsByChunkName', 'namedChunkGroups'],
+      filename: `../${ASSETS_STATS_FILE_NAME}`,
     }),
     new WebpackNpmDependenciesAnalyzer({
       filename: '../res.json',

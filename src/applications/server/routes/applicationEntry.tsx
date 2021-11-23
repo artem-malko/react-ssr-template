@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppState } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
 import { restoreStore } from '../store';
-import { AssetsData, getAssets } from '../utils/assets';
+import { AssetsData, readAssetsInfo, readPageDependenciesStats } from '../utils/assets';
 import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
 import { createRequest } from 'infrastructure/request';
 import { createServices } from 'core/services';
@@ -28,13 +28,16 @@ import { CSSProvider } from 'infrastructure/css/provider';
 import { Application } from 'applications/application';
 import { ApplicationContainerId } from 'config/constants';
 import { generateHead } from '../utils/generateHead';
+import { PageDependenciesManagerProvider } from 'infrastructure/dependencyManager/context';
+import { PageDependenciesManager } from 'infrastructure/dependencyManager/manager';
 
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
 // And https://github.com/reactwg/react-18/discussions/37
 const { renderToPipeableStream } = require('react-dom/server');
 
-const assetsPromise = getAssets();
+const assetsInfoPromise = readAssetsInfo();
+const pageDependenciesStatsPromise = readPageDependenciesStats();
 
 const SERVER_RENDER_ABORT_TIMEOUT = 5000;
 
@@ -69,8 +72,10 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
   const storePromise = restoreStore(req, res);
 
-  Promise.all<[Promise<Store<AppState>>, Promise<AssetsData>]>([storePromise, assetsPromise]).then(
-    ([store, assets]) => {
+  Promise.all<
+    [Promise<Store<AppState>>, Promise<AssetsData>, Promise<{ [pageName: string]: string[] }>]
+  >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise]).then(
+    ([store, assetsInfo, dependencyStats]) => {
       const state = store.getState();
       const compiledUrl = compileAppURL(state.appContext);
       const status = state.appContext.page.errorCode ? state.appContext.page.errorCode : 200;
@@ -105,7 +110,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         // @EXPERIMENT_REACT_bootstrapScripts
         const publicPath = serverApplicationConfig.publicPath;
         const reactPath = getFullPathForStaticResource({
-          staticResourcesPathMapping: assets.pathMapping,
+          staticResourcesPathMapping: assetsInfo.pathMapping,
           chunkName: 'react',
           resourceType: 'js',
           publicPath,
@@ -116,8 +121,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         });
         const cssProviderStore = new CSSServerProviderStore();
         const session = createServerSessionObject(req);
+        const pageDependenciesManager = new PageDependenciesManager(dependencyStats, publicPath);
 
-        let timeoutId: NodeJS.Timeout | undefined = undefined;
+        let renderTimeoutId: NodeJS.Timeout | undefined = undefined;
 
         const pipeableStream = renderToPipeableStream(
           <StrictMode>
@@ -128,17 +134,21 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                     <ConfigContext.Provider value={serverApplicationConfig}>
                       <QueryClientProvider client={queryClient}>
                         <CSSProvider cssProviderStore={cssProviderStore}>
-                          <Application
-                            polyfillsSourceCode={polyfillsSourceCode}
-                            publicPath={publicPath}
-                            assets={{
-                              inlineContent: assets.inlineContent,
-                              pathMapping: assets.pathMapping,
-                            }}
-                            store={store}
-                            session={session}
-                            clientApplicationConfig={clientApplicationConfig}
-                          />
+                          <PageDependenciesManagerProvider
+                            pageDependenciesManager={pageDependenciesManager}
+                          >
+                            <Application
+                              polyfillsSourceCode={polyfillsSourceCode}
+                              publicPath={publicPath}
+                              assets={{
+                                inlineContent: assetsInfo.inlineContent,
+                                pathMapping: assetsInfo.pathMapping,
+                              }}
+                              store={store}
+                              session={session}
+                              clientApplicationConfig={clientApplicationConfig}
+                            />
+                          </PageDependenciesManagerProvider>
                         </CSSProvider>
                       </QueryClientProvider>
                     </ConfigContext.Provider>
@@ -170,12 +180,17 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                 reactSSRMethodName === 'onCompleteAll'
                   ? pipeableStream.pipe(res)
                   : pipeableStream.pipe(
-                      new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
+                      new ReactStreamRenderEnhancer(
+                        res,
+                        queryClient,
+                        cssProviderStore,
+                        pageDependenciesManager,
+                      ),
                     );
 
               stream.once('finish', () => {
-                if (timeoutId) {
-                  clearTimeout(timeoutId);
+                if (renderTimeoutId) {
+                  clearTimeout(renderTimeoutId);
                 }
 
                 res.end();
@@ -188,8 +203,8 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
               console.error(error);
               pipeableStream.abort();
 
-              if (timeoutId) {
-                clearTimeout(timeoutId);
+              if (renderTimeoutId) {
+                clearTimeout(renderTimeoutId);
               }
             },
           },
@@ -197,9 +212,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
 
         /**
          * Abort current pipeableStream and switch to client rendering
-         * if enough time passes but server rendering has not been finished yet
+         * if enough time passed but server rendering has not been finished yet
          */
-        timeoutId = setTimeout(() => {
+        renderTimeoutId = setTimeout(() => {
           pipeableStream.abort();
         }, SERVER_RENDER_ABORT_TIMEOUT);
       }

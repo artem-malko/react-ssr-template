@@ -2,13 +2,23 @@ import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
 import { useStyles } from 'infrastructure/css/hook';
 import { sequence } from 'infrastructure/signal';
-import { memo, useCallback, useEffect, useState } from 'react';
+import { lazy, memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'ui/kit/link';
 import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
 const { useId } = require('react');
+
+// This import is used as an example of a problem with nested dynamic imports
+// Get more info right here src/infrastructure/dependencyManager/manager.ts
+const Item = lazy(() =>
+  import('./item').then((m) => {
+    return {
+      default: m.Item,
+    };
+  }),
+);
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const css = useStyles(styles);
@@ -74,10 +84,8 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               }}
               key={item.id}
             >
-              <div>
-                {item.title}
-                <hr />
-              </div>
+              <Item title={item.title} />
+              <hr />
             </Link>
           ))}
         {news.isError && <div>ERROR: {news.error.code}</div>}
