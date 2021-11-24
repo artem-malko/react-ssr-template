@@ -2,9 +2,10 @@ import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
 import { useStyles } from 'infrastructure/css/hook';
 import { sequence } from 'infrastructure/signal';
-import { lazy, memo, useCallback, useEffect, useState } from 'react';
+import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'ui/kit/link';
+import { Preloader } from 'ui/kit/preloader';
 import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
@@ -84,7 +85,9 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               }}
               key={item.id}
             >
-              <Item title={item.title} />
+              <Suspense fallback={<Preloader purpose="newsList item" />}>
+                <Item title={item.title} />
+              </Suspense>
               <hr />
             </Link>
           ))}

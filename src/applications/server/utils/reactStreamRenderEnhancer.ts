@@ -160,7 +160,7 @@ export class ReactStreamRenderEnhancer extends Writable {
             wrapWithImmediateScript(`
               var ${randomScriptElementVarName} = document.createElement('script');
               ${randomScriptElementVarName}.src = '${fileName}';
-              ${randomScriptElementVarName}.setAttribute('rel', 'preload');
+              ${randomScriptElementVarName}.setAttribute('async', true);
               document.head.appendChild(${randomScriptElementVarName});
           `),
           );
