@@ -58,6 +58,10 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
     [pageNumber, dispatch],
   );
 
+  const onItemHover = useCallback(() => {
+    console.log('hovered');
+  }, []);
+
   useEffect(() => {
     console.log('NEWSLIST RENDERED ON CLIENT! ID from useId(): ', id);
   }, [id]);
@@ -86,7 +90,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               key={item.id}
             >
               <Suspense fallback={<Preloader purpose="newsList item" />}>
-                <Item title={item.title} />
+                <Item title={item.title} onHover={onItemHover} />
               </Suspense>
               <hr />
             </Link>

@@ -28,8 +28,6 @@ import { CSSProvider } from 'infrastructure/css/provider';
 import { Application } from 'applications/application';
 import { ApplicationContainerId } from 'config/constants';
 import { generateHead } from '../utils/generateHead';
-import { PageDependenciesManagerProvider } from 'infrastructure/dependencyManager/context';
-import { PageDependenciesManager } from 'infrastructure/dependencyManager/manager';
 
 // @TODO_AFTER_REACT_18_RELEASE move to correct import
 // All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
@@ -39,7 +37,7 @@ const { renderToPipeableStream } = require('react-dom/server');
 const assetsInfoPromise = readAssetsInfo();
 const pageDependenciesStatsPromise = readPageDependenciesStats();
 
-const SERVER_RENDER_ABORT_TIMEOUT = 5000;
+const SERVER_RENDER_ABORT_TIMEOUT = 10000;
 
 export const createApplicationRouter: () => express.Handler = () => (req, res) => {
   res.set('X-Content-Type-Options', 'nosniff');
@@ -73,7 +71,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   const storePromise = restoreStore(req, res);
 
   Promise.all<
-    [Promise<Store<AppState>>, Promise<AssetsData>, Promise<{ [pageName: string]: string[] }>]
+    [Promise<Store<AppState>>, Promise<AssetsData>, Promise<{ [pageChunkName: string]: string[] }>]
   >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise]).then(
     ([store, assetsInfo, dependencyStats]) => {
       const state = store.getState();
@@ -106,12 +104,38 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             window: createWindowApi(),
           },
         });
-
-        // @EXPERIMENT_REACT_bootstrapScripts
         const publicPath = serverApplicationConfig.publicPath;
+
+        /**
+         * Required assets for the application start
+         */
         const reactPath = getFullPathForStaticResource({
           staticResourcesPathMapping: assetsInfo.pathMapping,
           chunkName: 'react',
+          resourceType: 'js',
+          publicPath,
+        });
+        const appPath = getFullPathForStaticResource({
+          staticResourcesPathMapping: assetsInfo.pathMapping,
+          chunkName: 'app',
+          resourceType: 'js',
+          publicPath,
+        });
+        const vendorPath = getFullPathForStaticResource({
+          staticResourcesPathMapping: assetsInfo.pathMapping,
+          chunkName: 'vendor',
+          resourceType: 'js',
+          publicPath,
+        });
+        const infrastructurePath = getFullPathForStaticResource({
+          staticResourcesPathMapping: assetsInfo.pathMapping,
+          chunkName: 'infrastructure',
+          resourceType: 'js',
+          publicPath,
+        });
+        const libPath = getFullPathForStaticResource({
+          staticResourcesPathMapping: assetsInfo.pathMapping,
+          chunkName: 'lib',
           resourceType: 'js',
           publicPath,
         });
@@ -121,7 +145,31 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         });
         const cssProviderStore = new CSSServerProviderStore();
         const session = createServerSessionObject(req);
-        const pageDependenciesManager = new PageDependenciesManager(dependencyStats, publicPath);
+
+        /**
+         * Each page has its own components, which can be loaded via dynamic import and React.lazy
+         * These components can have its own children, which are loaded via dynamic import too.
+         * So, you wait for the first import(), the next import() inside the first one will be delayed.
+         * And so on.
+         * The result will be like this:
+         * comp loading ---- finished
+         *                            childComp loading ----- finished
+         *                                                             granChildComp loading ----- finished
+         * As you can see, we had to wait to much time to load the last dynamic component.
+         * To prevent this, all dependencies of the current page will be preloaded via async script
+         *
+         * As a result you will see something like this:
+         * comp loading ---- finished
+         * childComp loading ----- finished
+         * granChildComp loading ----- finished
+         *
+         * Much better!
+         * More info is here https://github.com/reactwg/react-18/discussions/114
+         */
+        const pageDependencies = dependencyStats[`${state.appContext.page.name}Page`] || [];
+        const pageDependenciesScriptTags = pageDependencies
+          .map((depPath) => `<script src="${publicPath}${depPath}" async></script>`)
+          .join('');
 
         let renderTimeoutId: NodeJS.Timeout | undefined = undefined;
 
@@ -134,21 +182,17 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                     <ConfigContext.Provider value={serverApplicationConfig}>
                       <QueryClientProvider client={queryClient}>
                         <CSSProvider cssProviderStore={cssProviderStore}>
-                          <PageDependenciesManagerProvider
-                            pageDependenciesManager={pageDependenciesManager}
-                          >
-                            <Application
-                              polyfillsSourceCode={polyfillsSourceCode}
-                              publicPath={publicPath}
-                              assets={{
-                                inlineContent: assetsInfo.inlineContent,
-                                pathMapping: assetsInfo.pathMapping,
-                              }}
-                              store={store}
-                              session={session}
-                              clientApplicationConfig={clientApplicationConfig}
-                            />
-                          </PageDependenciesManagerProvider>
+                          <Application
+                            polyfillsSourceCode={polyfillsSourceCode}
+                            publicPath={publicPath}
+                            assets={{
+                              inlineContent: assetsInfo.inlineContent,
+                              pathMapping: assetsInfo.pathMapping,
+                            }}
+                            store={store}
+                            session={session}
+                            clientApplicationConfig={clientApplicationConfig}
+                          />
                         </CSSProvider>
                       </QueryClientProvider>
                     </ConfigContext.Provider>
@@ -158,17 +202,16 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             </PlatformAPIContext.Provider>
           </StrictMode>,
           {
-            // @EXPERIMENT_REACT_bootstrapScripts
-            bootstrapScripts: [reactPath],
+            bootstrapScripts: [reactPath, appPath, vendorPath, infrastructurePath, libPath],
             [reactSSRMethodName]() {
               // If something errored before we started streaming, we set the error code appropriately.
               res.status(didError ? 500 : 200);
               res.setHeader('Content-type', 'text/html');
               res.write('<!DOCTYPE html>');
-              // We will send main shell like html>head>body before react starts to stream
+              // We will send main shell like html>head+body before react starts to stream
               // to allow adding styles and scripts to the existed dom
               res.write(
-                `<html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative"><div id="${ApplicationContainerId}">`,
+                `<html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative">${pageDependenciesScriptTags}<div id="${ApplicationContainerId}">`,
               );
 
               /**
@@ -180,12 +223,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                 reactSSRMethodName === 'onCompleteAll'
                   ? pipeableStream.pipe(res)
                   : pipeableStream.pipe(
-                      new ReactStreamRenderEnhancer(
-                        res,
-                        queryClient,
-                        cssProviderStore,
-                        pageDependenciesManager,
-                      ),
+                      new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
                     );
 
               stream.once('finish', () => {

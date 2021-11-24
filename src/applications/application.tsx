@@ -46,30 +46,6 @@ export const Application = memo<{
       })};\
       ${assets.inlineContent}
     `;
-    const appPath = getFullPathForStaticResource({
-      staticResourcesPathMapping: assets.pathMapping,
-      chunkName: 'app',
-      resourceType: 'js',
-      publicPath,
-    });
-    const vendorPath = getFullPathForStaticResource({
-      staticResourcesPathMapping: assets.pathMapping,
-      chunkName: 'vendor',
-      resourceType: 'js',
-      publicPath,
-    });
-    const infrastructurePath = getFullPathForStaticResource({
-      staticResourcesPathMapping: assets.pathMapping,
-      chunkName: 'infrastructure',
-      resourceType: 'js',
-      publicPath,
-    });
-    const libPath = getFullPathForStaticResource({
-      staticResourcesPathMapping: assets.pathMapping,
-      chunkName: 'lib',
-      resourceType: 'js',
-      publicPath,
-    });
     const cssPath = getFullPathForStaticResource({
       staticResourcesPathMapping: assets.pathMapping,
       chunkName: 'stylesLtr',
@@ -85,20 +61,16 @@ export const Application = memo<{
           style={{
             pointerEvents: 'none',
             position: 'absolute',
-            width: '100vw',
             minHeight: '100%',
             top: 0,
             left: 0,
+            right: 0,
           }}
         />
 
         <script dangerouslySetInnerHTML={{ __html: inlineScript }} />
         {!!polyfillsSourceCode && <script dangerouslySetInnerHTML={{ __html: polyfillsSourceCode }} />}
-        <script src={appPath} async />
-        <script src={infrastructurePath} async />
-        <script src={libPath} async />
-        <script src={vendorPath} async />
-        {/* Insert link to a stylesheet for searchbots and other users without JS */}
+        {/* Insert a link to all stylesheets for searchbots and other users without JS */}
         <noscript>
           <link href={cssPath} rel="stylesheet" />
         </noscript>

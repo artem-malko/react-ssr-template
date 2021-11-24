@@ -95,7 +95,7 @@ function getPossiblePlacements(params: CalcPositionParams): Placement[] {
   }
 
   if (
-    window.innerWidth - targetElBoundingRect.right >=
+    document.documentElement.clientWidth - targetElBoundingRect.right >=
     popoverWidth + horizontalOffset + minHorizontalEdgeOffset
   ) {
     mutablePlacement.push('right');
@@ -228,7 +228,7 @@ function calcHorizontalAlignmentStyles(params: CalcPositionParams) {
     case 'end':
       return {
         right: (
-          window.innerWidth -
+          document.documentElement.clientWidth -
           targetElBoundingRect.right +
           horizontalOffset +
           window.scrollX
@@ -254,7 +254,10 @@ function calcHorizontalPlacementStyles(
       alignment,
     }),
     transform: alignment === 'center' ? 'translateY(-50%)' : 'none',
-    right: placement === 'left' ? (window.innerWidth - targetElBoundingRect.left).toString() : '',
+    right:
+      placement === 'left'
+        ? (document.documentElement.clientWidth - targetElBoundingRect.left).toString()
+        : '',
     left: placement === 'right' ? targetElBoundingRect.right.toString() : '',
   };
 }

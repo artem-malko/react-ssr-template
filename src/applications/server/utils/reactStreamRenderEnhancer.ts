@@ -1,6 +1,5 @@
 import { generateCss } from 'infrastructure/css/generator';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
-import { PageDependenciesManager } from 'infrastructure/dependencyManager/manager';
 import { Query, QueryClient } from 'react-query';
 import { Writable } from 'stream';
 
@@ -21,8 +20,6 @@ function dehydrateQuery(query: Query) {
  *    right after react rendered  a component with query usage
  *
  * 2. generated css right after react rendered  a component with styles
- *
- * 3. collected and created scripts for all page's deps
  */
 export class ReactStreamRenderEnhancer extends Writable {
   private queryClient: QueryClient;
@@ -32,19 +29,12 @@ export class ReactStreamRenderEnhancer extends Writable {
   private queriesCache: string[];
   private _writable: Writable;
   private cssProviderStore: CSSServerProviderStore;
-  private pageDependenciesManager: PageDependenciesManager;
 
-  constructor(
-    writable: Writable,
-    queryClient: QueryClient,
-    cssProviderStore: CSSServerProviderStore,
-    pageDependenciesManager: PageDependenciesManager,
-  ) {
+  constructor(writable: Writable, queryClient: QueryClient, cssProviderStore: CSSServerProviderStore) {
     super();
     this._writable = writable;
     this.queryClient = queryClient;
     this.cssProviderStore = cssProviderStore;
-    this.pageDependenciesManager = pageDependenciesManager;
     this.queryStorage = {};
     this.queriesCache = [];
   }
@@ -130,43 +120,6 @@ export class ReactStreamRenderEnhancer extends Writable {
         document.head.appendChild(${randomStyleElementVarName});
       `),
       );
-
-      /**
-       * Each page has its own components, which can be loaded via dynamic import and React.lazy
-       * These components can have its own children, which are loaded via dynamic import too.
-       * So, you wait for the first import(), the next import() inside the first one will be delayed.
-       * And so on.
-       * The result will be like this:
-       * comp loading ---- finished
-       *                            childComp loading ----- finished
-       *                                                             granChildComp loading ----- finished
-       * As you can see, we had to wait to much time to load the last dynamic component.
-       * So, to prevent this, all dependencies of the current page will be preloaded
-       *
-       * pageDependenciesManager.getPageDependencyAssets() returns a list of all files,
-       * which are used by the current page.
-       *
-       * So, as a result you will see something like this:
-       * comp loading ---- finished
-       * childComp loading ----- finished
-       * granChildComp loading ----- finished
-       *
-       * Much better!
-       */
-      if (this.pageDependenciesManager.areAssetsReadyForAppend()) {
-        this.pageDependenciesManager.getPageDependencyAssets().forEach((fileName) => {
-          const randomScriptElementVarName = generateRandomId('__script');
-          this._writable.write(
-            wrapWithImmediateScript(`
-              var ${randomScriptElementVarName} = document.createElement('script');
-              ${randomScriptElementVarName}.src = '${fileName}';
-              ${randomScriptElementVarName}.setAttribute('async', true);
-              document.head.appendChild(${randomScriptElementVarName});
-          `),
-          );
-        });
-        this.pageDependenciesManager.markAssetsAppended();
-      }
 
       /**
        * We have to clear store, to prevent generating already sent styles
