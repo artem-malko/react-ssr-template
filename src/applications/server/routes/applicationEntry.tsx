@@ -168,7 +168,13 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
          */
         const pageDependencies = dependencyStats[`${state.appContext.page.name}Page`] || [];
         const pageDependenciesScriptTags = pageDependencies
-          .map((depPath) => `<script src="${publicPath}${depPath}" async></script>`)
+          .map(
+            /**
+             * onerror is used to fix a bug with webpack and async preloading of dynamic JS-files
+             * More info: https://github.com/webpack/webpack/issues/14874
+             */
+            (depPath) => `<script src="${publicPath}${depPath}" async onerror="this.remove()"></script>`,
+          )
           .join('');
 
         let renderTimeoutId: NodeJS.Timeout | undefined = undefined;

@@ -1,11 +1,10 @@
 import { CommonPage } from 'core/store/types';
-import React, { lazy, memo } from 'react';
+import { memo, useState } from 'react';
 import { Search } from 'ui/components/search';
 import { StaticComponent } from 'ui/components/staticComponent';
+import { Lazy } from 'ui/kit/lazy';
 import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
-
-const NewsList = lazy(() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList'));
 
 export interface NewsPage extends CommonPage {
   name: 'news';
@@ -15,14 +14,25 @@ export interface NewsPage extends CommonPage {
 }
 
 export default memo<{ page: NewsPage }>(({ page }) => {
+  const [n, s] = useState(0);
   return (
     <>
       <Search />
       <div style={{ padding: '20px 0' }} />
-      <React.Suspense fallback={<Preloader purpose="NewsList" />}>
-        <NewsList initialPage={page.params.page} />
-      </React.Suspense>
+      <Lazy
+        loader={() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList')}
+        render={(NewsList) => <NewsList initialPage={page.params.page} />}
+        fallback={(status) =>
+          status === 'loading' ? (
+            <Preloader purpose="NewsList LOADING" />
+          ) : (
+            <Preloader purpose="NewsList ERROR" />
+          )
+        }
+      />
       <br />
+      {n}
+      <button onClick={() => s(n + 1)}>INCT</button>
       <div style={{ padding: '20px 0' }} />
       <StaticComponent />
       <div style={{ padding: '20px 0' }} />

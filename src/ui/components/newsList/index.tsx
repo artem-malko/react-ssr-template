@@ -2,24 +2,15 @@ import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
 import { useStyles } from 'infrastructure/css/hook';
 import { sequence } from 'infrastructure/signal';
-import { lazy, memo, Suspense, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Lazy } from 'ui/kit/lazy';
 import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
 import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
 const { useId } = require('react');
-
-// This import is used as an example of a problem with nested dynamic imports
-// Get more info right here src/infrastructure/dependencyManager/manager.ts
-const Item = lazy(() =>
-  import('./item').then((m) => {
-    return {
-      default: m.Item,
-    };
-  }),
-);
 
 export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const css = useStyles(styles);
@@ -58,6 +49,9 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
     [pageNumber, dispatch],
   );
 
+  /**
+   * This handlers is used as a marker, that
+   */
   const onItemHover = useCallback(() => {
     console.log('hovered');
   }, []);
@@ -89,9 +83,17 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               }}
               key={item.id}
             >
-              <Suspense fallback={<Preloader purpose="newsList item" />}>
-                <Item title={item.title} onHover={onItemHover} />
-              </Suspense>
+              {/*
+                This import is used as an example of a problem with nested dynamic imports
+                Get more info right here src/infrastructure/dependencyManager/manager.ts
+              */}
+              <Lazy
+                loader={() => import('./item')}
+                render={(Item) => <Item title={item.title} onHover={onItemHover} />}
+                fallback={(status) =>
+                  status === 'error' ? <>errror</> : <Preloader purpose="NewListItem" />
+                }
+              />
               <hr />
             </Link>
           ))}

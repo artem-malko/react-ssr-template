@@ -5,15 +5,19 @@ import { merge } from 'webpack-merge';
 import esbuild from 'esbuild';
 import { ASSETS_STATS_FILE_NAME } from '../src/infrastructure/webpack/stats';
 import { PAGE_DEPENDENCIES_FILE_NAME } from '../src/infrastructure/dependencyManager/webpack/plugin';
+import { pinoBannerPlugin, pinoEntries } from './utils/pino';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 const serverConfig: webpack.Configuration = {
-  entry: './src/applications/server/index.ts',
+  entry: {
+    server: './src/applications/server/index.ts',
+    ...pinoEntries,
+  },
 
   output: {
     path: path.resolve('./build'),
-    filename: 'server.js',
+    filename: '[name].js',
     assetModuleFilename: '[hash][ext][query]',
   },
 
@@ -45,6 +49,7 @@ const serverConfig: webpack.Configuration = {
     new webpack.EnvironmentPlugin({
       APP_ENV: 'server',
     }),
+    pinoBannerPlugin,
   ],
 
   cache: {
@@ -58,6 +63,8 @@ const serverConfig: webpack.Configuration = {
   optimization: {
     minimize: false,
   },
+
+  devtool: false,
 
   target: 'node',
 
@@ -75,4 +82,16 @@ const serverConfig: webpack.Configuration = {
 
 export default isProduction
   ? merge(universalConfig, serverConfig, { mode: 'production' })
-  : merge(universalConfig, serverConfig, { mode: 'development' });
+  : merge(
+      universalConfig,
+      serverConfig,
+      {
+        plugins: [
+          new webpack.EvalSourceMapDevToolPlugin({
+            exclude: /pino/,
+            noSources: true,
+          }),
+        ],
+      },
+      { mode: 'development' },
+    );

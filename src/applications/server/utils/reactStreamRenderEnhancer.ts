@@ -58,7 +58,7 @@ export class ReactStreamRenderEnhancer extends Writable {
        * Let's try to find a query ready to be dehydrated
        */
       const readyQuery = queryClientCache.find((q) => {
-        return !q.state.isFetching && !this.queryStorage[q.queryHash];
+        return q.state.status === 'success' && !this.queryStorage[q.queryHash];
       });
 
       /**

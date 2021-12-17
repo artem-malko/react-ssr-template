@@ -34,6 +34,10 @@ export const DevMenu = memo(() => {
                   <PagesPopup />
                 </BasePopup>
               ),
+              options: {
+                closeOnOverlayClick: true,
+                closeOnEscape: true,
+              },
             });
           }}
         >
@@ -128,7 +132,7 @@ const PagesPopup = memo(() => {
     <div style={{ padding: 10, minWidth: 300, minHeight: 300, display: 'flex' }}>
       <ul>
         {links.map((link) => (
-          <li key={link.title} onClick={() => hidePopupById(pagesPopupId)}>
+          <li key={link.title} onClick={() => hidePopupById(pagesPopupId)} style={{ paddingBottom: 8 }}>
             {link.page.name} — <Link page={link.page}>URL is {link.title}</Link>
           </li>
         ))}

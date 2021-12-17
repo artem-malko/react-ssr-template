@@ -22,7 +22,6 @@ const bundleStatsPlugins = withBundleStats
       new BundleAnalyzerPlugin(),
     ]
   : [];
-const chunkLoadTimeoutOption = { chunkLoadTimeout: 20000 };
 
 const clientConfig: webpack.Configuration = {
   entry: {
@@ -44,7 +43,7 @@ const clientConfig: webpack.Configuration = {
     chunkFilename: '[name].[contenthash].js',
     assetModuleFilename: '[hash][ext][query]',
     crossOriginLoading: 'anonymous',
-    ...chunkLoadTimeoutOption,
+    chunkLoadTimeout: 5000,
   },
 
   module: {

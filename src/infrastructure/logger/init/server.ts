@@ -11,7 +11,13 @@ function initLogger() {
         return { pino_level: label };
       },
     },
-    prettyPrint: isProduction ? false : { colorize: true },
+    transport: isProduction
+      ? {
+          target: 'pino/file',
+        }
+      : {
+          target: 'pino-pretty',
+        },
   });
 
   return loggerInstance;

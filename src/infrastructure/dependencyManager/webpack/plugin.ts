@@ -41,24 +41,40 @@ export class PageDependenciesManagerPlugin {
           chunkIdToChildrenIds: { [chunkId: string]: (string | number)[] };
         }>(
           (mutableAcc, statsChunk) => {
-            if (statsChunk.id) {
-              /**
-               * It's possible, when chunk doesn't have its own name.
-               * In that case its id will be used as a name
-               */
-              const name = statsChunk?.names?.[0] || statsChunk.id;
-              mutableAcc.chunkIdToChunkName[statsChunk.id] = name.toString();
+            if (!statsChunk.id) {
+              return mutableAcc;
             }
+
+            /**
+             * It's possible, when chunk doesn't have its own name.
+             * In that case its id will be used as a name
+             */
+            const name = statsChunk?.names?.[0] || statsChunk.id;
+            const originModuleName = statsChunk.origins?.find(
+              (origin) => !!origin.moduleName,
+            )?.moduleName;
+
+            /**
+             * Sometimes, dynamic import() should not be preloaded
+             * For example, module A should be imported on a click event
+             * Only that files, which have '_pr' or '_comp' in their name
+             * will be preloaded
+             */
+            if (!isNeededToBePreloaded(name.toString(), originModuleName)) {
+              return mutableAcc;
+            }
+
+            mutableAcc.chunkIdToChunkName[statsChunk.id] = name.toString();
 
             /**
              * Actually, this code has to be checked on a big codebase,
              * case I do not know a situation, when there is two JS-file for one chunk
              */
-            if (statsChunk.id && statsChunk?.files?.[0]) {
+            if (statsChunk?.files?.[0]) {
               mutableAcc.chunkIdToFileNameMap[statsChunk.id] = statsChunk.files[0];
             }
 
-            if (statsChunk.id && statsChunk.children) {
+            if (statsChunk.children) {
               mutableAcc.chunkIdToChildrenIds[statsChunk.id] = statsChunk.children.filter((childId) => {
                 /**
                  * It's strange, but sometimes it is possible, that current chunk can have one dep
@@ -155,3 +171,29 @@ const getFiles = (
 
   return mutableFoundFiles;
 };
+
+function isNeededToBePreloaded(name: string, originModuleName: string | undefined): boolean {
+  /**
+   * _sk_pr in the name means, that current file is not intended to be preloaded
+   */
+  if (name.includes('_sk_pr')) {
+    return false;
+  }
+
+  /**
+   * _pr in the name means, that current file is intended to preload
+   */
+  if (name.includes('_pr')) {
+    return true;
+  }
+
+  /**
+   * tsx in the end of the originModuleName means, that current file is intended to be preload,
+   * cause it is a component's js-code
+   */
+  if (originModuleName?.endsWith('tsx')) {
+    return true;
+  }
+
+  return false;
+}
