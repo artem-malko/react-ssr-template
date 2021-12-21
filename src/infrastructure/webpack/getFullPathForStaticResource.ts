@@ -11,6 +11,20 @@ export function getFullPathForStaticResource(params: Params): string {
   return `${publicPath}${assetFileName}`;
 }
 
+export function createJSResourcePathGetter(params: {
+  publicPath: string;
+  staticResourcesPathMapping: { [chunkName: string]: string[] };
+}) {
+  const { publicPath, staticResourcesPathMapping } = params;
+  return (chunkName: string) =>
+    getFullPathForStaticResource({
+      staticResourcesPathMapping,
+      publicPath,
+      resourceType: 'js',
+      chunkName,
+    });
+}
+
 /**
  * staticResourcesPathMapping — is an assetsByChunkName mapping from webpack
  * This function will extract certain file with selected resourceType

@@ -204,8 +204,7 @@ describe('generator / generateCss', () => {
     };
     const styles = createStyles({
       hash7: {
-        // @TODO fix types
-        animationName: [keyframeNames.translate, keyframeNames.opacity] as any,
+        animationName: [keyframeNames.translate, keyframeNames.opacity],
         animationDuration: '3s, 1200ms',
         animationIterationCount: 'infinite',
       },

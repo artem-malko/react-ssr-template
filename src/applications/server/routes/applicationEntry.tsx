@@ -16,7 +16,7 @@ import { createPlatformAPI } from 'core/platform';
 import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
-import { getFullPathForStaticResource } from 'infrastructure/webpack/getFullPathForStaticResource';
+import { createJSResourcePathGetter } from 'infrastructure/webpack/getFullPathForStaticResource';
 import { createServerSessionObject } from '../utils/createServerSessionObject';
 import { StrictMode } from 'react';
 import { PlatformAPIContext } from 'core/platform/shared/context';
@@ -109,36 +109,16 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
         /**
          * Required assets for the application start
          */
-        const reactPath = getFullPathForStaticResource({
+        const getFullPathForJSFile = createJSResourcePathGetter({
           staticResourcesPathMapping: assetsInfo.pathMapping,
-          chunkName: 'react',
-          resourceType: 'js',
           publicPath,
         });
-        const appPath = getFullPathForStaticResource({
-          staticResourcesPathMapping: assetsInfo.pathMapping,
-          chunkName: 'app',
-          resourceType: 'js',
-          publicPath,
-        });
-        const vendorPath = getFullPathForStaticResource({
-          staticResourcesPathMapping: assetsInfo.pathMapping,
-          chunkName: 'vendor',
-          resourceType: 'js',
-          publicPath,
-        });
-        const infrastructurePath = getFullPathForStaticResource({
-          staticResourcesPathMapping: assetsInfo.pathMapping,
-          chunkName: 'infrastructure',
-          resourceType: 'js',
-          publicPath,
-        });
-        const libPath = getFullPathForStaticResource({
-          staticResourcesPathMapping: assetsInfo.pathMapping,
-          chunkName: 'lib',
-          resourceType: 'js',
-          publicPath,
-        });
+        const reactPath = getFullPathForJSFile('react');
+        const appPath = getFullPathForJSFile('app');
+        const vendorPath = getFullPathForJSFile('vendor');
+        const infrastructurePath = getFullPathForJSFile('infrastructure');
+        const libPath = getFullPathForJSFile('lib');
+        const rarelyPath = getFullPathForJSFile('rarely');
 
         const queryClient = new QueryClient({
           defaultOptions: defaultQueryOptions,
@@ -208,7 +188,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             </PlatformAPIContext.Provider>
           </StrictMode>,
           {
-            bootstrapScripts: [reactPath, appPath, vendorPath, infrastructurePath, libPath],
+            bootstrapScripts: [reactPath, appPath, vendorPath, infrastructurePath, libPath, rarelyPath],
             [reactSSRMethodName]() {
               // If something errored before we started streaming, we set the error code appropriately.
               res.status(didError ? 500 : 200);

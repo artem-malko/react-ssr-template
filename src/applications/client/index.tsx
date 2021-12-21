@@ -86,7 +86,7 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
   </PlatformAPIContext.Provider>
 );
 
-// @TODO just for a strict mode testing
+// @JUST_FOR_TEST just for a strict mode testing
 if (location.search.includes('strict')) {
   // @TODO_AFTER_REACT_18_RELEASE remove as any
   restoreStore({ toastController, popupController }).then((store) => {

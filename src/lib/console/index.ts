@@ -1,8 +1,5 @@
 type Color = 'red' | 'green' | 'cyan' | 'yellow' | 'blue' | 'white';
 
-/**
- * @TODO add client version
- */
 export function colorize(msg: string, color?: Color) {
   if (process.env.APP_ENV === 'client') {
     return console.log(msg, {

@@ -140,6 +140,10 @@ const clientConfig: webpack.Configuration = {
               case 'scheduler':
               case 'object-assign':
                 return 'react';
+              case 'path-to-regexp':
+              case 'uuid':
+              case 'axios':
+                return 'rarely';
               default:
                 return 'vendor';
             }

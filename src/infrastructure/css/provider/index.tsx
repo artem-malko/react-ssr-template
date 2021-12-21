@@ -25,8 +25,8 @@ export class CSSProvider extends Component<CSSProviderProps> {
   public static displayName = 'CSSProvider';
 
   public render() {
-    // I've added any here, cause of the "Type instantiation is excessively deep and possibly infinite" error
-    // @TODO fix it lately. Any is ok here, cause the type for css function is infered from cssStub
+    // I've added any here,
+    // cause of the "Type instantiation is excessively deep and possibly infinite" error
     const css = (styleDescriptor: Styles<string>) => (selector: any, modifiers: any) => {
       const { hash, usedModifiers } = this.props.cssProviderStore.addStyles(
         selector as string,
