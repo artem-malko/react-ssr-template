@@ -193,11 +193,10 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
               // If something errored before we started streaming, we set the error code appropriately.
               res.status(didError ? 500 : 200);
               res.setHeader('Content-type', 'text/html');
-              res.write('<!DOCTYPE html>');
               // We will send main shell like html>head+body before react starts to stream
               // to allow adding styles and scripts to the existed dom
               res.write(
-                `<html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative">${pageDependenciesScriptTags}<div id="${ApplicationContainerId}">`,
+                `<!DOCTYPE html><html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative">${pageDependenciesScriptTags}<div id="${ApplicationContainerId}">`,
               );
 
               /**
@@ -217,7 +216,17 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                   clearTimeout(renderTimeoutId);
                 }
 
-                res.end();
+                /**
+                 * Actually, it is not necessary to call res.end manually,
+                 * cause React does this by itself
+                 *
+                 * But, if we have any wrapper on res, we can not be sure,
+                 * that wrapper implements all needed methods (especially _final)
+                 * So, the `end` method will be called manually, if writable has not been ended yet.
+                 */
+                if (!res.writableEnded) {
+                  res.end();
+                }
               });
             },
 
