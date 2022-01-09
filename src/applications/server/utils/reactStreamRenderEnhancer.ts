@@ -156,6 +156,8 @@ export class ReactStreamRenderEnhancer extends Writable {
 /**
  * Creates script, which executes right before the next chunk
  * so nothing else can observe it. Including React.
+ *
+ * This script has to be removed after execution, cause of server and client rendering mismatch warn
  */
 function wrapWithImmediateScript(code: string) {
   const randomScriptId = generateRandomId();

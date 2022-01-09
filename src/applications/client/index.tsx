@@ -60,7 +60,7 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
   <PlatformAPIContext.Provider value={platformAPI}>
     <SessionContext.Provider value={session}>
       <ServiceContext.Provider value={services}>
-        <ReduxStoreProvider store={store}>
+        <ReduxStoreProvider store={store} serverState={window.__initialReduxState}>
           <ConfigContext.Provider value={config}>
             <QueryClientProvider client={queryClient}>
               <CSSProvider cssProviderStore={cssProviderStore}>
