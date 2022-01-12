@@ -15,7 +15,17 @@ export const styles = createStyles({
     },
   },
 
+  title: {
+    _red: {
+      color: 'red',
+    },
+  },
+
   list: {
     padding: 10,
+
+    _red: {
+      background: 'red',
+    },
   },
 });

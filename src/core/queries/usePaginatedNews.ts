@@ -5,7 +5,7 @@ export const usePaginatedNews = (page = 1) => {
     ['news', page],
     async ({ services }) => {
       // Simple fake latency for the requests from server side
-      await new Promise((resolve) => setTimeout(resolve, page % 2 ? 3000 : 0));
+      await new Promise((resolve) => setTimeout(resolve, page % 2 ? 4000 : 0));
 
       return services.hackerNews.getNews({ page }).then((res) => {
         return res;

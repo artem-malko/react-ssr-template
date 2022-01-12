@@ -1,5 +1,6 @@
 import { usePaginatedNews } from 'core/queries/usePaginatedNews';
 import { patchPage } from 'core/signals/page';
+import { useAppSelector } from 'core/store/hooks';
 import { useStyles } from 'infrastructure/css/hook';
 import { sequence } from 'infrastructure/signal';
 import { memo, useCallback, useEffect, useState } from 'react';
@@ -20,6 +21,8 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
   const news = usePaginatedNews(pageNumber);
   const dispatch = useDispatch();
   const { showToast } = useToast();
+  const URLQueryParams = useAppSelector((s) => s.appContext.URLQueryParams);
+  const URLQueryParamsCount = Object.keys(URLQueryParams || {}).length;
   const onPageChange = useCallback(
     (action: 'inc' | 'dec') => {
       const newPageNumber = action === 'inc' ? pageNumber + 1 : pageNumber - 1;
@@ -62,7 +65,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
 
   return (
     <div className={css('root', ['_big', '_tablet'])} id={id}>
-      <h2>NewsList Component</h2>
+      <h2 className={css('title', URLQueryParamsCount > 0 ? ['_red'] : [])}>NewsList Component</h2>
       <button disabled={pageNumber === 1} onClick={() => onPageChange('dec')}>
         Prev page
       </button>
@@ -70,7 +73,7 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
       <br />
       <br />
 
-      <div className={css('list')}>
+      <div className={css('list', URLQueryParamsCount > 0 ? ['_red'] : [])}>
         {news.isFetching && <div>Updating...</div>}
         {news.isSuccess &&
           news.data.slice(0, 10).map((item) => (

@@ -1,5 +1,10 @@
+import { setQueryStringParams } from 'core/actions/appContext/setQueryStringParams';
+import { useAppSelector } from 'core/store/hooks';
 import { CommonPage } from 'core/store/types';
-import { memo, useState } from 'react';
+import { historyPush } from 'infrastructure/router/actions';
+import { sequence } from 'infrastructure/signal';
+import { memo, useCallback, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Search } from 'ui/components/search';
 import { StaticComponent } from 'ui/components/staticComponent';
 import { Lazy } from 'ui/kit/lazy';
@@ -15,10 +20,32 @@ export interface NewsPage extends CommonPage {
 
 export default memo<{ page: NewsPage }>(({ page }) => {
   const [n, s] = useState(0);
+  const dispatch = useDispatch();
+  const URLQueryParams = useAppSelector((s) => s.appContext.URLQueryParams);
+  const addURLQuery = useCallback(() => {
+    dispatch(
+      sequence(
+        setQueryStringParams(
+          Object.keys(URLQueryParams || {}).length
+            ? { params: {} }
+            : {
+                params: {
+                  test_mode_attr: ['2'],
+                },
+              },
+        ),
+        historyPush(),
+      ),
+    );
+  }, [dispatch, URLQueryParams]);
+
   return (
     <>
       <Search />
       <div style={{ padding: '20px 0' }} />
+      <button onClick={addURLQuery}>Patch URL Query to change NewsList header color</button>
+      <br /> <br />
+      <br />
       <Lazy
         loader={() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList')}
         render={(NewsList) => <NewsList initialPage={page.params.page} />}
