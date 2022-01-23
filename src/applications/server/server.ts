@@ -1,6 +1,6 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import path from 'path';
+import path from 'node:path';
 import { serverApplicationConfig } from 'config/generator/server';
 import { clientIp } from './middlewares/clientIP';
 import { isSearchBot } from './middlewares/searchBots';

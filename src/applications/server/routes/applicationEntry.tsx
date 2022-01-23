@@ -1,4 +1,4 @@
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 import express from 'express';
 import { Store } from 'redux';
 import { QueryClient, QueryClientProvider } from 'react-query';

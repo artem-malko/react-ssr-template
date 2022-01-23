@@ -1,7 +1,7 @@
 import { generateCss } from 'infrastructure/css/generator';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { Query, QueryClient } from 'react-query';
-import { Writable } from 'stream';
+import { Writable } from 'node:stream';
 
 /**
  * This is just a copy from react-query repo

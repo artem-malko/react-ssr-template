@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'node:fs';
 
 export interface AssetsList {
   [chunkName: string]: string[];

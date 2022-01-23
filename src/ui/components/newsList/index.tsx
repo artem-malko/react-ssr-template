@@ -75,6 +75,17 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
 
       <div className={css('list', URLQueryParamsCount > 0 ? ['_red'] : [])}>
         {news.isFetching && <div>Updating...</div>}
+        {URLQueryParamsCount > 0 && (
+          <div
+            style={{
+              height: '400px',
+              width: '100%',
+              background: 'red',
+            }}
+          >
+            JUST A BIG DIV
+          </div>
+        )}
         {news.isSuccess &&
           news.data.slice(0, 10).map((item) => (
             <Link
@@ -100,6 +111,17 @@ export const NewsList = memo<{ initialPage: number }>(({ initialPage }) => {
               <hr />
             </Link>
           ))}
+        {URLQueryParamsCount > 0 && (
+          <div
+            style={{
+              height: '400px',
+              width: '100%',
+              background: 'red',
+            }}
+          >
+            JUST A BIG DIV
+          </div>
+        )}
         {news.isError && <div>ERROR: {news.error.code}</div>}
       </div>
       <br />
