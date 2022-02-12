@@ -231,9 +231,22 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             },
 
             // @TODO looks quite silly, need to refactor it
+            onErrorShell(error: Error) {
+              // Something errored before we could complete the shell so we emit an alternative shell.
+              res.status(500);
+              console.error('onErrorShell: ', error);
+
+              if (renderTimeoutId) {
+                clearTimeout(renderTimeoutId);
+              }
+
+              res.send(`<!doctype><p>Error<br/>${error}</p>`);
+            },
+
+            // @TODO looks quite silly, need to refactor it
             onError(error: Error) {
               didError = true;
-              console.error(error);
+              console.error('onError: ', error);
               pipeableStream.abort();
 
               if (renderTimeoutId) {
