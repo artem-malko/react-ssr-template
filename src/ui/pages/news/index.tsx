@@ -15,6 +15,7 @@ export interface NewsPage extends CommonPage {
   name: 'news';
   params: {
     page: number;
+    useInfinity?: boolean;
   };
 }
 
@@ -48,7 +49,9 @@ export default memo<{ page: NewsPage }>(({ page }) => {
       <br />
       <Lazy
         loader={() => import(/* webpackChunkName: "newsList" */ 'ui/components/newsList')}
-        render={(NewsList) => <NewsList initialPage={page.params.page} />}
+        render={(NewsList) => (
+          <NewsList initialPage={page.params.page} useInfinityList={!!page.params.useInfinity} />
+        )}
         fallback={(status) =>
           status === 'loading' ? (
             <Preloader purpose="NewsList LOADING" />

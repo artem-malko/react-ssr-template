@@ -9,12 +9,14 @@ export const newsPageRoute: Route<RouteWithoutParams, NewsPage> = {
       name: 'news',
       params: {
         page: parsePageQueryParam(queryParams),
+        useInfinity: !!queryParams['useInfinity'],
       },
     });
   },
-  matchPageToQueryParams: ({ page }) => {
+  matchPageToQueryParams: ({ page, useInfinity }) => {
     return {
       p: [page.toString()],
+      useInfinity: useInfinity ? [''] : [],
     };
   },
 };
