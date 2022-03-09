@@ -65,8 +65,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
    * and giving it earlier may give you better rankings due to perf.
    */
   const onCompleteAll = req.isSearchBot;
-  const reactSSRMethodName =
-    forcedToUseOnComplete || onCompleteAll ? 'onCompleteAll' : 'onCompleteShell';
+  const reactSSRMethodName = forcedToUseOnComplete || onCompleteAll ? 'onAllReady' : 'onShellReady';
 
   const storePromise = restoreStore(req, res);
 
@@ -205,7 +204,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                * dehydrated data and critical css (which is in a JS wrapper)
                */
               const stream: Writable =
-                reactSSRMethodName === 'onCompleteAll'
+                reactSSRMethodName === 'onAllReady'
                   ? pipeableStream.pipe(res)
                   : pipeableStream.pipe(
                       new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
@@ -231,7 +230,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             },
 
             // @TODO looks quite silly, need to refactor it
-            onErrorShell(error: Error) {
+            onShellError(error: Error) {
               // Something errored before we could complete the shell so we emit an alternative shell.
               res.status(500);
               console.error('onErrorShell: ', error);
@@ -240,6 +239,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                 clearTimeout(renderTimeoutId);
               }
 
+              /**
+               * @TODO switch to client render
+               */
               res.send(`<!doctype><p>Error<br/>${error}</p>`);
             },
 

@@ -1,11 +1,11 @@
 import path from 'path';
 import webpack from 'webpack';
 import { universalConfig } from './universal';
-import { merge } from 'webpack-merge';
 import esbuild from 'esbuild';
 import { ASSETS_STATS_FILE_NAME } from '../src/infrastructure/webpack/stats';
 import { PAGE_DEPENDENCIES_FILE_NAME } from '../src/infrastructure/dependencyManager/webpack/plugin';
 import { pinoBannerPlugin, pinoEntries } from './utils/pino';
+import { merge } from './utils/merge';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
