@@ -51,6 +51,7 @@ export const Main = memo<Props>(({ renderCallback }) => {
     </div>
   );
 });
+Main.displayName = 'Main';
 
 const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ 'ui/pages/root'));
 const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'ui/pages/news'));

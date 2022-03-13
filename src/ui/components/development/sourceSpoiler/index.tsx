@@ -14,7 +14,7 @@ export const SourceSpoiler = memo<Props>(({ source }) => {
             <div onClick={toggle} style={{ paddingBottom: 8, cursor: 'pointer' }}>
               {isExpanded ? <button>Hide source</button> : <button>Show source</button>}
             </div>
-            <Fade isShown={isExpanded} transition={300}>
+            <Fade isShown={isExpanded} transitionDuration={300}>
               <table>
                 <tbody>
                   {source &&

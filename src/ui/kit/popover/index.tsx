@@ -1,12 +1,22 @@
-import { debounce } from 'lib/lodash';
-import { memo, PropsWithChildren, useState, useRef, useEffect, useLayoutEffect } from 'react';
+import { memo, PropsWithChildren, useRef, useLayoutEffect, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { useOutsideClick } from 'ui/hooks/useOutsideClick';
+import { useResizeObserver } from 'ui/hooks/useResizeObserver';
+import { Fade } from '../fade';
 import { popoverContainerId } from './shared';
 import { getPositionStyles } from './utils';
 
 export type Placement = 'top' | 'right' | 'bottom' | 'left';
 export type Alignment = 'start' | 'center' | 'end';
+
+const defaultView = {
+  top: 'auto',
+  right: 'auto',
+  bottom: 'auto',
+  left: 'auto',
+  width: 0,
+  transform: 'none',
+};
 
 type Props = {
   targetEl: HTMLDivElement | null;
@@ -17,6 +27,8 @@ type Props = {
   width?: number;
   horizontalOffset?: number;
   verticalOffset?: number;
+  animationDuration?: number;
+  animationDelay?: number;
 };
 export const Popover = memo<PropsWithChildren<Props>>(
   ({
@@ -29,17 +41,12 @@ export const Popover = memo<PropsWithChildren<Props>>(
     placement = 'bottom',
     alignment = 'center',
     width = 0,
+    animationDuration = 200,
+    animationDelay = 0,
   }) => {
-    const [view, setView] = useState({
-      top: 'auto',
-      right: 'auto',
-      bottom: 'auto',
-      left: 'auto',
-      width: 0,
-      transform: 'none',
-    });
-    const [isVisible, setIsVisible] = useState(isShown);
     const popoverContainerRef = useRef<HTMLDivElement | null>(null);
+    const popoverConentRef = useRef<HTMLDivElement | null>(null);
+    const bodyElRef = useRef<HTMLElement | null>(null);
 
     useOutsideClick({
       sourceEl: targetEl,
@@ -48,49 +55,38 @@ export const Popover = memo<PropsWithChildren<Props>>(
       additionalRef: popoverContainerRef,
     });
 
-    useEffect(() => {
-      const onResize = debounce(() => {
-        hide();
-      }, 100);
+    useLayoutEffect(() => {
+      popoverContainerRef.current = document.querySelector(`#${popoverContainerId}`);
+      bodyElRef.current = document.body;
+    }, []);
 
-      window.addEventListener('resize', onResize);
+    const onResizeHandler = useCallback(() => {
+      hide();
 
-      return () => {
-        window.removeEventListener('resize', onResize);
-      };
+      // We need to hide popover conent as fast as possible to prevent any glitches
+      if (popoverConentRef.current) {
+        popoverConentRef.current.style.display = 'none';
+      }
     }, [hide]);
 
-    useEffect(() => {
-      if (typeof ResizeObserver === 'undefined') {
-        return;
-      }
+    useResizeObserver(bodyElRef, onResizeHandler);
 
-      // create an Observer instance
-      const resizeObserver = new ResizeObserver(() => {
-        // @TODO recalculate position
-        hide();
-      });
-      resizeObserver.observe(document.body);
-
-      return () => {
-        resizeObserver.disconnect();
-      };
-    }, [hide]);
-
-    useEffect(() => {
-      if (!targetEl) {
-        return;
-      }
-
-      if (!isShown) {
-        setIsVisible(false);
-        return;
+    /**
+     * Get more info about calculation of the view in getPositionStyles function
+     */
+    const view = useMemo(() => {
+      /**
+       * isShown is used to recalculate position in case of hide/show switch cause of resizeObserver
+       */
+      if (!targetEl || !isShown) {
+        return defaultView;
       }
 
       const targetElBoundingRect = targetEl.getBoundingClientRect();
       const popoverWidth = width || targetElBoundingRect.width;
 
-      setView({
+      return {
+        ...defaultView,
         ...getPositionStyles({
           horizontalOffset: horizontalOffset,
           verticalOffset: verticalOffset,
@@ -100,15 +96,10 @@ export const Popover = memo<PropsWithChildren<Props>>(
           alignment: alignment,
         }),
         width: width || targetElBoundingRect.width,
-      });
-      setIsVisible(true);
+      };
     }, [isShown, targetEl, width, horizontalOffset, verticalOffset, placement, alignment]);
 
-    useLayoutEffect(() => {
-      popoverContainerRef.current = document.querySelector(`#${popoverContainerId}`);
-    }, []);
-
-    if (!isShown || !isVisible || !popoverContainerRef.current) {
+    if (!isShown || !popoverContainerRef.current) {
       return null;
     }
 
@@ -124,8 +115,17 @@ export const Popover = memo<PropsWithChildren<Props>>(
           width: `${view.width}px`,
           transform: view.transform,
         }}
+        ref={popoverConentRef}
       >
-        {children}
+        <Fade
+          isShown
+          // If animationDuration <= 0, it means, we do not have to animate
+          isInitiallyShown={animationDuration <= 0}
+          transitionDuration={animationDuration}
+          transitionDelay={animationDelay}
+        >
+          {children}
+        </Fade>
       </div>,
       popoverContainerRef.current,
     );

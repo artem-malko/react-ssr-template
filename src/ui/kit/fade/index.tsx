@@ -4,13 +4,19 @@ import { midTransitionDuration } from 'ui/styles/shared';
 import { useStyles } from 'infrastructure/css/hook';
 
 type Props = {
-  transition?: number;
-  delay?: number;
+  transitionDuration?: number;
+  transitionDelay?: number;
   isShown: boolean;
   isInitiallyShown?: boolean;
 };
 export const Fade = memo<PropsWithChildren<Props>>(
-  ({ transition, delay, isShown, children, isInitiallyShown }) => {
+  ({
+    transitionDuration = midTransitionDuration,
+    transitionDelay = 0,
+    isShown,
+    children,
+    isInitiallyShown,
+  }) => {
     const [shouldAnimate, setSouldAnimate] = useState(false);
     const [internalIsInitiallyShown, setInternalIsInitiallyShown] = useState(isInitiallyShown);
     const css = useStyles(styles);
@@ -20,10 +26,10 @@ export const Fade = memo<PropsWithChildren<Props>>(
       }
 
       return {
-        transitionDuration: transition ? `${transition}ms` : `${midTransitionDuration}ms`,
-        transitionDelay: delay ? `${delay}ms` : '0s',
+        transitionDuration: `${transitionDuration}ms`,
+        transitionDelay: `${transitionDelay}ms`,
       };
-    }, [transition, delay, internalIsInitiallyShown]);
+    }, [transitionDuration, transitionDelay, internalIsInitiallyShown]);
 
     useEffect(() => {
       setSouldAnimate(isShown);
