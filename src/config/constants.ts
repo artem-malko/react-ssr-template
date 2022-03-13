@@ -3,7 +3,7 @@ import { CookieAttributes } from 'js-cookie';
 
 export const ApplicationContainerId = '__application';
 
-// @TODO fix it
+// @REPLACE_ON_FORK
 export const baseDomain = 'example.com';
 
 type CookieName = 'user' | 'sid' | 'pushedResources';

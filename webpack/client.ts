@@ -158,7 +158,11 @@ const clientConfig: webpack.Configuration = {
       APP_ENV: 'client',
     }),
 
-    new CSSInJSPlugin(),
+    new CSSInJSPlugin({
+      useRTL: false,
+      ltrChunkName: 'stylesLtr',
+      rtlChunkName: 'stylesRtl',
+    }),
 
     new PageDependenciesManagerPlugin(),
 

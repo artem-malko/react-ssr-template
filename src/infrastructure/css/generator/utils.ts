@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { prefix } from 'inline-style-prefixer';
+import { prefix } from './prefixer';
 import { Style } from '../types';
 
 /* istanbul ignore next */
@@ -162,7 +162,6 @@ function cssifyKeyFrames(keyframesStyles: { [key: string]: React.CSSProperties }
   return res;
 }
 
-// @TODO sort media queries in result css
 // combine similar mq
 const mutableCssifyCache: { [key: string]: string } = {};
 export function cssify(
