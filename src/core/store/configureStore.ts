@@ -3,6 +3,7 @@ import { mainReducer } from './reducer';
 import { createSignalMiddleware } from 'infrastructure/signal/middleware';
 import { createNavigationMiddleware } from 'infrastructure/router/middlewares';
 import { AppState } from './types';
+// @TODO move to configureStore params
 import { compileAppURL } from 'ui/main/routing';
 
 export function configureStore(params: {

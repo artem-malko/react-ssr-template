@@ -1,6 +1,8 @@
 import { MapDiscriminatedUnion } from 'lib/types';
 import { Action } from 'redux';
 
+type QueryParamValue = Array<string>;
+
 export interface AnyPage<
   PageName extends string,
   Params extends Record<string, any> = Record<string, any>,
@@ -19,7 +21,7 @@ export interface AnyPage<
  * - ?q=value transforms to { q: ['value'] }
  * - ?q=value_1&q=value_2 transforms to { q: ['value1', 'value2'] }
  */
-export type URLQueryParams = Record<string, string[]>;
+export type URLQueryParams = Record<string, QueryParamValue>;
 
 /**
  * Every App, which uses this router has to extend this type in its own AppContext
@@ -79,7 +81,8 @@ export type Route<
   path: string;
   signal: (pathParams: RoutePathParams, queryParams: URLQueryParams) => Action;
   matchPageToPathParams?: (pageParams: Page['params']) => RoutePathParams;
-  matchPageToQueryParams?: (pageParams: Page['params']) => { [key: string]: string[] };
+  // @TODO Array<string | true> true — for empty value
+  matchPageToQueryParams?: (pageParams: Page['params']) => { [key: string]: QueryParamValue };
 };
 
 /**
