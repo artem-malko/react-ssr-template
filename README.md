@@ -5,10 +5,8 @@ Simple template for a website with SSR (with streams) and React 18 with a brand 
 🚀 Just start with
 
 ```bash
-npm i --force && make dev
+npm i && make dev
 ```
-`--force` flag is used, cause react-query depends on react 17 and below.
-
 If you want to see this project in action: http://158.101.223.0:5000/
 
 🚧 🛠️ Work In Progress 🛠️ 🚧

@@ -1,4 +1,4 @@
-import ReactDOMClient from 'react-dom/client';
+import { hydrateRoot } from 'react-dom/client';
 import { Provider as ReduxStoreProvider } from 'react-redux';
 import { Application } from 'applications/application';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -33,7 +33,7 @@ const queryClient = new QueryClient({
 
 const cssProviderStore = new CSSClientProviderStore();
 
-const container = document.getElementById(ApplicationContainerId);
+const container = document.getElementById(ApplicationContainerId) as Element;
 
 const config = getClientApplicationConfig();
 
@@ -88,9 +88,8 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
 
 // @JUST_FOR_TEST just for a strict mode testing
 if (location.search.includes('strict')) {
-  // @TODO_AFTER_REACT_18_RELEASE remove as any
   restoreStore({ toastController, popupController }).then((store) => {
-    (ReactDOMClient as any).hydrateRoot(
+    hydrateRoot(
       container,
       <StrictMode>
         <ApplicationWithProviders store={store} />
@@ -98,8 +97,7 @@ if (location.search.includes('strict')) {
     );
   });
 } else {
-  // @TODO_AFTER_REACT_18_RELEASE remove as any
   restoreStore({ toastController, popupController }).then((store) => {
-    (ReactDOMClient as any).hydrateRoot(container, <ApplicationWithProviders store={store} />);
+    hydrateRoot(container, <ApplicationWithProviders store={store} />);
   });
 }

@@ -1,4 +1,4 @@
-import { createContext, Component } from 'react';
+import { createContext, Component, PropsWithChildren } from 'react';
 import { Styles } from '../types';
 import { CSSProviderStoreInterface } from './types';
 
@@ -21,7 +21,7 @@ interface CSSProviderProps {
 /**
  * Universal provider for CSS in JS workflow
  */
-export class CSSProvider extends Component<CSSProviderProps> {
+export class CSSProvider extends Component<PropsWithChildren<CSSProviderProps>> {
   public static displayName = 'CSSProvider';
 
   public render() {
