@@ -17,28 +17,28 @@ import { defaultQueryOptions } from 'infrastructure/query/defaultOptions';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
 import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
 import { createJSResourcePathGetter } from 'infrastructure/webpack/getFullPathForStaticResource';
-import { createServerSessionObject } from '../utils/createServerSessionObject';
 import { StrictMode } from 'react';
+import { renderToPipeableStream } from 'react-dom/server';
+import { Provider as ReduxStoreProvider } from 'react-redux';
 import { PlatformAPIContext } from 'core/platform/shared/context';
 import { SessionContext } from 'core/session/context';
 import { ServiceContext } from 'core/services/shared/context';
-import { Provider as ReduxStoreProvider } from 'react-redux';
 import { ConfigContext } from 'config/react';
 import { CSSProvider } from 'infrastructure/css/provider';
 import { Application } from 'applications/application';
 import { ApplicationContainerId } from 'config/constants';
 import { generateHead } from '../utils/generateHead';
-
-// @TODO_AFTER_REACT_18_RELEASE move to correct import
-// All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
-// And https://github.com/reactwg/react-18/discussions/37
-const { renderToPipeableStream } = require('react-dom/server');
+import { createServerSessionObject } from '../utils/createServerSessionObject';
 
 const assetsInfoPromise = readAssetsInfo();
 const pageDependenciesStatsPromise = readPageDependenciesStats();
 
 const SERVER_RENDER_ABORT_TIMEOUT = 10000;
 
+/**
+ * All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
+ * And https://github.com/reactwg/react-18/discussions/37
+ */
 export const createApplicationRouter: () => express.Handler = () => (req, res) => {
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('X-XSS-Protection', '1');
@@ -230,7 +230,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             },
 
             // @TODO looks quite silly, need to refactor it
-            onShellError(error: Error) {
+            onShellError(error) {
               // Something errored before we could complete the shell so we emit an alternative shell.
               res.status(500);
               console.error('onErrorShell: ', error);
@@ -246,7 +246,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             },
 
             // @TODO looks quite silly, need to refactor it
-            onError(error: Error) {
+            onError(error) {
               didError = true;
               console.error('onError: ', error);
               pipeableStream.abort();
