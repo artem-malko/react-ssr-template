@@ -85,8 +85,8 @@ describe('generator / generateCss', () => {
     );
   });
 
-  it(`Generate correct styles for complex styles object: prefixes for style property value,
-      Check media queries and modificator.`, () => {
+  it(`Generate correct styles for complex styles object,
+      check media queries and modificator.`, () => {
     const styles = createStyles({
       hash3: {
         display: 'flex',
@@ -102,7 +102,7 @@ describe('generator / generateCss', () => {
     });
 
     expect(generateCss(styles)).be.eq(
-      '.hash3{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex}@media screen and (max-width:500px){.hash3{color:blue}}.hash3._red{transform:translateX(10px)}',
+      '.hash3{display:flex}@media screen and (max-width:500px){.hash3{color:blue}}.hash3._red{transform:translateX(10px)}',
     );
   });
 

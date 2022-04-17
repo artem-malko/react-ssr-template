@@ -17,7 +17,6 @@ describe('Timer', () => {
 
   afterEach(() => {
     clock.restore();
-    clock.uninstall();
     state.counter = 0;
   });
 

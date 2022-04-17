@@ -15,7 +15,6 @@ describe('Queue', () => {
 
   afterEach(() => {
     clock.restore();
-    clock.uninstall();
   });
 
   it('queue works correctly with 1 job, job is done on next tick, timeout is not passed', () => {

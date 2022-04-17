@@ -5,7 +5,7 @@ export const waitForNextTickWithMockedTimers = async (clock: SinonFakeTimers, ms
   await new Promise<void>((resolve) => {
     resolve();
   });
-  clock.runMicrotasks();
+  'runMicrotasks' in clock && clock.runMicrotasks();
 };
 
 export const waitForResolve = (callback: () => any) => Promise.resolve().then(callback);

@@ -131,7 +131,6 @@ describe('lodash', () => {
       expect(outer.name).to.eq('third');
 
       clock.restore();
-      clock.uninstall();
     });
   });
 });
