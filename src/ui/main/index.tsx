@@ -11,6 +11,7 @@ import { styles } from './index.css';
 import { Popup } from 'ui/kit/popup/popup';
 import { ZIndexLayout } from 'ui/kit/zIndex';
 import { DevMenu } from 'ui/components/development/devMenu';
+import { ErrorBoundary } from 'react-error-boundary';
 
 /**
  * Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5
@@ -22,6 +23,8 @@ export const Main = memo<Props>(({ renderCallback }) => {
   useStyles(globalStyles)(':global');
   const css = useStyles(styles);
   const page = useAppSelector(selectPage);
+
+  console.log('page: ', page);
 
   return (
     <div ref={renderCallback}>
@@ -42,9 +45,22 @@ export const Main = memo<Props>(({ renderCallback }) => {
               <DevMenu />
             </div>
 
-            <Suspense fallback={<Preloader purpose="page" />}>
-              <Page page={page} />
-            </Suspense>
+            {/* @TODO fix hardcode of the error page's params */}
+            <ErrorBoundary
+              // If we are here, it means, where is something happen with request for a chunck
+              fallback={
+                <ErrorPage
+                  page={{
+                    name: 'error',
+                    params: { code: 500 },
+                  }}
+                />
+              }
+            >
+              <Suspense fallback={<Preloader purpose="page" />}>
+                <Page page={page} />
+              </Suspense>
+            </ErrorBoundary>
           </div>
         }
       />
@@ -56,6 +72,7 @@ Main.displayName = 'Main';
 const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ 'ui/pages/root'));
 const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'ui/pages/news'));
 const NewsItemPage = lazy(() => import(/* webpackChunkName: "newsItemPage" */ 'ui/pages/newsItem'));
+const UsersPage = lazy(() => import(/* webpackChunkName: "usersPage" */ 'ui/pages/users'));
 
 const Page = memo<{ page: Page }>(({ page }) => {
   switch (page.name) {
@@ -65,6 +82,8 @@ const Page = memo<{ page: Page }>(({ page }) => {
       return <NewsPage page={page} />;
     case 'newsItem':
       return <NewsItemPage page={page} />;
+    case 'users':
+      return <UsersPage page={page} />;
     default:
       return <ErrorPage page={page} />;
   }

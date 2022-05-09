@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
 type Params = {
-  sourceEl: HTMLDivElement | null;
+  sourceRef: React.RefObject<HTMLElement | null>;
   isShown: boolean;
   hide: () => void;
   // Can be used for popover, for example
-  additionalRef?: React.MutableRefObject<HTMLDivElement | null>;
+  additionalRef?: React.MutableRefObject<HTMLElement | null>;
 };
 
 /**
@@ -36,10 +36,10 @@ type Params = {
  *   );
  * }
  */
-export const useOutsideClick = ({ sourceEl, additionalRef, isShown, hide }: Params) => {
+export const useOutsideClick = ({ sourceRef, additionalRef, isShown, hide }: Params) => {
   useEffect(() => {
     const onOutSideClick = (e: Event) => {
-      if (!sourceEl) {
+      if (!sourceRef) {
         return;
       }
 
@@ -50,8 +50,8 @@ export const useOutsideClick = ({ sourceEl, additionalRef, isShown, hide }: Para
       }
 
       if (
-        sourceEl &&
-        !sourceEl.contains(target) &&
+        sourceRef.current &&
+        !sourceRef.current.contains(target) &&
         !additionalRef?.current?.contains(target) &&
         isShown
       ) {
@@ -66,5 +66,5 @@ export const useOutsideClick = ({ sourceEl, additionalRef, isShown, hide }: Para
       window.removeEventListener('click', onOutSideClick, true);
       window.removeEventListener('touchend', onOutSideClick, true);
     };
-  }, [isShown, sourceEl, additionalRef, hide]);
+  }, [isShown, sourceRef, additionalRef, hide]);
 };

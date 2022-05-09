@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore, Middleware, compose, StoreEnhancer, Store } from 'redux';
+import { applyMiddleware, legacy_createStore, Middleware, compose, StoreEnhancer, Store } from 'redux';
 import { mainReducer } from './reducer';
 import { createSignalMiddleware } from 'infrastructure/signal/middleware';
 import { createNavigationMiddleware } from 'infrastructure/router/middlewares';
@@ -20,5 +20,9 @@ export function configureStore(params: {
 
   const finalEnhancer = compose(appliedMiddlewares, ...enhancers);
 
-  return createStore(mainReducer, initialState as AppState, finalEnhancer as StoreEnhancer<AppState>);
+  return legacy_createStore(
+    mainReducer,
+    initialState as AppState,
+    finalEnhancer as StoreEnhancer<AppState>,
+  );
 }

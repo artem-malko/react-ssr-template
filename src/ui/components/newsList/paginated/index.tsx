@@ -1,45 +1,37 @@
-import { usePaginatedNews } from 'core/queries/usePaginatedNews';
-import { patchPage } from 'core/signals/page';
-import { sequence } from 'infrastructure/signal';
+import { usePaginatedNews } from 'core/queries/news/usePaginatedNews';
 import { memo, useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { showToast as showToastAction } from 'ui/kit/toast/infrastructure/action';
 import { Lazy } from 'ui/kit/lazy';
 import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
+import { useAppRouter } from 'hooks/useAppRouter';
+import { NewsPage } from 'ui/pages/news';
+import { useToast } from 'ui/kit/toast/infrastructure/hook';
 
 const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) => void }>(
   ({ initialPage, onItemHover }) => {
     const [pageNumber, setPageNumber] = useState(initialPage);
+    const { showToast } = useToast();
+    const { patchPage } = useAppRouter();
     const news = usePaginatedNews(pageNumber);
-    const dispatch = useDispatch();
+
     const onPageChange = useCallback(
       (action: 'inc' | 'dec') => {
         const newPageNumber = action === 'inc' ? pageNumber + 1 : pageNumber - 1;
-        dispatch(
-          sequence(
-            patchPage((activePage) => {
-              if (activePage.name !== 'news') {
-                return;
-              }
 
-              return {
-                name: 'news',
-                params: {
-                  page: newPageNumber,
-                },
-              };
-            }),
-            showToastAction({
-              id: newPageNumber.toString() + Math.random(),
-              title: 'New page: ' + newPageNumber + '. This toast is shown from signal',
-              type: 'success',
-            }),
-          ),
-        );
-        setPageNumber(newPageNumber);
+        patchPage<NewsPage>((activePage) => ({
+          name: 'news',
+          params: {
+            ...activePage.params,
+            page: newPageNumber,
+          },
+        })).then(() => {
+          showToast({
+            body: () => <>New page: ${newPageNumber}. This toast is shown from signal</>,
+          });
+          setPageNumber(newPageNumber);
+        });
       },
-      [pageNumber, dispatch],
+      [pageNumber, patchPage, showToast],
     );
 
     return (
@@ -73,7 +65,7 @@ const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) =
                 loader={() => import('../item')}
                 render={(Item) => <Item title={item.title} onHover={onItemHover} />}
                 fallback={(status) =>
-                  status === 'error' ? <>errror</> : <Preloader purpose="NewListItem" />
+                  status === 'error' ? <>NewListItem error</> : <Preloader purpose="NewListItem" />
                 }
               />
               <hr />

@@ -7,6 +7,7 @@ import {
   showPopup,
   showPopupActionType,
 } from './action';
+import { v4 } from 'uuid';
 
 export function createPopupMiddleware(
   popupController: PopupController,
@@ -17,7 +18,7 @@ export function createPopupMiddleware(
         const currentAction = action as ReturnType<typeof showPopup>;
 
         popupController.addPopup({
-          id: currentAction.payload.id,
+          id: v4(),
           body: currentAction.payload.body,
           onClose: currentAction.payload.onClose,
         });

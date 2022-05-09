@@ -1,11 +1,11 @@
-import { openPage } from 'core/signals/page';
+import { openPageSignal } from 'core/signals/page';
 import { Route, RouteWithoutParams, URLQueryParams } from 'infrastructure/router/types';
 import { NewsPage } from '.';
 
 export const newsPageRoute: Route<RouteWithoutParams, NewsPage> = {
   path: '/news',
   signal: (_, queryParams) => {
-    return openPage({
+    return openPageSignal({
       name: 'news',
       params: {
         page: parsePageQueryParam(queryParams),

@@ -1,5 +1,5 @@
 /* istanbul ignore next */
-export function noop() {
+export function noopFunc() {
   /**
    * This is just noop function
    */

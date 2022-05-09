@@ -1,46 +1,36 @@
 import { useAppSelector } from 'core/store/hooks';
 import { useStyles } from 'infrastructure/css/hook';
-import { memo, useCallback, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { patchPage } from 'core/signals/page';
+import { memo, useCallback, useEffect, useId, useState } from 'react';
 import { Lazy } from 'ui/kit/lazy';
 import { Preloader } from 'ui/kit/preloader';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { styles } from './index.css';
-
-const { useId } = require('react');
+import { useAppRouter } from 'hooks/useAppRouter';
+import { NewsPage } from 'ui/pages/news';
 
 export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
   ({ initialPage, useInfinityList }) => {
     const css = useStyles(styles);
+    const { patchPage } = useAppRouter();
     // Just to try a new hook)
     const id = useId();
     const { showToast } = useToast();
     const URLQueryParams = useAppSelector((s) => s.appContext.URLQueryParams);
     const URLQueryParamsCount = Object.keys(URLQueryParams || {}).length;
-    const dispatch = useDispatch();
     const [listType, setListType] = useState<'paginated' | 'infinity'>(
       useInfinityList ? 'infinity' : 'paginated',
     );
     const switchListType = useCallback(() => {
       const newType = listType === 'paginated' ? 'infinity' : 'paginated';
       setListType(newType);
-      dispatch(
-        patchPage((activePage) => {
-          if (activePage.name !== 'news') {
-            return;
-          }
-
-          return {
-            name: 'news',
-            params: {
-              ...activePage.params,
-              useInfinity: newType === 'infinity',
-            },
-          };
-        }),
-      );
-    }, [listType, dispatch]);
+      patchPage<NewsPage>((activePage) => ({
+        name: 'news',
+        params: {
+          ...activePage.params,
+          useInfinity: newType === 'infinity',
+        },
+      }));
+    }, [listType, patchPage]);
 
     /**
      * This handlers is used as a marker, that
@@ -79,7 +69,11 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
               loader={() => import('./paginated')}
               render={(List) => <List initialPage={initialPage} onItemHover={onItemHover} />}
               fallback={(status) =>
-                status === 'error' ? <>errror</> : <Preloader purpose="NewListItem" />
+                status === 'error' ? (
+                  <>paginatedNewList error</>
+                ) : (
+                  <Preloader purpose="paginatedNewList" />
+                )
               }
               key="paginated"
             />
@@ -88,7 +82,7 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
               loader={() => import('./infinity')}
               render={(List) => <List initialPage={initialPage} onItemHover={onItemHover} />}
               fallback={(status) =>
-                status === 'error' ? <>errror</> : <Preloader purpose="NewListItem" />
+                status === 'error' ? <>infinityNewList error</> : <Preloader purpose="infinityNewList" />
               }
               key="infinity"
             />
@@ -110,13 +104,11 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
         <button
           onClick={() =>
             showToast({
-              id: Math.random().toString(),
-              title: (
+              body: () => (
                 <div>
                   This is a toast from hook! You can use any <strong>JSX Here</strong>
                 </div>
               ),
-              type: 'default',
             })
           }
         >

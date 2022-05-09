@@ -1,4 +1,4 @@
-import { noop } from 'lib/lodash';
+import { noopFunc } from 'lib/lodash';
 
 /**
  * Any dynamic import retry creator
@@ -20,7 +20,7 @@ export function dynamicImportRetryCreator<T>(
     onError?: (error: Error) => void;
   },
 ): () => Promise<T> {
-  const { retriesCount = 5, retriesInterval = 1000, onError = noop } = options || {};
+  const { retriesCount = 5, retriesInterval = 1000, onError = noopFunc } = options || {};
 
   return function retry(retriesLeft = retriesCount, interval = retriesInterval) {
     return new Promise<T>((resolve, reject) => {

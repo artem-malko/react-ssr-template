@@ -95,6 +95,7 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
           requester,
           config: {
             hackerNewsAPIURL: serverApplicationConfig.hackerNewsAPIURL,
+            fakeCRUDAPI: serverApplicationConfig.fakeCRUDAPI,
           },
         });
         const platformAPI = createPlatformAPI({
@@ -249,11 +250,11 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
             onError(error) {
               didError = true;
               console.error('onError: ', error);
-              pipeableStream.abort();
+              // pipeableStream.abort();
 
-              if (renderTimeoutId) {
-                clearTimeout(renderTimeoutId);
-              }
+              // if (renderTimeoutId) {
+              //   clearTimeout(renderTimeoutId);
+              // }
             },
           },
         );

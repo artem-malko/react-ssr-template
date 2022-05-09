@@ -44,6 +44,7 @@ const services = createServices({
   requester,
   config: {
     hackerNewsAPIURL: config.hackerNewsAPIURL,
+    fakeCRUDAPI: config.fakeCRUDAPI,
   },
 });
 const platformAPI = createPlatformAPI({

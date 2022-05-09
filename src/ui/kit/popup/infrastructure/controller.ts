@@ -43,9 +43,7 @@ export class PopupController {
     });
   };
 
-  // Do not need to have unsubscribe, cause it will subscribe for the whole app life
   public subscribeToChanges = (subscriber: Subscriber) => {
-    // eslint-disable-next-line
     this.mutableSubscribers.push(subscriber);
 
     const subscriberIndex = this.mutableSubscribers.length - 1;

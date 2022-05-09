@@ -4,16 +4,43 @@ import { Page } from 'core/store/types';
 import { useStyles } from 'infrastructure/css/hook';
 import { Link } from 'ui/kit/link';
 import { Popover } from 'ui/kit/popover';
-import { usePopup } from 'ui/kit/popup/infrastructure/hook';
+import { usePopup, usePopupActions } from 'ui/kit/popup/infrastructure/hook';
 import { ProjectInfo } from '../projectInfo';
 import { styles } from './index.css';
 import { BasePopup } from 'ui/kit/popup/basePopup';
 
-const pagesPopupId = 'pages';
-
 export const DevMenu = memo(() => {
   const css = useStyles(styles);
-  const { addPopup } = usePopup();
+  const { showPopup: showPagesPopup } = usePopup(
+    () => ({
+      body: ({ popupId, closePopup }) => (
+        <BasePopup popupId={popupId}>
+          <PagesPopup closePopup={closePopup} />
+        </BasePopup>
+      ),
+      options: {
+        closeOnOverlayClick: true,
+        closeOnEscape: true,
+      },
+    }),
+    [],
+  );
+  const { showPopup: showScenariosPopup } = usePopup(
+    () => ({
+      body: ({ popupId }) => (
+        <BasePopup popupId={popupId}>
+          <ScenarioPopup />
+        </BasePopup>
+      ),
+      options: {
+        closeOnOverlayClick: true,
+        closeOnEscape: true,
+        minHeight: '300px',
+        minWidth: '300px',
+      },
+    }),
+    [],
+  );
   const [isShown, setIsShown] = useState(false);
   const popoverParentRef = useRef(null);
   const hide = useCallback(() => {
@@ -24,44 +51,10 @@ export const DevMenu = memo(() => {
   return (
     <>
       <div className={css('root')}>
-        <div
-          className={css('link')}
-          onClick={() => {
-            addPopup({
-              id: pagesPopupId,
-              body: (
-                <BasePopup popupId={pagesPopupId}>
-                  <PagesPopup />
-                </BasePopup>
-              ),
-              options: {
-                closeOnOverlayClick: true,
-                closeOnEscape: true,
-              },
-            });
-          }}
-        >
+        <div className={css('link')} onClick={showPagesPopup}>
           Show page list
         </div>
-        <div
-          className={css('link')}
-          onClick={() => {
-            addPopup({
-              id: 'scenario',
-              body: (
-                <BasePopup popupId="scenario">
-                  <ScenarioPopup />
-                </BasePopup>
-              ),
-              options: {
-                closeOnOverlayClick: true,
-                closeOnEscape: true,
-                minHeight: '300px',
-                minWidth: '300px',
-              },
-            });
-          }}
-        >
+        <div className={css('link')} onClick={showScenariosPopup}>
           Start popup scenario
         </div>
         <div className={css('link')}>
@@ -70,7 +63,7 @@ export const DevMenu = memo(() => {
           </div>
           <Popover
             hide={hide}
-            targetEl={popoverParentRef.current}
+            targetRef={popoverParentRef}
             isShown={isShown}
             width={200}
             alignment="center"
@@ -101,8 +94,7 @@ export const DevMenu = memo(() => {
   );
 });
 
-const PagesPopup = memo(() => {
-  const { closePopupById: hidePopupById } = usePopup();
+const PagesPopup = memo<{ closePopup: () => void }>(({ closePopup }) => {
   const links: Array<{ page: Page; title: string }> = [
     {
       page: { name: 'root' },
@@ -119,6 +111,15 @@ const PagesPopup = memo(() => {
     },
     {
       page: {
+        name: 'users',
+        params: {
+          page: 1,
+        },
+      },
+      title: 'users?p=1',
+    },
+    {
+      page: {
         name: 'newsItem',
         params: {
           id: 29133561,
@@ -132,7 +133,7 @@ const PagesPopup = memo(() => {
     <div style={{ padding: 10, minWidth: 300, minHeight: 300, display: 'flex' }}>
       <ul>
         {links.map((link) => (
-          <li key={link.title} onClick={() => hidePopupById(pagesPopupId)} style={{ paddingBottom: 8 }}>
+          <li key={link.title} onClick={closePopup} style={{ paddingBottom: 8 }}>
             {link.page.name} — <Link page={link.page}>URL is {link.title}</Link>
           </li>
         ))}
@@ -142,7 +143,20 @@ const PagesPopup = memo(() => {
 });
 
 const ScenarioPopup = memo(() => {
-  const { addPopup } = usePopup();
+  const { showPopup: showModalPopup } = usePopup(
+    () => ({
+      body: ({ popupId, closePopup }) => (
+        <BasePopup popupId={popupId} hideCloseButton>
+          <ModalPopup closePopup={closePopup} />
+        </BasePopup>
+      ),
+      options: {
+        minHeight: '250px',
+        minWidth: '250px',
+      },
+    }),
+    [],
+  );
 
   return (
     <div
@@ -162,30 +176,13 @@ const ScenarioPopup = memo(() => {
       <br />
       <br />
       <br />
-      <button
-        onClick={() => {
-          addPopup({
-            id: 'modal',
-            body: (
-              <BasePopup popupId="modal" hideCloseButton>
-                <ModalPopup popupId="modal" />
-              </BasePopup>
-            ),
-            options: {
-              minHeight: '250px',
-              minWidth: '250px',
-            },
-          });
-        }}
-      >
-        Open model popup
-      </button>
+      <button onClick={showModalPopup}>Open model popup</button>
     </div>
   );
 });
 
-const ModalPopup = memo<{ popupId: string }>(({ popupId }) => {
-  const { closePopupById, closeAllPopups } = usePopup();
+const ModalPopup = memo<{ closePopup: () => void }>(({ closePopup }) => {
+  const { closeAllPopups } = usePopupActions();
 
   return (
     <div
@@ -207,13 +204,7 @@ const ModalPopup = memo<{ popupId: string }>(({ popupId }) => {
       You can close it by clicking the button below:
       <br />
       <br />
-      <button
-        onClick={() => {
-          closePopupById(popupId);
-        }}
-      >
-        Close modal popup
-      </button>
+      <button onClick={closePopup}>Close modal popup</button>
       <br />
       Or you can close all popups
       <br />

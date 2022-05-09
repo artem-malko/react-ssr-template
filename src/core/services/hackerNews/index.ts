@@ -1,9 +1,9 @@
 import { Requester } from 'infrastructure/request/types';
 import { FetchNewsResponse, FetchNewsItemResponse } from './types';
 
-interface Config {
+type Config = {
   apiURL: string;
-}
+};
 export const createHackerNewsService = (request: Requester, config: Config) => {
   return {
     getNews(params: { page: number }) {

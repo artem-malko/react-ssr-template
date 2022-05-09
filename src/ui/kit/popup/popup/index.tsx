@@ -1,11 +1,11 @@
 import { memo, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSession } from 'core/session/hook';
 import { useStyles } from 'infrastructure/css/hook';
-import { Fade } from 'ui/kit/fade';
+import { FadeIn } from 'ui/kit/fadeIn';
 import { PopupControllerContext } from '../infrastructure/context';
 import { Popup as PopupType } from '../types';
 import { styles } from './index.css';
-import { noop } from 'lib/lodash';
+import { noopFunc } from 'lib/lodash';
 import { useOutsideClick } from 'ui/hooks/useOutsideClick';
 
 /**
@@ -58,7 +58,7 @@ export const Popup = memo(() => {
 
     popupRef.current.pop();
     rerender(Math.random());
-    popupToRender.onClose ? popupToRender.onClose() : noop();
+    popupToRender.onClose ? popupToRender.onClose() : noopFunc();
   }, [popupToRender]);
 
   // Block scroll of the page, if any popup is opened
@@ -92,9 +92,9 @@ export const Popup = memo(() => {
   }, [hideCurrentPopup, popupToRender?.options?.closeOnEscape]);
 
   useOutsideClick({
-    sourceEl: popupWrapperElementRef.current,
+    sourceRef: popupWrapperElementRef,
     isShown: !!popupToRender,
-    hide: popupToRender?.options?.closeOnOverlayClick ? hideCurrentPopup : noop,
+    hide: popupToRender?.options?.closeOnOverlayClick ? hideCurrentPopup : noopFunc,
   });
 
   const rootMods = popupToRender ? ['_has_popup' as const] : [];
@@ -111,13 +111,16 @@ export const Popup = memo(() => {
       <div className={css('overlay', rootMods)} />
       <div ref={popupWrapperElementRef}>
         {/* Key is used to restart fade animation */}
-        <Fade isShown={!!popupToRender} key={popupToRender?.id}>
+        <FadeIn isShown={!!popupToRender} key={popupToRender?.id}>
           {!!popupToRender && (
             <div className={css('popup', popupMods)} style={mutableInlineStyles}>
-              {popupToRender.body}
+              {popupToRender.body({
+                closePopup: hideCurrentPopup,
+                popupId: popupToRender.id,
+              })}
             </div>
           )}
-        </Fade>
+        </FadeIn>
       </div>
     </div>
   );

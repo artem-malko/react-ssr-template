@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Fade } from 'ui/kit/fade';
+import { FadeIn } from 'ui/kit/fadeIn';
 import { Spoiler } from 'ui/kit/spoiler';
 
 type Props = {
@@ -14,7 +14,7 @@ export const SourceSpoiler = memo<Props>(({ source }) => {
             <div onClick={toggle} style={{ paddingBottom: 8, cursor: 'pointer' }}>
               {isExpanded ? <button>Hide source</button> : <button>Show source</button>}
             </div>
-            <Fade isShown={isExpanded} transitionDuration={300}>
+            <FadeIn isShown={isExpanded} transitionDuration={300}>
               <table>
                 <tbody>
                   {source &&
@@ -30,7 +30,7 @@ export const SourceSpoiler = memo<Props>(({ source }) => {
                     })}
                 </tbody>
               </table>
-            </Fade>
+            </FadeIn>
           </div>
         );
       }}

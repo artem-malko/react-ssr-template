@@ -1,7 +1,7 @@
 import { useStyles } from 'infrastructure/css/hook';
 import { memo, PropsWithChildren, useCallback } from 'react';
 import { ZIndexLayout } from 'ui/kit/zIndex';
-import { usePopup } from '../infrastructure/hook';
+import { usePopupActions } from '../infrastructure/hook';
 import { styles } from './index.css';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 export const BasePopup = memo<PropsWithChildren<Props>>(({ children, hideCloseButton, popupId }) => {
   const css = useStyles(styles);
-  const { closePopupById } = usePopup();
+  const { closePopupById } = usePopupActions();
   const onCloseClick = useCallback(() => {
     closePopupById(popupId);
   }, [closePopupById, popupId]);

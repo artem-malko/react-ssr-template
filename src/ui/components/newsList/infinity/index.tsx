@@ -1,4 +1,4 @@
-import { useInfinityNews } from 'core/queries/useInfinityNews';
+import { useInfinityNews } from 'core/queries/news/useInfinityNews';
 import { memo } from 'react';
 import { Lazy } from 'ui/kit/lazy';
 import { Link } from 'ui/kit/link';
@@ -35,7 +35,7 @@ const InfinityList = memo<{ initialPage: number; onItemHover: (title: string) =>
                     loader={() => import('../item')}
                     render={(Item) => <Item title={item.title} onHover={onItemHover} />}
                     fallback={(status) =>
-                      status === 'error' ? <>errror</> : <Preloader purpose="NewListItem" />
+                      status === 'error' ? <>NewListItem error</> : <Preloader purpose="NewListItem" />
                     }
                   />
                   <hr />

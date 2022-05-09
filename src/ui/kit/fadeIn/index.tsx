@@ -9,7 +9,7 @@ type Props = {
   isShown: boolean;
   isInitiallyShown?: boolean;
 };
-export const Fade = memo<PropsWithChildren<Props>>(
+export const FadeIn = memo<PropsWithChildren<Props>>(
   ({
     transitionDuration = midTransitionDuration,
     transitionDelay = 0,
@@ -41,9 +41,9 @@ export const Fade = memo<PropsWithChildren<Props>>(
         className={css('fade', shouldAnimate || internalIsInitiallyShown ? ['_shown'] : [])}
         style={inlineStyles}
       >
-        {shouldAnimate && children}
+        {isShown && children}
       </div>
     );
   },
 );
-Fade.displayName = 'Fade';
+FadeIn.displayName = 'FadeIn';

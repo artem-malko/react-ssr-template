@@ -1,9 +1,9 @@
-import { openPage } from 'core/signals/page';
+import { openPageSignal } from 'core/signals/page';
 import { HttpErrorCode } from 'core/types/http';
 import { createSignal } from 'infrastructure/signal';
 
 export const openErrorPage = createSignal('openErrorPage', (code: HttpErrorCode) =>
-  openPage({
+  openPageSignal({
     name: 'error',
     params: {
       code,

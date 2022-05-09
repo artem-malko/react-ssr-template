@@ -6,7 +6,7 @@ import { AllowedInlineStyle } from 'infrastructure/css/types';
 import { Page } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
 import { useDispatch } from 'react-redux';
-import { openPage } from 'core/signals/page';
+import { openPageSignal } from 'core/signals/page';
 
 type GeneralProps = {
   target?: HTMLAttributeAnchorTarget;
@@ -58,7 +58,7 @@ const AppLink = memo<
       props.onClick(e);
     }
 
-    dispatch(openPage(props.page));
+    dispatch(openPageSignal(props.page));
   };
 
   return (

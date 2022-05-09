@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { openPage as openPageSignal } from 'core/signals/page';
+import { openPageSignal as openPageSignal } from 'core/signals/page';
 import { Page } from 'core/store/types';
 
 /**

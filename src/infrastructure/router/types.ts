@@ -1,7 +1,7 @@
 import { MapDiscriminatedUnion } from 'lib/types';
 import { Action } from 'redux';
 
-type QueryParamValue = Array<string>;
+type QueryParamValue = Array<string | undefined>;
 
 export interface AnyPage<
   PageName extends string,

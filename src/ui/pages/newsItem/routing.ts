@@ -1,4 +1,4 @@
-import { openPage } from 'core/signals/page';
+import { openPageSignal } from 'core/signals/page';
 import { Route, RouteWithParams } from 'infrastructure/router/types';
 import { NewsItemPage } from '.';
 import { openErrorPage } from '../error/signals';
@@ -12,7 +12,7 @@ export const newsItemPageRoute: Route<RouteWithParams<{ id: string }>, NewsItemP
       return openErrorPage(404);
     }
 
-    return openPage({
+    return openPageSignal({
       name: 'newsItem',
       params: {
         id,

@@ -1,5 +1,5 @@
 import { usePlatformAPI } from 'core/platform/shared/context';
-import { useNewsItem } from 'core/queries/useNewsItem';
+import { useNewsItem } from 'core/queries/news/useNewsItem';
 import { useStyles } from 'infrastructure/css/hook';
 import { memo, useEffect } from 'react';
 import { styles } from './index.css';

@@ -1,6 +1,7 @@
 import { cookies } from 'config/constants';
 import { Router } from 'express';
 import { handleLogFromClient } from 'infrastructure/logger/serverLog';
+import { fakeCRUDRouter } from '../services/fakeCrud';
 
 export const utilityRouter = Router();
 
@@ -13,3 +14,5 @@ utilityRouter.post('/log', (req, res) => {
   });
   res.json({ status: 'ok' });
 });
+
+utilityRouter.use('/fakecrud', fakeCRUDRouter);

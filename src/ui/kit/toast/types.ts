@@ -2,6 +2,11 @@ import React from 'react';
 
 export type Toast = {
   id: string;
-  title: string | React.ReactNode;
-  type: 'default' | 'success' | 'error' | 'warning';
+  body: (p: { hideToast: () => void }) => React.ReactNode;
+  options?: {
+    hideOnClick?: boolean;
+    freezeOnHover?: boolean;
+    freezeOnVisibilitychange?: boolean;
+    toastLiveTime?: number;
+  };
 };

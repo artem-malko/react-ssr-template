@@ -111,9 +111,11 @@ function compileQueryString(queryStringParams: URLQueryParams | undefined): stri
 
   return Object.entries(queryStringParams)
     .reduce<string[]>((mutableAcc, [paramLabel, paramValue]) => {
-      paramValue.forEach((v) => {
-        mutableAcc.push(compileQueryParam(paramLabel, v));
-      });
+      paramValue
+        .filter((v): v is string => typeof v !== 'undefined')
+        .forEach((v) => {
+          mutableAcc.push(compileQueryParam(paramLabel, v));
+        });
 
       return mutableAcc;
     }, [])

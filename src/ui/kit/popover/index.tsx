@@ -1,12 +1,21 @@
-import { memo, PropsWithChildren, useRef, useLayoutEffect, useMemo, useCallback } from 'react';
+import {
+  memo,
+  useRef,
+  useMemo,
+  useCallback,
+  useEffect,
+  useState,
+  isValidElement,
+  useLayoutEffect,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { useOutsideClick } from 'ui/hooks/useOutsideClick';
 import { useResizeObserver } from 'ui/hooks/useResizeObserver';
-import { Fade } from '../fade';
+import { FadeIn } from '../fadeIn';
 import { popoverContainerId } from './shared';
-import { getPositionStyles } from './utils';
+import { getPositionViewAttrs } from './utils';
 
-export type Placement = 'top' | 'right' | 'bottom' | 'left';
+export type Placement = 'top' | 'end' | 'bottom' | 'start';
 export type Alignment = 'start' | 'center' | 'end';
 
 const defaultView = {
@@ -19,7 +28,7 @@ const defaultView = {
 };
 
 type Props = {
-  targetEl: HTMLDivElement | null;
+  targetRef: React.RefObject<HTMLElement>;
   isShown: boolean;
   hide: () => void;
   placement?: Placement;
@@ -29,10 +38,41 @@ type Props = {
   verticalOffset?: number;
   animationDuration?: number;
   animationDelay?: number;
+  children:
+    | React.ReactNode
+    | ((params: { placement: Placement; alignment: Alignment }) => React.ReactNode);
+  isRTL?: boolean;
 };
-export const Popover = memo<PropsWithChildren<Props>>(
+/**
+ * The popover component allows to show any content, near other element
+ *
+ * @example
+ * const popoverTargetRef = useRef(null);
+ * const [isPopoverShown, setIsPopoverShown] = useState(false);
+ * const hide = useCallback(() => { setIsPopoverShown(false); }, []);
+ *
+ * return (
+ *   <>
+ *     <button onClick={() => setIsPopoverShown(true)} ref={popoverTargetRef}>
+ *       Show popover
+ *     </button>
+ *     <Popover
+ *      hide={hide}
+ *      targetRef={popoverTargetRef}
+ *      isShown={isPopoverShown}
+ *      alignment="center"
+ *      width={150}
+ *      verticalOffset={4}
+ *     >
+ *       Hidden Content
+ *     </Popover>
+ *   </>
+ * );
+ *
+ */
+export const Popover = memo<Props>(
   ({
-    targetEl,
+    targetRef,
     isShown,
     hide,
     children,
@@ -43,15 +83,18 @@ export const Popover = memo<PropsWithChildren<Props>>(
     width = 0,
     animationDuration = 200,
     animationDelay = 0,
+    isRTL = false,
   }) => {
     const popoverContainerRef = useRef<HTMLDivElement | null>(null);
-    const popoverConentRef = useRef<HTMLDivElement | null>(null);
+    const popoverContentRef = useRef<HTMLDivElement | null>(null);
     const bodyElRef = useRef<HTMLElement | null>(null);
+    const [popoverContentDOMRect, setPopoverContentDOMRect] = useState<DOMRect | undefined>(undefined);
 
     useOutsideClick({
-      sourceEl: targetEl,
+      sourceRef: targetRef,
       isShown,
       hide,
+      // @TODO pass an array of refs to useOutsideClick
       additionalRef: popoverContainerRef,
     });
 
@@ -64,44 +107,81 @@ export const Popover = memo<PropsWithChildren<Props>>(
       hide();
 
       // We need to hide popover conent as fast as possible to prevent any glitches
-      if (popoverConentRef.current) {
-        popoverConentRef.current.style.display = 'none';
+      if (popoverContentRef.current) {
+        popoverContentRef.current.style.display = 'none';
       }
     }, [hide]);
-
     useResizeObserver(bodyElRef, onResizeHandler);
 
     /**
-     * Get more info about calculation of the view in getPositionStyles function
+     * After render, we can get all demensions of a popover
      */
+    useEffect(() => {
+      if (isShown) {
+        setPopoverContentDOMRect(popoverContentRef.current?.getBoundingClientRect());
+      }
+    }, [isShown]);
+
     const view = useMemo(() => {
       /**
-       * isShown is used to recalculate position in case of hide/show switch cause of resizeObserver
+       * isShown is used to recalculate position
+       * in case of hide/show switch cause of resizeObserver
        */
-      if (!targetEl || !isShown) {
+      if (!targetRef.current || !isShown) {
         return defaultView;
       }
 
-      const targetElBoundingRect = targetEl.getBoundingClientRect();
+      const targetElBoundingRect = targetRef.current.getBoundingClientRect();
       const popoverWidth = width || targetElBoundingRect.width;
+
+      /**
+       * Let's try to render a popover somewhere to get its size
+       */
+      if (!popoverContentDOMRect) {
+        return {
+          ...defaultView,
+          width: popoverWidth,
+        };
+      }
 
       return {
         ...defaultView,
-        ...getPositionStyles({
-          horizontalOffset: horizontalOffset,
-          verticalOffset: verticalOffset,
+        ...getPositionViewAttrs({
+          horizontalOffset,
+          verticalOffset,
           placement,
           popoverWidth,
           targetElBoundingRect,
-          alignment: alignment,
+          popoverContentDOMRect,
+          alignment,
+          isRTL,
         }),
-        width: width || targetElBoundingRect.width,
+        width: popoverWidth,
       };
-    }, [isShown, targetEl, width, horizontalOffset, verticalOffset, placement, alignment]);
+    }, [
+      popoverContentDOMRect,
+      isShown,
+      targetRef,
+      width,
+      horizontalOffset,
+      verticalOffset,
+      placement,
+      alignment,
+      isRTL,
+    ]);
 
     if (!isShown || !popoverContainerRef.current) {
       return null;
     }
+
+    const childrenToRender = isValidElement(children)
+      ? children
+      : typeof children === 'function'
+      ? children({
+          alignment,
+          placement,
+        })
+      : children;
 
     return createPortal(
       <div
@@ -114,21 +194,23 @@ export const Popover = memo<PropsWithChildren<Props>>(
           left: `${view.left}px`,
           width: `${view.width}px`,
           transform: view.transform,
+          // We have to render a popover with its all demensions
+          // So, we need to use a visibility property
+          visibility: !!popoverContentDOMRect && !!popoverContentDOMRect.height ? 'visible' : 'hidden',
         }}
-        ref={popoverConentRef}
+        ref={popoverContentRef}
       >
-        <Fade
+        <FadeIn
           isShown
-          // If animationDuration <= 0, it means, we do not have to animate
           isInitiallyShown={animationDuration <= 0}
           transitionDuration={animationDuration}
           transitionDelay={animationDelay}
         >
-          {children}
-        </Fade>
+          {childrenToRender}
+        </FadeIn>
       </div>,
       popoverContainerRef.current,
     );
   },
 );
-Popover.displayName = 'Dropdown';
+Popover.displayName = 'Popover';

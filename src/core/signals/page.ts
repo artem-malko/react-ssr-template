@@ -4,16 +4,16 @@ import { historyPush, historyReplace } from 'infrastructure/router/actions';
 import { createSignal, noop, sequence } from 'infrastructure/signal';
 import { withSelectors } from '.';
 
-export const openPage = createSignal('openPage', (page: Page, useReplace?: boolean) =>
+export const openPageSignal = createSignal('openPage', (page: Page, useReplace?: boolean) =>
   sequence(openPageAction(page), useReplace ? historyReplace() : historyPush()),
 );
 
 /**
  * Useful in cases, when you need to change params of the current page
  */
-export const patchPage = createSignal(
+export const patchPageSignal = createSignal(
   'patchPage',
-  (patcher: (activePage: Page) => Page | undefined, useReplace?: boolean) => {
+  (patcher: <P extends Page>(activePage: P) => P | undefined, useReplace?: boolean) => {
     return withSelectors(
       {
         activePage: (state) => state.appContext.page,
@@ -21,7 +21,7 @@ export const patchPage = createSignal(
       ({ activePage }) => {
         const newPage = patcher(activePage);
 
-        if (!newPage || newPage === activePage) {
+        if (!newPage || newPage === activePage || newPage.name !== activePage.name) {
           return noop();
         }
 

@@ -32,7 +32,7 @@ export function processAnyAPIError(
   throw parsedError;
 }
 
-function parseAnyAPIError(error: AxiosError<string> | Error): AnyServiceParsedError {
+function parseAnyAPIError(error: AxiosError | Error): AnyServiceParsedError {
   // Process any error, except Network errors
   if (!('isAxiosError' in error)) {
     return {
@@ -55,7 +55,6 @@ function parseAnyAPIError(error: AxiosError<string> | Error): AnyServiceParsedEr
       message: 'Network connect timeout error',
     };
   }
-
   // Server is not responding or there is no response from server
   if (!error.response) {
     return {
@@ -67,13 +66,20 @@ function parseAnyAPIError(error: AxiosError<string> | Error): AnyServiceParsedEr
   const parsedErrorCode = error.response.status
     ? (error.response.status as ErrorResponseCode)
     : (500 as const);
+
   // Server responded with an error in a body
-  if (error.response.data) {
+  let parsedErrorData: Record<string, any> = {};
+
+  if (!error.response.data) {
+    return {
+      code: parsedErrorCode,
+      message: error.message || 'Unknown error',
+    };
+  }
+
+  if (typeof error.response.data === 'string') {
     try {
-      return {
-        code: (error.response.status as ErrorResponseCode) || (500 as const),
-        message: 'Error response data: ' + error.response.data,
-      };
+      parsedErrorData = JSON.parse(error.response.data);
     } catch (parseError) {
       return {
         code: 500 as const,
@@ -82,8 +88,19 @@ function parseAnyAPIError(error: AxiosError<string> | Error): AnyServiceParsedEr
     }
   }
 
+  if (typeof error.response.data === 'object') {
+    parsedErrorData = error.response.data;
+  }
+
+  if (!parsedErrorData.error) {
+    return {
+      code: (error.response.status as ErrorResponseCode) || (500 as const),
+      message: `Parsed error body: ${JSON.stringify(parsedErrorData)}`,
+    };
+  }
+
   return {
-    code: parsedErrorCode,
-    message: error.message || 'Unknown error',
+    code: parsedErrorData.error.code || (error.response.status as ErrorResponseCode) || (500 as const),
+    message: parsedErrorData.error.message || undefined,
   };
 }

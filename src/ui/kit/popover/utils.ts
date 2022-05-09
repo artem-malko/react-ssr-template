@@ -2,103 +2,115 @@ import { isServer } from 'lib/browser';
 import { Alignment, Placement } from '.';
 
 // mn distance above and under a target element
-const minVerticalFreeSpace = 100;
+const minVerticalFreeSpace = 8;
 // min distance to screen horizontal edges
 const minHorizontalEdgeOffset = 8;
 
-const defaultPositionStyles = {
+const defaultPositionStyles: PositionViewAttrs = {
   top: 'auto',
   right: 'auto',
   bottom: 'auto',
   left: 'auto',
   transform: 'none',
 };
+export type PositionViewAttrs = {
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+  transform: string;
+};
 type CalcPositionParams = {
   targetElBoundingRect: DOMRect;
+  popoverContentDOMRect: DOMRect;
   popoverWidth: number;
   placement: Placement;
   horizontalOffset: number;
   verticalOffset: number;
   alignment: Alignment;
+  isRTL?: boolean;
 };
+
 /**
  * Returns calculated styles (top/right/bottom/left/transform) for passed placement and alignment
  * This func considers current position of a popover's parent and tries to place popover on
  * the closest placement and alignment, which were passed in props
  */
-export function getPositionStyles(params: CalcPositionParams) {
-  const { placement } = params;
-
+export function getPositionViewAttrs(params: CalcPositionParams): PositionViewAttrs {
   if (isServer) {
     return defaultPositionStyles;
   }
 
-  const possiblePlacements = getPossiblePlacements(params);
+  let mutableParams = {
+    ...params,
+  };
 
-  switch (placement) {
-    case 'right': {
-      return possiblePlacements.includes('right')
-        ? calcHorizontalPlacementStyles(params, 'right')
-        : calcHorizontalPlacementStyles(params, 'left');
+  /**
+   * If RTL is on, and placement is 'start' or 'end'
+   * We can just switch them, it's much more simple, than calucalte it
+   */
+  if (
+    mutableParams.isRTL &&
+    (mutableParams.placement === 'start' || mutableParams.placement === 'end')
+  ) {
+    mutableParams = {
+      ...mutableParams,
+      placement: mutableParams.placement === 'start' ? 'end' : 'start',
+    };
+  }
+
+  const possiblePlacements = getPossiblePlacements(mutableParams);
+
+  switch (mutableParams.placement) {
+    case 'end': {
+      return possiblePlacements.includes('end')
+        ? calcHorizontalPlacementStyles(mutableParams, 'end')
+        : calcHorizontalPlacementStyles(mutableParams, 'start');
     }
-    case 'left': {
-      return possiblePlacements.includes('left')
-        ? calcHorizontalPlacementStyles(params, 'left')
-        : calcHorizontalPlacementStyles(params, 'right');
+    case 'start': {
+      return possiblePlacements.includes('start')
+        ? calcHorizontalPlacementStyles(mutableParams, 'start')
+        : calcHorizontalPlacementStyles(mutableParams, 'end');
     }
 
     case 'top': {
       return possiblePlacements.includes('top')
-        ? calcVerticalPlacementStyles(params, 'top')
-        : calcVerticalPlacementStyles(params, 'bottom');
+        ? calcVerticalPlacementStyles(mutableParams, 'top')
+        : calcVerticalPlacementStyles(mutableParams, 'bottom');
     }
     case 'bottom': {
       return possiblePlacements.includes('bottom')
-        ? calcVerticalPlacementStyles(params, 'bottom')
-        : calcVerticalPlacementStyles(params, 'top');
+        ? calcVerticalPlacementStyles(mutableParams, 'bottom')
+        : calcVerticalPlacementStyles(mutableParams, 'top');
     }
   }
 }
 
-/**
- * Return several possible placements.
- * Can be usefull, when you need to calc the final placement and alignment
- */
 function getPossiblePlacements(params: CalcPositionParams): Placement[] {
-  const { targetElBoundingRect, verticalOffset, popoverWidth, horizontalOffset } = params;
+  const { targetElBoundingRect, verticalOffset, popoverWidth, horizontalOffset, popoverContentDOMRect } =
+    params;
   const mutablePlacement: Placement[] = [];
 
-  /**
-   * If there is enough space above the popover's parent
-   * top space above the parent + verticalOffset
-   *
-   * It is possible, that the popover will be placed over the screen
-   * But this is a lesser of two evils.
-   */
-  if (targetElBoundingRect.top >= minVerticalFreeSpace + verticalOffset) {
+  if (targetElBoundingRect.top >= minVerticalFreeSpace + verticalOffset + popoverContentDOMRect.height) {
     mutablePlacement.push('top');
   }
 
-  /**
-   * If there is enough space under the popover's parent
-   * the window height - a bottom space, under the parent + verticalOffset
-   *
-   * It is possible, that the popover will be placed over the screen
-   * But this is a lesser of two evils.
-   */
-  if (window.innerHeight - targetElBoundingRect.bottom >= minVerticalFreeSpace + verticalOffset) {
+  if (
+    window.innerHeight - targetElBoundingRect.bottom >=
+    minVerticalFreeSpace + verticalOffset + popoverContentDOMRect.height
+  ) {
     mutablePlacement.push('bottom');
   }
 
   if (targetElBoundingRect.left >= popoverWidth + minHorizontalEdgeOffset + horizontalOffset) {
-    mutablePlacement.push('left');
+    mutablePlacement.push('start');
   }
 
   if (
     document.documentElement.clientWidth - targetElBoundingRect.right >=
-    popoverWidth + horizontalOffset + minHorizontalEdgeOffset
+    popoverWidth + minHorizontalEdgeOffset + horizontalOffset
   ) {
-    mutablePlacement.push('right');
+    mutablePlacement.push('end');
   }
 
   if (!mutablePlacement.length) {
@@ -117,26 +129,26 @@ function getPossibleAlignment(params: CalcPositionParams): Alignment {
     case 'bottom': {
       const possiblePlacements = getPossiblePlacements({
         ...params,
-        popoverWidth: params.popoverWidth / 2,
+        popoverWidth: Math.ceil(params.popoverWidth / 2),
       });
 
-      if (possiblePlacements.includes('right')) {
+      if (possiblePlacements.includes('end')) {
         mutablePossibleAlignment.push('start');
       }
 
-      if (possiblePlacements.includes('left')) {
+      if (possiblePlacements.includes('start')) {
         mutablePossibleAlignment.push('end');
       }
 
-      if (possiblePlacements.includes('right') && possiblePlacements.includes('left')) {
+      if (possiblePlacements.includes('end') && possiblePlacements.includes('start')) {
         mutablePossibleAlignment.push('center');
       }
 
       break;
     }
 
-    case 'left':
-    case 'right': {
+    case 'start':
+    case 'end': {
       const possiblePlacements = getPossiblePlacements(params);
 
       if (possiblePlacements.includes('bottom')) {
@@ -217,12 +229,12 @@ function calcHorizontalAlignmentStyles(params: CalcPositionParams) {
       };
     case 'center':
       return {
-        left: (
+        left: Math.round(
           targetElBoundingRect.left +
-          horizontalOffset +
-          window.scrollX -
-          popoverWidth / 2 +
-          targetElBoundingRect.width / 2
+            horizontalOffset +
+            window.scrollX -
+            popoverWidth / 2 +
+            targetElBoundingRect.width / 2,
         ).toString(),
       };
     case 'end':
@@ -239,9 +251,9 @@ function calcHorizontalAlignmentStyles(params: CalcPositionParams) {
 
 function calcHorizontalPlacementStyles(
   calcPositionParams: CalcPositionParams,
-  placement: 'left' | 'right',
+  placement: 'start' | 'end',
 ) {
-  const { targetElBoundingRect } = calcPositionParams;
+  const { targetElBoundingRect, horizontalOffset } = calcPositionParams;
   const alignment = getPossibleAlignment({
     ...calcPositionParams,
     placement,
@@ -255,31 +267,42 @@ function calcHorizontalPlacementStyles(
     }),
     transform: alignment === 'center' ? 'translateY(-50%)' : 'none',
     right:
-      placement === 'left'
-        ? (document.documentElement.clientWidth - targetElBoundingRect.left).toString()
+      placement === 'start'
+        ? (
+            document.documentElement.clientWidth -
+            targetElBoundingRect.left +
+            horizontalOffset
+          ).toString()
         : '',
-    left: placement === 'right' ? targetElBoundingRect.right.toString() : '',
+    left: placement === 'end' ? (targetElBoundingRect.right + horizontalOffset).toString() : '',
   };
 }
 
 function calcVerticalAlignmentStyles(params: CalcPositionParams) {
-  const { alignment, targetElBoundingRect } = params;
+  const { alignment, targetElBoundingRect, verticalOffset } = params;
 
   switch (alignment) {
     case 'start': {
       return {
-        top: (targetElBoundingRect.top + window.scrollY).toString(),
+        top: (targetElBoundingRect.top + window.scrollY + verticalOffset).toString(),
       };
     }
     case 'center': {
       return {
-        top: (targetElBoundingRect.top + window.scrollY + targetElBoundingRect.height / 2).toString(),
+        top: Math.round(
+          targetElBoundingRect.top + window.scrollY + targetElBoundingRect.height / 2 + verticalOffset,
+        ).toString(),
       };
     }
 
     case 'end': {
       return {
-        bottom: (document.body.scrollHeight - targetElBoundingRect.bottom - window.scrollY).toString(),
+        bottom: (
+          document.body.scrollHeight -
+          targetElBoundingRect.bottom -
+          window.scrollY -
+          verticalOffset
+        ).toString(),
       };
     }
   }

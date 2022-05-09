@@ -1,3 +1,4 @@
+import { v4 } from 'uuid';
 import { Toast } from '../types';
 
 type Subscriber = (toast: Toast) => void;
@@ -5,9 +6,12 @@ type Subscriber = (toast: Toast) => void;
 export class ToastController {
   private mutableSubscribers: Subscriber[] = [];
 
-  public addToast = (toast: Toast) => {
+  public addToast = (toast: Omit<Toast, 'id'>) => {
     this.mutableSubscribers.forEach((subscriber) => {
-      subscriber(toast);
+      subscriber({
+        ...toast,
+        id: v4(),
+      });
     });
   };
 

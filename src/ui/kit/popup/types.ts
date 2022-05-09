@@ -1,6 +1,6 @@
 export type Popup = {
   id: string;
-  body: JSX.Element;
+  body: (params: { closePopup: () => void; popupId: string }) => JSX.Element;
   onClose?: () => void;
   options?: {
     closeOnEscape?: boolean;

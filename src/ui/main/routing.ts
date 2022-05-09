@@ -5,6 +5,7 @@ import { errorPageRoute } from 'ui/pages/error/routing';
 import { newsPageRoute } from 'ui/pages/news/routing';
 import { newsItemPageRoute } from 'ui/pages/newsItem/routing';
 import { rootPageRoute } from 'ui/pages/root/routing';
+import { usersPageRoute } from 'ui/pages/users/routing';
 
 export type AppRoutes = Routes<Page>;
 
@@ -13,6 +14,7 @@ export const routes: AppRoutes = {
   error: errorPageRoute,
   news: newsPageRoute,
   newsItem: newsItemPageRoute,
+  users: usersPageRoute,
 };
 
 /**

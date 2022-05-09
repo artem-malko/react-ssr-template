@@ -1,4 +1,4 @@
-import { noop } from 'lib/lodash';
+import { noopFunc } from 'lib/lodash';
 import { Component, ComponentType, lazy, LazyExoticComponent, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { dynamicImportRetryCreator } from './retry';
@@ -30,7 +30,7 @@ type AsyncStatus = 'loading' | 'error';
  * — do not retry on offline mode
  */
 export function createLazyComponentLoader(
-  logError: (error: Error) => void = noop,
+  logError: (error: Error) => void = noopFunc,
   defaultPlaceholder = <></>,
 ) {
   return class Lazy<Props> extends Component<LazyProps<Props>, LazyState<Props>> {

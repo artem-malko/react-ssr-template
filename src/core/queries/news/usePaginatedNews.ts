@@ -13,7 +13,6 @@ export const usePaginatedNews = (page = 1) => {
     },
     {
       staleTime: Infinity,
-      useErrorBoundary: false,
     },
   );
 

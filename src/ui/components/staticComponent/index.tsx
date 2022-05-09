@@ -7,7 +7,7 @@ export const StaticComponent = memo(() => {
   const config = useConfig();
   const [isShown, setIsShown] = useState(false);
   const [alignment, setAlignment] = useState<Alignment>('center');
-  const [placement, setPlacement] = useState<Placement>('left');
+  const [placement, setPlacement] = useState<Placement>('start');
   const rootRef = useRef(null);
   const hide = useCallback(() => {
     setIsShown(false);
@@ -57,11 +57,11 @@ export const StaticComponent = memo(() => {
         <div style={{ marginRight: '100px' }}>
           <h3>placement</h3>
           <br />
-          <select onChange={onPlacementChange} defaultValue="left">
+          <select onChange={onPlacementChange} defaultValue="start">
             <option value="top">top</option>
-            <option value="right">right</option>
+            <option value="end">end</option>
             <option value="bottom">bottom</option>
-            <option value="left">left</option>
+            <option value="start">start</option>
           </select>
         </div>
 
@@ -82,7 +82,7 @@ export const StaticComponent = memo(() => {
       </div>
       <Popover
         hide={hide}
-        targetEl={rootRef.current}
+        targetRef={rootRef}
         isShown={isShown}
         width={200}
         placement={placement}

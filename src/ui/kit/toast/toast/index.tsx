@@ -1,10 +1,16 @@
-import { memo, useRef, useState, useLayoutEffect, useCallback } from 'react';
+import { memo, useRef, useState, useCallback, useEffect } from 'react';
 import { Toast } from '../types';
 import { styles } from './index.css';
 import { Timer } from 'lib/timer';
 import { useStyles } from 'infrastructure/css/hook';
+import { noopFunc } from 'lib/lodash';
 
-const baseToastTimeLive = 4000;
+const baseToastOptions: Required<Toast['options']> = {
+  hideOnClick: true,
+  freezeOnHover: true,
+  freezeOnVisibilitychange: true,
+  toastLiveTime: 4000,
+};
 
 type Props = {
   toast: Toast;
@@ -12,14 +18,21 @@ type Props = {
 };
 export const ToastItem = memo<Props>((props) => {
   const { toast, remove } = props;
+  const options: Required<Toast['options']> = {
+    freezeOnHover: toast?.options?.freezeOnHover ?? baseToastOptions.freezeOnHover,
+    hideOnClick: toast?.options?.hideOnClick ?? baseToastOptions.hideOnClick,
+    freezeOnVisibilitychange:
+      toast?.options?.freezeOnVisibilitychange ?? baseToastOptions.freezeOnVisibilitychange,
+    toastLiveTime: toast?.options?.toastLiveTime ?? baseToastOptions.toastLiveTime,
+  };
   const css = useStyles(styles);
   const [isVisible, setIsVisible] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(baseToastTimeLive);
+  const [timeLeft, setTimeLeft] = useState(options.toastLiveTime);
   const [animate, setAnimate] = useState(false);
   const onClose = useCallback(() => {
     remove(toast.id);
   }, [remove, toast.id]);
-  const timerRef = useRef(new Timer(onClose, baseToastTimeLive));
+  const timerRef = useRef(new Timer(onClose, options.toastLiveTime));
   const barElRef = useRef<HTMLDivElement | null>(null);
 
   const pauseTimer = useCallback(() => {
@@ -34,12 +47,14 @@ export const ToastItem = memo<Props>((props) => {
 
   // Pause toast removing when the window loses focus
   // Start timer and show toast
-  useLayoutEffect(() => {
+  useEffect(() => {
     function handleVisibilityChange() {
-      if (document.hidden) {
-        pauseTimer();
-      } else {
-        startTimer();
+      if (options?.freezeOnVisibilitychange) {
+        if (document.hidden) {
+          pauseTimer();
+        } else {
+          startTimer();
+        }
       }
     }
 
@@ -58,23 +73,19 @@ export const ToastItem = memo<Props>((props) => {
 
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [pauseTimer, startTimer]);
+  }, [pauseTimer, startTimer, options?.freezeOnVisibilitychange]);
 
   return (
     <div
       className={css('item')}
-      onMouseEnter={pauseTimer}
-      onMouseLeave={startTimer}
+      onMouseEnter={options.freezeOnHover ? pauseTimer : noopFunc}
+      onMouseLeave={options.freezeOnHover ? startTimer : noopFunc}
       style={{ opacity: isVisible ? 1 : 0 }}
     >
-      <div className={css('close')} onClick={onClose}>
+      <div className={css('close')} onClick={options.hideOnClick ? onClose : noopFunc}>
         ✖️
       </div>
-      <div className={css('body')}>
-        {toast.title}
-        <br />
-        toast type is: <strong>{toast.type}</strong>
-      </div>
+      <div className={css('body')}>{toast.body({ hideToast: onClose })}</div>
 
       <div
         className={css('bar')}

@@ -10,9 +10,7 @@ export function createToastsMiddleware(
       const currentAction = action as ReturnType<typeof showToast>;
 
       toastController.addToast({
-        title: currentAction.payload.title,
-        type: currentAction.payload.type,
-        id: currentAction.payload.id,
+        body: currentAction.payload.body,
       });
 
       // We do not need to handle action in main reducer in production
