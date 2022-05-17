@@ -12,7 +12,7 @@ const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) =
     const [pageNumber, setPageNumber] = useState(initialPage);
     const { showToast } = useToast();
     const { patchPage } = useAppRouter();
-    const news = usePaginatedNews(pageNumber);
+    const { queryResult: news } = usePaginatedNews(pageNumber);
 
     const onPageChange = useCallback(
       (action: 'inc' | 'dec') => {

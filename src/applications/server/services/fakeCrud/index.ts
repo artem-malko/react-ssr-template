@@ -1,10 +1,9 @@
-import { Router } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { existsSync, writeFileSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
 import { v4 } from 'uuid';
 
-const dataJSONPath = './data.json';
-
+const dataJSONPath = `./data.json`;
 const isDataJSONExists = existsSync(dataJSONPath);
 
 if (!isDataJSONExists) {
@@ -17,15 +16,28 @@ if (!isDataJSONExists) {
  */
 export const fakeCRUDRouter = Router();
 
-fakeCRUDRouter.get('/users', async (req, res) => {
+function fakeAPIRandomErrorResponser(_: Request, res: Response, next: NextFunction) {
+  if (Math.random() <= 0.1) {
+    return res.status(500).json(renderError(500, 'Fake error'));
+  }
+
+  next();
+}
+
+fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users', async (req, res) => {
   const parsedLimit = parseInt(req.query['limit']?.toString() || '0', 10);
   const limit = Number.isNaN(parsedLimit) ? 10 : parsedLimit;
   const parsedOffset = parseInt(req.query['offset']?.toString() || '0', 10);
   const offset = Number.isNaN(parsedOffset) ? 0 : parsedOffset;
-  const statusFilter = req.query['status']?.toString();
+  // In case of /users?status=active&status=banned
+  const statusFilter = (
+    Array.isArray(req.query['status']) ? req.query['status'] : [req.query['status']]
+  ).filter((s) => !!s);
 
   const users = await readUsers();
-  const filteredUsers = statusFilter ? users.filter((u) => u.status === statusFilter) : users;
+  const filteredUsers = statusFilter.length
+    ? users.filter((u) => statusFilter.includes(u.status))
+    : users;
 
   if (!filteredUsers.length) {
     return res.status(404).json(renderError(404, 'No users'));
@@ -39,7 +51,7 @@ fakeCRUDRouter.get('/users', async (req, res) => {
   });
 });
 
-fakeCRUDRouter.get('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users/:id', async (req, res) => {
   const userIdToGet = req.params.id;
 
   const users = await readUsers();
@@ -55,23 +67,28 @@ fakeCRUDRouter.get('/users/:id', async (req, res) => {
   });
 });
 
-fakeCRUDRouter.post('/users', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomErrorResponser).post('/users', async (req, res) => {
   const users = await readUsers();
   const newUserId = v4();
 
-  await writeUsers(
-    users.concat({
-      ...req.body,
-      id: newUserId,
-    }),
-  );
+  const newList = []
+    .concat(
+      {
+        ...req.body,
+        id: newUserId,
+      },
+      ...users,
+    )
+    .slice(0, 40);
+
+  await writeUsers(newList);
 
   return res.status(200).json({
     data: { id: newUserId },
   });
 });
 
-fakeCRUDRouter.patch('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomErrorResponser).patch('/users/:id', async (req, res) => {
   const userIdToUpdate = req.params.id;
   const paramsToUpdate = req.body;
   const users = await readUsers();
@@ -97,7 +114,7 @@ fakeCRUDRouter.patch('/users/:id', async (req, res) => {
   });
 });
 
-fakeCRUDRouter.delete('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomErrorResponser).delete('/users/:id', async (req, res) => {
   const userIdToDelete = req.params.id;
   const users = await readUsers();
 

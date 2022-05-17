@@ -1,4 +1,4 @@
-export type UserStatus = 'acitve' | 'banned' | 'inactive';
+export type UserStatus = 'active' | 'banned' | 'inactive';
 
 export type User = {
   id: string;
@@ -7,14 +7,20 @@ export type User = {
 };
 
 export type FetchUsersResponse = {
-  users: User[];
-  total: number;
+  data: {
+    users: User[];
+    total: number;
+  };
 };
 
 export type FetchUserByIdResponse = {
-  user: User;
+  data: {
+    user: User;
+  };
 };
 
 export type ModifyUserResponse = {
-  id: string;
+  data: {
+    id: string;
+  };
 };

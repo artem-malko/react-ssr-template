@@ -11,8 +11,8 @@ function main() {
 
   // 90 days
   const diff = 1000 * 60 * 60 * 24 * 90;
-  const result = [];
-  const freshFiles = [];
+  const mutableResult = [];
+  const mutableFreshFiles = [];
 
   readDirResult.forEach((file) => {
     const pathToFile = path.join(pathToFiles, file);
@@ -20,25 +20,25 @@ function main() {
 
     if (currentDateInMs - statResult.atimeMs > diff) {
       fs.unlinkSync(pathToFile);
-      result.push(file);
+      mutableResult.push(file);
     } else {
-      freshFiles.push(pathToFile);
+      mutableFreshFiles.push(pathToFile);
     }
   });
 
   console.log('------------------------------');
   console.log('Old files removing result: ');
-  if (!result.length) {
+  if (!mutableResult.length) {
     console.log('No old files!');
   } else {
-    result.forEach((r) => {
+    mutableResult.forEach((r) => {
       console.log(r);
     });
   }
   console.log('------------------------------');
   console.log('------------------------------');
   console.log('Fresh files: ');
-  freshFiles.forEach((r) => {
+  mutableFreshFiles.forEach((r) => {
     console.log(r);
   });
   console.log('------------------------------');

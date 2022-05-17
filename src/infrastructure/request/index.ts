@@ -26,6 +26,7 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
     };
 
     return (
+      // @TODO try to move to builtin fetch in NodeJS 18
       axios
         .request<T>(axiosConfig)
         // We need only response data, without any axios features

@@ -1,12 +1,6 @@
-import { Services } from 'core/services';
 import { AnyServiceParsedError } from 'infrastructure/request/types';
-import {
-  QueryFunctionContext,
-  QueryKey,
-  useInfiniteQuery,
-  UseInfiniteQueryOptions,
-  QueryFunctionData,
-} from 'react-query';
+import { QueryKey, useInfiniteQuery, UseInfiniteQueryOptions } from 'react-query';
+import { AppQueryFunction } from './types';
 import { useQueryEnhancer } from './useQueryEnhancer';
 
 /**
@@ -19,10 +13,7 @@ import { useQueryEnhancer } from './useQueryEnhancer';
  * What if an Error will be thrown during response parse? */
 export const useInfiniteAppQuery = <TResult, TError extends AnyServiceParsedError>(
   key: QueryKey,
-  queryFunction: (params: {
-    services: Services;
-    context: QueryFunctionContext<QueryKey>;
-  }) => QueryFunctionData<TResult> | Promise<QueryFunctionData<TResult>>,
+  queryFunction: AppQueryFunction<TResult, QueryKey>,
   options?: Omit<UseInfiniteQueryOptions<TResult, TError>, 'queryKey' | 'queryFn'>,
 ) => {
   const { queryFunctionWithServices } = useQueryEnhancer(key, queryFunction);

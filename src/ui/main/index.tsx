@@ -57,7 +57,7 @@ export const Main = memo<Props>(({ renderCallback }) => {
                 />
               }
             >
-              <Suspense fallback={<Preloader purpose="page" />}>
+              <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
                 <Page page={page} />
               </Suspense>
             </ErrorBoundary>

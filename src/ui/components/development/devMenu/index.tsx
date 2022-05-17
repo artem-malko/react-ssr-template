@@ -1,8 +1,6 @@
 import { memo, useCallback, useRef, useState } from 'react';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { Page } from 'core/store/types';
 import { useStyles } from 'infrastructure/css/hook';
-import { Link } from 'ui/kit/link';
 import { Popover } from 'ui/kit/popover';
 import { usePopup, usePopupActions } from 'ui/kit/popup/infrastructure/hook';
 import { ProjectInfo } from '../projectInfo';
@@ -11,20 +9,6 @@ import { BasePopup } from 'ui/kit/popup/basePopup';
 
 export const DevMenu = memo(() => {
   const css = useStyles(styles);
-  const { showPopup: showPagesPopup } = usePopup(
-    () => ({
-      body: ({ popupId, closePopup }) => (
-        <BasePopup popupId={popupId}>
-          <PagesPopup closePopup={closePopup} />
-        </BasePopup>
-      ),
-      options: {
-        closeOnOverlayClick: true,
-        closeOnEscape: true,
-      },
-    }),
-    [],
-  );
   const { showPopup: showScenariosPopup } = usePopup(
     () => ({
       body: ({ popupId }) => (
@@ -51,9 +35,6 @@ export const DevMenu = memo(() => {
   return (
     <>
       <div className={css('root')}>
-        <div className={css('link')} onClick={showPagesPopup}>
-          Show page list
-        </div>
         <div className={css('link')} onClick={showScenariosPopup}>
           Start popup scenario
         </div>
@@ -91,54 +72,6 @@ export const DevMenu = memo(() => {
       </div>
       {isQueryDevToolsUsed && <ReactQueryDevtools initialIsOpen={false} />}
     </>
-  );
-});
-
-const PagesPopup = memo<{ closePopup: () => void }>(({ closePopup }) => {
-  const links: Array<{ page: Page; title: string }> = [
-    {
-      page: { name: 'root' },
-      title: '/',
-    },
-    {
-      page: {
-        name: 'news',
-        params: {
-          page: 1,
-        },
-      },
-      title: 'news?p=1',
-    },
-    {
-      page: {
-        name: 'users',
-        params: {
-          page: 1,
-        },
-      },
-      title: 'users?p=1',
-    },
-    {
-      page: {
-        name: 'newsItem',
-        params: {
-          id: 29133561,
-        },
-      },
-      title: 'news/29133561',
-    },
-  ];
-
-  return (
-    <div style={{ padding: 10, minWidth: 300, minHeight: 300, display: 'flex' }}>
-      <ul>
-        {links.map((link) => (
-          <li key={link.title} onClick={closePopup} style={{ paddingBottom: 8 }}>
-            {link.page.name} — <Link page={link.page}>URL is {link.title}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 });
 

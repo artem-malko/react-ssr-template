@@ -4,6 +4,8 @@ import { Route, RouteWithoutParams, URLQueryParams } from 'infrastructure/router
 import { parsePageQueryParam } from 'ui/utils/routing/parsePageQueryParam';
 import { UsersPage } from '.';
 
+const filterQueryParamName = 'filter[status]';
+
 export const usersPageRoute: Route<RouteWithoutParams, UsersPage> = {
   path: '/users',
   signal: (_, queryParams) => {
@@ -20,20 +22,23 @@ export const usersPageRoute: Route<RouteWithoutParams, UsersPage> = {
     return {
       p: [page.toString()],
       userId: [activeUserId],
-      filter: [filterStatus],
+      'filter[status]': filterStatus || [],
     };
   },
 };
 
-function parseFilterStatus(queryParams: URLQueryParams): UserStatus | undefined {
-  const rawFilterStatusParam = queryParams['filter'] && queryParams['filter'][0];
+function parseFilterStatus(queryParams: URLQueryParams): UserStatus[] {
+  return (queryParams[filterQueryParamName] || []).reduce<UserStatus[]>((mutableRes, param) => {
+    switch (param) {
+      case 'active':
+      case 'banned':
+      case 'inactive':
+        mutableRes.push(param);
+        break;
+      default:
+        return mutableRes;
+    }
 
-  switch (rawFilterStatusParam) {
-    case 'acitve':
-    case 'banned':
-    case 'inactive':
-      return rawFilterStatusParam;
-    default:
-      return;
-  }
+    return mutableRes;
+  }, []);
 }

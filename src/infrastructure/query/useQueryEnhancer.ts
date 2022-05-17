@@ -1,26 +1,15 @@
-import { Services } from 'core/services';
 import { useServices } from 'core/services/shared/context';
-import {
-  hashQueryKey,
-  hydrate,
-  QueryFunctionContext,
-  QueryFunctionData,
-  QueryKey,
-  useQueryClient,
-} from 'react-query';
+import { hashQueryKey, hydrate, QueryFunctionContext, QueryKey, useQueryClient } from 'react-query';
 import { getDehydratedQueryStateFromDom } from './getDehydratedQueryStateFromDom';
-
+import { AppQueryFunction } from './types';
 /**
  * Purposes:
- * 1. Add an appliaction services to a queryFunction args
+ * 1. Add an application services to a queryFunction args
  * 2. dehydrate a query state on client side in case of a stream rendering
  */
 export const useQueryEnhancer = <TResult>(
   queryKey: QueryKey,
-  queryFunction: (params: {
-    services: Services;
-    context: QueryFunctionContext<QueryKey>;
-  }) => QueryFunctionData<TResult> | Promise<QueryFunctionData<TResult>>,
+  queryFunction: AppQueryFunction<TResult>,
 ) => {
   const queryClient = useQueryClient();
   const services = useServices();

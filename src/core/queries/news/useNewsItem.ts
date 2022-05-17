@@ -2,7 +2,7 @@ import { FetchNewsItemResponse } from 'core/services/hackerNews/types';
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
 
 export const useNewsItem = (newsItemId: number, initialData?: FetchNewsItemResponse) => {
-  const newsItem = useAppQuery(
+  return useAppQuery(
     ['newsItem', newsItemId],
     async ({ services }) => {
       return services.hackerNews.getNewsItem({ id: newsItemId });
@@ -12,6 +12,4 @@ export const useNewsItem = (newsItemId: number, initialData?: FetchNewsItemRespo
       initialData,
     },
   );
-
-  return newsItem;
 };
