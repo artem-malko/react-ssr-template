@@ -98,3 +98,5 @@ export const UserEditor = memo<Props>(({ userId }) => {
   return <></>;
 });
 UserEditor.displayName = 'UserEditor';
+
+export default UserEditor;

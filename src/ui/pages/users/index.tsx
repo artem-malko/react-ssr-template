@@ -2,8 +2,8 @@ import { UserStatus } from 'core/services/fake/types';
 import { CommonPage } from 'core/store/types';
 import { memo, Suspense } from 'react';
 import { AddUser } from 'ui/components/users/add';
-import { UserEditor } from 'ui/components/users/editor';
 import { UserList } from 'ui/components/users/list';
+import { Lazy } from 'ui/kit/lazy';
 import { Preloader } from 'ui/kit/preloader';
 
 export interface UsersPage extends CommonPage {
@@ -27,15 +27,30 @@ export default memo<{ page: UsersPage }>(({ page }) => {
       <br />
       <br />
 
-      {page.params.activeUserId && (
-        <Suspense fallback={<Preloader purpose="UserEditor" />}>
-          <UserEditor userId={page.params.activeUserId} />
-        </Suspense>
-      )}
+      {page.params.activeUserId && <UserEditorWrapper activeUserId={page.params.activeUserId} />}
+
       <br />
       <br />
       <hr />
       <AddUser />
     </>
+  );
+});
+
+const UserEditorWrapper = memo<{ activeUserId: string }>(({ activeUserId }) => {
+  return (
+    <Suspense fallback={<Preloader purpose="UserEditor" />}>
+      <Lazy
+        loader={() => import(/* webpackChunkName: "userListEditor" */ 'ui/components/users/editor')}
+        render={(UserEditor) => <UserEditor userId={activeUserId} />}
+        fallback={(status) =>
+          status === 'loading' ? (
+            <Preloader purpose="UserEditor LOADING" />
+          ) : (
+            <Preloader purpose="UserEditor ERROR" />
+          )
+        }
+      />
+    </Suspense>
   );
 });

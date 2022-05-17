@@ -48,6 +48,7 @@ RUN rm ./tools/${GITHUB_SHA}_removeOldFiles.js
 COPY --from=builder /usr/app/build ./build
 
 COPY Makefile /usr/app/
+COPY data.json /usr/app/
 
 ENV SERVER_PORT=5000
 
