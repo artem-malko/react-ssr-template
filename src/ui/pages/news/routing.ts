@@ -1,5 +1,6 @@
 import { openPageSignal } from 'core/signals/page';
-import { Route, RouteWithoutParams, URLQueryParams } from 'infrastructure/router/types';
+import { Route, RouteWithoutParams } from 'infrastructure/router/types';
+import { parsePageQueryParam } from 'ui/utils/routing/parsePageQueryParam';
 import { NewsPage } from '.';
 
 export const newsPageRoute: Route<RouteWithoutParams, NewsPage> = {
@@ -20,15 +21,3 @@ export const newsPageRoute: Route<RouteWithoutParams, NewsPage> = {
     };
   },
 };
-
-function parsePageQueryParam(queryParams: URLQueryParams): number {
-  const rawPageQueryParam = queryParams['p'];
-
-  if (!rawPageQueryParam || !rawPageQueryParam.length || !rawPageQueryParam[0]) {
-    return 1;
-  }
-
-  const parsedPage = parseInt(rawPageQueryParam[0], 10);
-
-  return Number.isNaN(parsedPage) ? 1 : parsedPage <= 0 ? 1 : parsedPage;
-}

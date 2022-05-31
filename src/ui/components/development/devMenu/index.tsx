@@ -6,6 +6,7 @@ import { usePopup, usePopupActions } from 'ui/kit/popup/infrastructure/hook';
 import { ProjectInfo } from '../projectInfo';
 import { styles } from './index.css';
 import { BasePopup } from 'ui/kit/popup/basePopup';
+import { Link } from 'ui/kit/link';
 
 export const DevMenu = memo(() => {
   const css = useStyles(styles);
@@ -35,6 +36,9 @@ export const DevMenu = memo(() => {
   return (
     <>
       <div className={css('root')}>
+        <div className={css('link')}>
+          <Link page={{ name: 'root' }}>Go to main</Link>
+        </div>
         <div className={css('link')} onClick={showScenariosPopup}>
           Start popup scenario
         </div>
@@ -70,7 +74,11 @@ export const DevMenu = memo(() => {
           </div>
         )}
       </div>
-      {isQueryDevToolsUsed && <ReactQueryDevtools initialIsOpen={false} />}
+      {isQueryDevToolsUsed && (
+        <div style={{ position: 'fixed' }}>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </div>
+      )}
     </>
   );
 });

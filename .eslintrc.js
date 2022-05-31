@@ -40,6 +40,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     'react/display-name': 'off',
+    'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react-hooks/exhaustive-deps': [

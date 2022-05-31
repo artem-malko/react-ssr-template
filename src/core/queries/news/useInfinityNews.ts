@@ -1,14 +1,20 @@
 import { useInfiniteAppQuery } from 'infrastructure/query/useInfiniteAppQuery';
 
-export const useInfinityNews = (initialPage = 1) => {
+type UseInfinityNewsParams = {
+  initialPage: number;
+};
+export const createUseInfinityNewsKey = () => {
+  return ['infinity_news'];
+};
+export const useInfinityNews = (params: UseInfinityNewsParams) => {
   return useInfiniteAppQuery(
-    ['infinity_news'],
-    async ({ services, context: { pageParam = initialPage } }) => {
+    createUseInfinityNewsKey(),
+    async ({ services, context: { pageParam = params.initialPage } }) => {
       return services.hackerNews.getNews({ page: pageParam });
     },
     {
       staleTime: Infinity,
-      getNextPageParam: (_, pages) => initialPage + pages.length,
+      getNextPageParam: (_, pages) => params.initialPage + pages.length,
     },
   );
 };

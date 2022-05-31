@@ -105,7 +105,7 @@ const clientConfig: webpack.Configuration = {
       name: 'runtime',
     },
 
-    moduleIds: 'hashed',
+    moduleIds: 'deterministic',
 
     splitChunks: {
       minChunks: 2,

@@ -22,7 +22,7 @@ export const UserEditor = memo<Props>(({ userId }) => {
   const { patchPage } = useAppRouter();
   // const invalidateUserList = useUserListInvalidate();
   const userListUpdate = useUserListOptimisticUpdater();
-  const { queryResult: userByIdResult } = useUserById(userId);
+  const { queryResult: userByIdResult } = useUserById({ userId });
   const disableActiveUser = useCallback(
     () =>
       patchPage<UsersPage>((activePage) => ({

@@ -1,7 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { existsSync, writeFileSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
+import { createCookieAPI } from 'core/platform/cookie/server';
 import { v4 } from 'uuid';
+import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'constants/cookies';
 
 const dataJSONPath = `./data.json`;
 const isDataJSONExists = existsSync(dataJSONPath);
@@ -16,8 +18,20 @@ if (!isDataJSONExists) {
  */
 export const fakeCRUDRouter = Router();
 
-function fakeAPIRandomErrorResponser(_: Request, res: Response, next: NextFunction) {
-  if (Math.random() <= 0.1) {
+async function fakeAPIRandomErrorResponser(req: Request, res: Response, next: NextFunction) {
+  const cookieAPI = createCookieAPI(req, res);
+  const useErrorsInFakeAPIFromCookie = cookieAPI.get(useErrorsInFakeAPI.name);
+  const useRandomLatencyInFakeAPIFromCookie = cookieAPI.get(useRandomLatencyInFakeAPI.name);
+
+  if (useRandomLatencyInFakeAPIFromCookie === '1') {
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, Math.round(Math.random() * 2000));
+    });
+  }
+
+  if (useErrorsInFakeAPIFromCookie === '1' && Math.random() <= 0.2) {
     return res.status(500).json(renderError(500, 'Fake error'));
   }
 

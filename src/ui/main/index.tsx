@@ -24,8 +24,6 @@ export const Main = memo<Props>(({ renderCallback }) => {
   const css = useStyles(styles);
   const page = useAppSelector(selectPage);
 
-  console.log('page: ', page);
-
   return (
     <div ref={renderCallback}>
       <ZIndexLayout

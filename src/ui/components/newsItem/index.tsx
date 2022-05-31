@@ -6,7 +6,7 @@ import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   const css = useStyles(styles);
-  const { queryResult: newsItem, invalidateQuery } = useNewsItem(newsItemId);
+  const { queryResult: newsItem, invalidateQuery } = useNewsItem({ newsItemId });
   const platformAPI = usePlatformAPI();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   return (
     <div className={css('root')}>
       <h2>NewsITEM Component</h2>
-      <div onClick={invalidateQuery}>INVALIDATE</div>
+      <div onClick={() => invalidateQuery()}>INVALIDATE</div>
       {newsItem.isFetching && <div>Updating...</div>}
       {newsItem.isSuccess && (
         <>

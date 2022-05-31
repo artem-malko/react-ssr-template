@@ -30,5 +30,5 @@ export const useQueryEnhancer = <TResult>(
   const queryFunctionWithServices = (context: QueryFunctionContext<QueryKey>) =>
     queryFunction({ services, context });
 
-  return { queryFunctionWithServices };
+  return { queryFunctionWithServices, queryId };
 };

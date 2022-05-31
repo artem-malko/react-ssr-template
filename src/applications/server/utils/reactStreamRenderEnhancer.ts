@@ -175,6 +175,7 @@ function generateRandomId(prefix?: string) {
  * So, we have to wait until any tag will be in the beggining of the chunk
  *
  * Looks like it is a bug inside React
+ * @TODO check after react 18.2.0 release
  */
 function isItSafeToWrite(chunk: any) {
   const stringifiedChunk = chunk.toString();

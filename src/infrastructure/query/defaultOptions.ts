@@ -15,8 +15,7 @@ export const defaultQueryOptions: DefaultOptions = {
     retryOnMount: false,
 
     suspense: true,
-
-    // @TODO fix than there will be any instructions to work with errorBoundary and piping
+    // As for me, it is much more easy to handle error near useQuery usage
     useErrorBoundary: false,
   },
 };

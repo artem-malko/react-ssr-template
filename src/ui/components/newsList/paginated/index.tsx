@@ -12,7 +12,9 @@ const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) =
     const [pageNumber, setPageNumber] = useState(initialPage);
     const { showToast } = useToast();
     const { patchPage } = useAppRouter();
-    const { queryResult: news } = usePaginatedNews(pageNumber);
+    const { queryResult: news } = usePaginatedNews({
+      page: pageNumber,
+    });
 
     const onPageChange = useCallback(
       (action: 'inc' | 'dec') => {
@@ -44,6 +46,7 @@ const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) =
         <button onClick={() => onPageChange('inc')}>Next page</button>
         <br />
         <br />
+        {news.isLoading && <div>LOADING...</div>}
         {news.isFetching && <div>Updating...</div>}
         {news.isError && <div>ERROR: {news.error.code}</div>}
         {news.isSuccess &&

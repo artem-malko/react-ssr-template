@@ -3,12 +3,18 @@ import { useAppQuery } from 'infrastructure/query/useAppQuery';
 import { useCallback } from 'react';
 import { useQueryClient } from 'react-query';
 
-const userByIdQueryName = 'userById';
-export const useUserById = (userId: string) => {
+type UserByIdParams = {
+  userId: string;
+};
+
+export const createUserByIdQueryKey = (params: UserByIdParams) => {
+  return ['userById', ...Object.values(params.userId)];
+};
+export const useUserById = (params: UserByIdParams) => {
   return useAppQuery(
-    [userByIdQueryName, userId],
+    createUserByIdQueryKey(params),
     async ({ services }) => {
-      return services.fakeAPI.getUserById({ id: userId });
+      return services.fakeAPI.getUserById({ id: params.userId });
     },
     {
       staleTime: Infinity,
@@ -21,7 +27,7 @@ export const useUserByIdInvalidate = () => {
 
   return useCallback(
     (userId: string) => {
-      return queryClient.invalidateQueries([userByIdQueryName, userId]);
+      return queryClient.invalidateQueries(createUserByIdQueryKey({ userId }));
     },
     [queryClient],
   );
@@ -33,7 +39,7 @@ export const useUserByIdOptimisticUpdater = () => {
   return useCallback(
     (userToUpdate: User) => {
       return queryClient.setQueriesData<FetchUserByIdResponse['data']>(
-        [userByIdQueryName, userToUpdate.id],
+        createUserByIdQueryKey({ userId: userToUpdate.id }),
         () => {
           return { user: userToUpdate };
         },

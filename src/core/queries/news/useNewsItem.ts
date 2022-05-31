@@ -1,15 +1,22 @@
 import { FetchNewsItemResponse } from 'core/services/hackerNews/types';
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
 
-export const useNewsItem = (newsItemId: number, initialData?: FetchNewsItemResponse) => {
+type UseNewsItemParams = {
+  newsItemId: number;
+  initialData?: FetchNewsItemResponse;
+};
+export const createUseNewsItemKey = (params: UseNewsItemParams) => {
+  return ['newsItem', params.newsItemId];
+};
+export const useNewsItem = (params: UseNewsItemParams) => {
   return useAppQuery(
-    ['newsItem', newsItemId],
+    createUseNewsItemKey(params),
     async ({ services }) => {
-      return services.hackerNews.getNewsItem({ id: newsItemId });
+      return services.hackerNews.getNewsItem({ id: params.newsItemId });
     },
     {
       staleTime: Infinity,
-      initialData,
+      initialData: params.initialData,
     },
   );
 };

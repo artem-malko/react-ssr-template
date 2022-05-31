@@ -6,7 +6,7 @@ import { Preloader } from 'ui/kit/preloader';
 
 const InfinityList = memo<{ initialPage: number; onItemHover: (title: string) => void }>(
   ({ initialPage, onItemHover }) => {
-    const infinityNews = useInfinityNews(initialPage);
+    const infinityNews = useInfinityNews({ initialPage });
 
     return (
       <>

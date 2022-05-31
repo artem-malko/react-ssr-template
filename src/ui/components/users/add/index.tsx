@@ -30,7 +30,7 @@ export const AddUser = memo(() => {
                 showToast({
                   body: () => <>User with name {name} has been added</>,
                 });
-                invalidateUserList().catch((error) => {
+                invalidateUserList({ page: 1 }).catch((error) => {
                   showToast({
                     body: () => (
                       <>
