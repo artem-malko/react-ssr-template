@@ -8,7 +8,7 @@ type UserByIdParams = {
 };
 
 export const createUserByIdQueryKey = (params: UserByIdParams) => {
-  return ['userById', ...Object.values(params.userId)];
+  return ['userById', params.userId];
 };
 export const useUserById = (params: UserByIdParams) => {
   return useAppQuery(

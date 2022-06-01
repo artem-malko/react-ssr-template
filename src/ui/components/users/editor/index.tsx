@@ -7,7 +7,7 @@ import { UserStatus } from 'core/services/fake/types';
 import { useServices } from 'core/services/shared/context';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { useUserById } from 'core/queries/users/useUserById';
-import { useUserListOptimisticUpdater } from 'core/queries/users/useUserList';
+import { useUserListInvalidate } from 'core/queries/users/useUserList';
 
 type Props = {
   userId: string;
@@ -15,13 +15,13 @@ type Props = {
 /**
  * You can find two approaches to update data after any mutations
  * The first one — query invalidation (invalidateUserList)
- * The second one — query-cache update (userListUpdate)
+ * The second one — query-cache update (userListOptimisticUpdate)
  */
 export const UserEditor = memo<Props>(({ userId }) => {
   const { showToast } = useToast();
   const { patchPage } = useAppRouter();
-  // const invalidateUserList = useUserListInvalidate();
-  const userListUpdate = useUserListOptimisticUpdater();
+  const invalidateUserList = useUserListInvalidate();
+  // const userListOptimisticUpdate = useUserListOptimisticUpdater();
   const { queryResult: userByIdResult } = useUserById({ userId });
   const disableActiveUser = useCallback(
     () =>
@@ -60,13 +60,13 @@ export const UserEditor = memo<Props>(({ userId }) => {
                   showToast({
                     body: () => <>User with name {name} has been updated</>,
                   });
-                  //
-                  // invalidateUserList(1);
-                  userListUpdate({
-                    id: userId,
-                    name,
-                    status,
-                  });
+
+                  invalidateUserList({ page: 1 });
+                  // userListOptimisticUpdate({
+                  //   id: userId,
+                  //   name,
+                  //   status,
+                  // });
                 },
                 onError(error) {
                   showToast({
