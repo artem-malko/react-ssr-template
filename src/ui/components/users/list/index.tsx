@@ -1,7 +1,7 @@
 import { useUserList } from 'core/queries/users/useUserList';
 import { UserStatus } from 'core/services/fake/types';
 import { useAppRouter } from 'hooks/useAppRouter';
-import { memo, useEffect, useId, useState } from 'react';
+import { memo, useCallback, useEffect, useId, useState } from 'react';
 import { UsersPage } from 'ui/pages/users';
 import { UserTableRow } from './row';
 
@@ -16,6 +16,21 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
     statusFilter: filterStatusState,
   });
   const { patchPage } = useAppRouter();
+
+  const onPageChange = useCallback(
+    (action: 'inc' | 'dec') => {
+      const newPageNumber = action === 'inc' ? page + 1 : page - 1;
+
+      patchPage<UsersPage>((activePage) => ({
+        name: 'users',
+        params: {
+          ...activePage.params,
+          page: newPageNumber,
+        },
+      }));
+    },
+    [page, patchPage],
+  );
 
   useEffect(() => {
     patchPage<UsersPage>((activePage) => ({
@@ -83,6 +98,17 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
           ))}
         </tbody>
       </table>
+      <br />
+      <button disabled={page === 1} onClick={() => onPageChange('dec')}>
+        Prev page
+      </button>
+      <button
+        disabled={page === Math.ceil(queryResult.data.total / 10)}
+        onClick={() => onPageChange('inc')}
+      >
+        Next page
+      </button>
+      <br />
     </div>
   );
 });

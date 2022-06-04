@@ -67,7 +67,7 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
           {listType === 'paginated' ? (
             <Lazy
               loader={() => import('./paginated')}
-              render={(List) => <List initialPage={initialPage} onItemHover={onItemHover} />}
+              render={(List) => <List pageNumber={initialPage} onItemHover={onItemHover} />}
               fallback={(status) =>
                 status === 'error' ? (
                   <>paginatedNewList error</>

@@ -1,5 +1,5 @@
 import { usePaginatedNews } from 'core/queries/news/usePaginatedNews';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback } from 'react';
 import { Lazy } from 'ui/kit/lazy';
 import { Link } from 'ui/kit/link';
 import { Preloader } from 'ui/kit/preloader';
@@ -7,9 +7,8 @@ import { useAppRouter } from 'hooks/useAppRouter';
 import { NewsPage } from 'ui/pages/news';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 
-const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) => void }>(
-  ({ initialPage, onItemHover }) => {
-    const [pageNumber, setPageNumber] = useState(initialPage);
+const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) => void }>(
+  ({ pageNumber, onItemHover }) => {
     const { showToast } = useToast();
     const { patchPage } = useAppRouter();
     const { queryResult: news } = usePaginatedNews({
@@ -30,7 +29,6 @@ const PaginatedList = memo<{ initialPage: number; onItemHover: (title: string) =
           showToast({
             body: () => <>New page: ${newPageNumber}. This toast is shown from signal</>,
           });
-          setPageNumber(newPageNumber);
         });
       },
       [pageNumber, patchPage, showToast],

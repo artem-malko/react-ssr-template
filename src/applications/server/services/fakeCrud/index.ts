@@ -59,7 +59,7 @@ fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users', async (req, res) =
 
   return res.status(200).json({
     data: {
-      users: filteredUsers.slice(offset, limit),
+      users: filteredUsers.slice(offset, limit + offset),
       total: filteredUsers.length,
     },
   });
