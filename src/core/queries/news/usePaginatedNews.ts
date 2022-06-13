@@ -1,10 +1,11 @@
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
+import { useNewsQueryMainKey } from './common';
 
 type UsePaginatedNewsParams = {
   page: number;
 };
 export const createUsePaginatedNewsKey = (params: UsePaginatedNewsParams) => {
-  return ['paginated_news', ...Object.values(params)];
+  return [useNewsQueryMainKey, 'paginated_news', ...Object.values(params)];
 };
 export const usePaginatedNews = (params: UsePaginatedNewsParams) => {
   return useAppQuery(createUsePaginatedNewsKey(params), async ({ services }) => {

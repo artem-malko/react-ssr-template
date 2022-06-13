@@ -47,9 +47,13 @@ export const UserEditor = memo<Props>(({ userId }) => {
 
   if (userByIdResult.data) {
     return (
-      <div>
+      <div style={{ padding: 10, border: '2px solid #262626', backgroundColor: '#fefefe' }}>
         <h1>Edit user: {userByIdResult.data.user.name}</h1>
         <h3>Current use status: {userByIdResult.data.user.status}</h3>
+        <h4>Current fetchStatus: {userByIdResult.fetchStatus}</h4>
+        <h4>Current query status: {userByIdResult.status}</h4>
+        <h4>Current query isError: {userByIdResult.isError.toString()}</h4>
+        <h4>Current query isSuccess: {userByIdResult.isSuccess.toString()}</h4>
         <br />
         <UserForm
           onSubmit={(name, status) => {
@@ -93,6 +97,10 @@ export const UserEditor = memo<Props>(({ userId }) => {
         <button onClick={disableActiveUser}>Cancel</button>
       </div>
     );
+  }
+
+  if (userByIdResult.error) {
+    return <button onClick={disableActiveUser}>Cancel</button>;
   }
 
   return <></>;

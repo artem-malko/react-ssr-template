@@ -59,12 +59,12 @@ export const useOutsideClick = ({ sourceRef, additionalRef, isShown, hide }: Par
       }
     };
 
-    window.addEventListener('click', onOutSideClick, true);
-    window.addEventListener('touchend', onOutSideClick, true);
+    window.addEventListener('mousedown', onOutSideClick);
+    window.addEventListener('touchstart', onOutSideClick);
 
     return () => {
-      window.removeEventListener('click', onOutSideClick, true);
-      window.removeEventListener('touchend', onOutSideClick, true);
+      window.removeEventListener('mousedown', onOutSideClick);
+      window.removeEventListener('touchstart', onOutSideClick);
     };
   }, [isShown, sourceRef, additionalRef, hide]);
 };

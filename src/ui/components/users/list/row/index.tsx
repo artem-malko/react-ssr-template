@@ -9,8 +9,9 @@ import { UsersPage } from 'ui/pages/users';
 type Props = {
   user: User;
   index: number;
+  page: number;
 };
-export const UserTableRow = memo<Props>(({ user, index }) => {
+export const UserTableRow = memo<Props>(({ user, index, page }) => {
   const { patchPage } = useAppRouter();
   const { showToast } = useToast();
   const toggleActiveUser = useCallback(
@@ -53,7 +54,7 @@ export const UserTableRow = memo<Props>(({ user, index }) => {
 
   return (
     <tr>
-      <td>{index + 1}</td>
+      <td>{index + 1 + (page - 1) * 10}</td>
       <td>{user.id}</td>
       <td>
         <strong>{user.name}</strong>

@@ -17,7 +17,7 @@ export const AddUser = memo(() => {
   });
 
   return (
-    <div>
+    <div style={{ padding: 10, border: '2px solid #262626', backgroundColor: '#fefefe' }}>
       <h1>Add user</h1>
       <br />
       <UserForm

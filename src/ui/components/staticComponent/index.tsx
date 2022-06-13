@@ -88,7 +88,7 @@ export const StaticComponent = memo(() => {
         placement={placement}
         alignment={alignment}
       >
-        <div style={{ background: '#fff', outline: '1px solid red' }}>
+        <div style={{ background: '#fff', border: '1px solid red' }}>
           Dropdown content
           <br />
           Dropdown content

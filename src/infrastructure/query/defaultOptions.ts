@@ -6,11 +6,12 @@ import { DefaultOptions } from 'react-query';
 export const defaultQueryOptions: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
+    refetchOnReconnect: true,
     refetchOnMount: false,
 
     keepPreviousData: true,
 
+    // Actually, its ok to change this option to 3 times
     retry: false,
     retryOnMount: false,
 

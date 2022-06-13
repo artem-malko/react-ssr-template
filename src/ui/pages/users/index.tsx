@@ -47,6 +47,9 @@ export default memo<{ page: UsersPage }>(({ page }) => {
           </>
         )}
       </Spoiler>
+
+      {/* A gap for reactQuery dev tools */}
+      <div style={{ height: 300 }} />
     </>
   );
 });

@@ -18,7 +18,7 @@ if (!isDataJSONExists) {
  */
 export const fakeCRUDRouter = Router();
 
-async function fakeAPIRandomErrorResponser(req: Request, res: Response, next: NextFunction) {
+async function fakeAPIRandomLatencyAndErrorResponser(req: Request, res: Response, next: NextFunction) {
   const cookieAPI = createCookieAPI(req, res);
   const useErrorsInFakeAPIFromCookie = cookieAPI.get(useErrorsInFakeAPI.name);
   const useRandomLatencyInFakeAPIFromCookie = cookieAPI.get(useRandomLatencyInFakeAPI.name);
@@ -38,7 +38,7 @@ async function fakeAPIRandomErrorResponser(req: Request, res: Response, next: Ne
   next();
 }
 
-fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users', async (req, res) => {
   const parsedLimit = parseInt(req.query['limit']?.toString() || '0', 10);
   const limit = Number.isNaN(parsedLimit) ? 10 : parsedLimit;
   const parsedOffset = parseInt(req.query['offset']?.toString() || '0', 10);
@@ -65,7 +65,7 @@ fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users', async (req, res) =
   });
 });
 
-fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users/:id', async (req, res) => {
   const userIdToGet = req.params.id;
 
   const users = await readUsers();
@@ -81,7 +81,7 @@ fakeCRUDRouter.use(fakeAPIRandomErrorResponser).get('/users/:id', async (req, re
   });
 });
 
-fakeCRUDRouter.use(fakeAPIRandomErrorResponser).post('/users', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).post('/users', async (req, res) => {
   const users = await readUsers();
   const newUserId = v4();
 
@@ -102,7 +102,7 @@ fakeCRUDRouter.use(fakeAPIRandomErrorResponser).post('/users', async (req, res) 
   });
 });
 
-fakeCRUDRouter.use(fakeAPIRandomErrorResponser).patch('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).patch('/users/:id', async (req, res) => {
   const userIdToUpdate = req.params.id;
   const paramsToUpdate = req.body;
   const users = await readUsers();
@@ -128,7 +128,7 @@ fakeCRUDRouter.use(fakeAPIRandomErrorResponser).patch('/users/:id', async (req, 
   });
 });
 
-fakeCRUDRouter.use(fakeAPIRandomErrorResponser).delete('/users/:id', async (req, res) => {
+fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).delete('/users/:id', async (req, res) => {
   const userIdToDelete = req.params.id;
   const users = await readUsers();
 

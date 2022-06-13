@@ -1,10 +1,11 @@
 import { useInfiniteAppQuery } from 'infrastructure/query/useInfiniteAppQuery';
+import { useNewsQueryMainKey } from './common';
 
 type UseInfinityNewsParams = {
   initialPage: number;
 };
 export const createUseInfinityNewsKey = () => {
-  return ['infinity_news'];
+  return [useNewsQueryMainKey, 'infinity_news'];
 };
 export const useInfinityNews = (params: UseInfinityNewsParams) => {
   return useInfiniteAppQuery(

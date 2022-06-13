@@ -62,7 +62,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div>
       <UserListFilters
         disabled={queryResult.isFetching}
         filterStatus={filterStatusState}
@@ -94,7 +94,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
             ))}
           </tr>
           {queryResult.data.users.map((user, i) => (
-            <UserTableRow user={user} index={i} key={user.id} />
+            <UserTableRow user={user} index={i} key={user.id} page={page} />
           ))}
         </tbody>
       </table>

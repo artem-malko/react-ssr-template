@@ -90,26 +90,43 @@ export const Popover = memo<Props>(
     const bodyElRef = useRef<HTMLElement | null>(null);
     const [popoverContentDOMRect, setPopoverContentDOMRect] = useState<DOMRect | undefined>(undefined);
 
-    useOutsideClick({
-      sourceRef: targetRef,
-      isShown,
-      hide,
-      // @TODO pass an array of refs to useOutsideClick
-      additionalRef: popoverContainerRef,
-    });
-
     useLayoutEffect(() => {
       popoverContainerRef.current = document.querySelector(`#${popoverContainerId}`);
       bodyElRef.current = document.body;
     }, []);
 
-    const onResizeHandler = useCallback(() => {
-      hide();
+    useLayoutEffect(() => {
+      /**
+       * Prevent popover hiding on case of useOutsideClick execution
+       * In useOutsideClick we have mousedown and touchstart event handlers
+       * Right here we prevent propogation of these events, if click was in a popoverContainer
+       */
+      const eventListener = (event: MouseEvent | TouchEvent) => {
+        event.stopPropagation();
+      };
 
+      popoverContainerRef.current?.addEventListener('mousedown', eventListener, true);
+      popoverContainerRef.current?.addEventListener('touchstart', eventListener, true);
+
+      return () => {
+        popoverContainerRef.current?.removeEventListener('mousedown', eventListener, true);
+        popoverContainerRef.current?.removeEventListener('touchstart', eventListener, true);
+      };
+    }, []);
+
+    useOutsideClick({
+      sourceRef: targetRef,
+      isShown,
+      hide,
+    });
+
+    const onResizeHandler = useCallback(() => {
       // We need to hide popover conent as fast as possible to prevent any glitches
       if (popoverContentRef.current) {
         popoverContentRef.current.style.display = 'none';
       }
+
+      hide();
     }, [hide]);
     useResizeObserver(bodyElRef, onResizeHandler);
 

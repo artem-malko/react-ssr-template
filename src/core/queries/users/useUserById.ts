@@ -1,24 +1,39 @@
+import { Services } from 'core/services';
 import { FetchUserByIdResponse, User } from 'core/services/fake/types';
+import { useServices } from 'core/services/shared/context';
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
 import { useCallback } from 'react';
 import { useQueryClient } from 'react-query';
+import { useUsersQueryMainKey } from './common';
 
 type UserByIdParams = {
   userId: string;
 };
 
+const userByIdFetcher = (services: Services, params: UserByIdParams) => {
+  return services.fakeAPI.getUserById({ id: params.userId });
+};
+
 export const createUserByIdQueryKey = (params: UserByIdParams) => {
-  return ['userById', params.userId];
+  return [useUsersQueryMainKey, 'userById', params.userId];
 };
 export const useUserById = (params: UserByIdParams) => {
-  return useAppQuery(
-    createUserByIdQueryKey(params),
-    async ({ services }) => {
-      return services.fakeAPI.getUserById({ id: params.userId });
+  return useAppQuery(createUserByIdQueryKey(params), ({ services }) => {
+    return userByIdFetcher(services, params);
+  });
+};
+
+export const useUserByIdFetcher = () => {
+  const queryClient = useQueryClient();
+  const services = useServices();
+
+  return useCallback(
+    (params: UserByIdParams) => {
+      return queryClient.fetchQuery(createUserByIdQueryKey(params), () =>
+        userByIdFetcher(services, params),
+      );
     },
-    {
-      staleTime: Infinity,
-    },
+    [queryClient, services],
   );
 };
 
