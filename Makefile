@@ -152,7 +152,7 @@ lint-without-cache:
 # Start prettier with only error logs
 .PHONY: prettier
 prettier:
-	@echo "\n${CYAN}Start prettier${RESET}\n" && node_modules/.bin/prettier --list-different "src/**/*.tsx" "src/**/*.ts"
+	@echo "\n${CYAN}Start prettier${RESET}\n" && node_modules/.bin/prettier --cache --list-different "src/**/*.tsx" "src/**/*.ts"
 
 # Start tsc checks (typings and etc)
 .PHONY: tsc

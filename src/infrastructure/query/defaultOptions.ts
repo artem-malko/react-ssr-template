@@ -7,7 +7,7 @@ export const defaultQueryOptions: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
-    refetchOnMount: false,
+    refetchOnMount: true,
 
     keepPreviousData: true,
 
