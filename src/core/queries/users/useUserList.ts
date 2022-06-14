@@ -1,3 +1,4 @@
+import { Services } from 'core/services';
 import { FetchUsersResponse, User, UserStatus } from 'core/services/fake/types';
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
 import { useCallback } from 'react';
@@ -8,12 +9,17 @@ type UseUserListParams = {
   page: number;
   statusFilter?: UserStatus[];
 };
-export const createUserListQueryKey = (params: UseUserListParams) => {
+
+const userListFetcher = (services: Services, params: UseUserListParams) => {
+  return services.fakeAPI.getUsers({ page: params.page, status: params.statusFilter });
+};
+const createUserListQueryKey = (params: UseUserListParams) => {
   return [useUsersQueryMainKey, 'userList', params];
 };
+
 export const useUserList = (params: UseUserListParams) => {
   return useAppQuery(createUserListQueryKey(params), async ({ services }) => {
-    return services.fakeAPI.getUsers({ page: params.page, status: params.statusFilter });
+    return userListFetcher(services, params);
   });
 };
 

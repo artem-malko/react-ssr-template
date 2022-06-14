@@ -13,10 +13,10 @@ type UserByIdParams = {
 const userByIdFetcher = (services: Services, params: UserByIdParams) => {
   return services.fakeAPI.getUserById({ id: params.userId });
 };
-
-export const createUserByIdQueryKey = (params: UserByIdParams) => {
+const createUserByIdQueryKey = (params: UserByIdParams) => {
   return [useUsersQueryMainKey, 'userById', params.userId];
 };
+
 export const useUserById = (params: UserByIdParams) => {
   return useAppQuery(createUserByIdQueryKey(params), ({ services }) => {
     return userByIdFetcher(services, params);
