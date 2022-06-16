@@ -1,13 +1,9 @@
 import { memo, useCallback } from 'react';
 import { useAppRouter } from 'hooks/useAppRouter';
-import { useMutation } from 'react-query';
 import { UserForm } from '../form';
 import { UsersPage } from 'ui/pages/users';
-import { UserStatus } from 'core/services/fake/types';
-import { useServices } from 'core/services/shared/context';
-import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { useUserById } from 'core/queries/users/useUserById';
-import { useUserListInvalidate } from 'core/queries/users/useUserList';
+import { useEditUser } from 'core/queries/users/useEditUser';
 
 type Props = {
   userId: string;
@@ -18,10 +14,8 @@ type Props = {
  * The second one — query-cache update (userListOptimisticUpdate)
  */
 export const UserEditor = memo<Props>(({ userId }) => {
-  const { showToast } = useToast();
   const { patchPage } = useAppRouter();
-  const invalidateUserList = useUserListInvalidate();
-  // const userListOptimisticUpdate = useUserListOptimisticUpdater();
+
   const { queryResult: userByIdResult } = useUserById({ userId });
   const disableActiveUser = useCallback(
     () =>
@@ -34,20 +28,30 @@ export const UserEditor = memo<Props>(({ userId }) => {
       })),
     [patchPage],
   );
-
-  const services = useServices();
-  const { mutate: updateUser } = useMutation((userToUpdate: { name?: string; status?: UserStatus }) => {
-    return services.fakeAPI.updateUserInfo({
-      user: {
-        ...userToUpdate,
-        id: userId,
-      },
-    });
-  });
+  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser();
 
   if (userByIdResult.data) {
     return (
-      <div style={{ padding: 10, border: '2px solid #262626', backgroundColor: '#fefefe' }}>
+      <div
+        style={{
+          position: 'relative',
+          padding: 10,
+          border: '2px solid #262626',
+          backgroundColor: '#fefefe',
+        }}
+      >
+        {isMutationInProgress && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(255,255,255,.5)',
+            }}
+          ></div>
+        )}
         <h1>Edit user: {userByIdResult.data.user.name}</h1>
         <h3>Current use status: {userByIdResult.data.user.status}</h3>
         <h4>Current fetchStatus: {userByIdResult.fetchStatus}</h4>
@@ -57,32 +61,9 @@ export const UserEditor = memo<Props>(({ userId }) => {
         <br />
         <UserForm
           onSubmit={(name, status) => {
-            updateUser(
-              { name, status },
+            editUser(
+              { name, status, id: userId },
               {
-                onSuccess() {
-                  showToast({
-                    body: () => <>User with name {name} has been updated</>,
-                  });
-
-                  invalidateUserList({ page: 1 });
-                  // userListOptimisticUpdate({
-                  //   id: userId,
-                  //   name,
-                  //   status,
-                  // });
-                },
-                onError(error) {
-                  showToast({
-                    body: () => (
-                      <>
-                        Something happen while user updating
-                        <br />
-                        {JSON.stringify(error)}
-                      </>
-                    ),
-                  });
-                },
                 onSettled() {
                   disableActiveUser();
                 },

@@ -1,9 +1,7 @@
+import { useDeleteUser } from 'core/queries/users/useDeleteuser';
 import { User, UserStatus } from 'core/services/fake/types';
-import { useServices } from 'core/services/shared/context';
 import { useAppRouter } from 'hooks/useAppRouter';
 import { memo, useCallback } from 'react';
-import { useMutation } from 'react-query';
-import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { UsersPage } from 'ui/pages/users';
 
 type Props = {
@@ -13,7 +11,6 @@ type Props = {
 };
 export const UserTableRow = memo<Props>(({ user, index, page }) => {
   const { patchPage } = useAppRouter();
-  const { showToast } = useToast();
   const toggleActiveUser = useCallback(
     (userId: string | undefined) => {
       return patchPage<UsersPage>((activePage) => ({
@@ -26,31 +23,17 @@ export const UserTableRow = memo<Props>(({ user, index, page }) => {
     },
     [patchPage],
   );
-  const services = useServices();
-  const { mutate: deleteUser } = useMutation(() => {
-    return services.fakeAPI.deleteUserById({ id: user.id });
-  });
+  const { mutate: deleteUser, isLoading: isMutationInProgress } = useDeleteUser();
   const onDeleteClick = useCallback(() => {
-    return deleteUser(undefined, {
-      onSuccess() {
-        toggleActiveUser(undefined);
-        showToast({
-          body: () => <>User with name {user.name} has been deleted</>,
-        });
+    return deleteUser(
+      { userId: user.id, name: user.name },
+      {
+        onSuccess() {
+          toggleActiveUser(undefined);
+        },
       },
-      onError(error) {
-        showToast({
-          body: () => (
-            <>
-              Something happen while new user creation
-              <br />
-              {JSON.stringify(error)}
-            </>
-          ),
-        });
-      },
-    });
-  }, [deleteUser, toggleActiveUser, user.name, showToast]);
+    );
+  }, [deleteUser, toggleActiveUser, user.id, user.name]);
 
   return (
     <tr>
@@ -61,10 +44,14 @@ export const UserTableRow = memo<Props>(({ user, index, page }) => {
       </td>
       <td style={{ textAlign: 'center' }}>{renderStatus(user.status)}</td>
       <td>
-        <button onClick={() => toggleActiveUser(user.id)}>✏️ Edit</button>
+        <button onClick={() => toggleActiveUser(user.id)} disabled={isMutationInProgress}>
+          ✏️ Edit
+        </button>
       </td>
       <td>
-        <button onClick={onDeleteClick}>❌ delete</button>
+        <button onClick={onDeleteClick} disabled={isMutationInProgress}>
+          ❌ delete
+        </button>
       </td>
     </tr>
   );

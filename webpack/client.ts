@@ -105,7 +105,8 @@ const clientConfig: webpack.Configuration = {
       name: 'runtime',
     },
 
-    moduleIds: 'deterministic',
+    // @TODO something wrong with deteremenistic, no cache update while development
+    moduleIds: 'hashed',
 
     splitChunks: {
       minChunks: 2,
