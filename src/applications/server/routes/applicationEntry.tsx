@@ -243,18 +243,19 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
               /**
                * @TODO switch to client render
                */
-              res.send(`<!doctype><p>Error<br/>${error}</p>`);
+              res.send(`<!doctype><p>onShellError<br/>${error}</p>`);
             },
 
             // @TODO looks quite silly, need to refactor it
             onError(error) {
               didError = true;
               console.error('onError: ', error);
-              // pipeableStream.abort();
 
-              // if (renderTimeoutId) {
-              //   clearTimeout(renderTimeoutId);
-              // }
+              if (renderTimeoutId) {
+                clearTimeout(renderTimeoutId);
+              }
+
+              res.send(`<!doctype><p>onError<br/>${error}</p>`);
             },
           },
         );

@@ -95,10 +95,19 @@ if (location.search.includes('strict')) {
       <StrictMode>
         <ApplicationWithProviders store={store} />
       </StrictMode>,
+      {
+        onRecoverableError: (...args) => {
+          console.log('args: ', args);
+        },
+      },
     );
   });
 } else {
   restoreStore({ toastController, popupController }).then((store) => {
-    hydrateRoot(container, <ApplicationWithProviders store={store} />);
+    hydrateRoot(container, <ApplicationWithProviders store={store} />, {
+      onRecoverableError: (...args) => {
+        console.log('args: ', args);
+      },
+    });
   });
 }
