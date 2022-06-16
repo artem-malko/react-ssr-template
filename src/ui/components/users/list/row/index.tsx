@@ -1,4 +1,4 @@
-import { useDeleteUser } from 'core/queries/users/useDeleteuser';
+import { useDeleteUser } from 'core/queries/users/useDeleteUser';
 import { User, UserStatus } from 'core/services/fake/types';
 import { useAppRouter } from 'hooks/useAppRouter';
 import { memo, useCallback } from 'react';
