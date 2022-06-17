@@ -1,13 +1,13 @@
 import { UserStatus } from 'core/services/fake/types';
 import { useServices } from 'core/services/shared/context';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
-import { useUserListInvalidate } from './useUserList';
+import { useUsersQueryMainKey } from './common';
 
 export const useEditUser = () => {
   const { showToast } = useToast();
   const services = useServices();
-  const invalidateUserList = useUserListInvalidate();
+  const queryClient = useQueryClient();
   // const userListOptimisticUpdate = useUserListOptimisticUpdater();
 
   return useMutation(
@@ -22,7 +22,18 @@ export const useEditUser = () => {
           body: () => <>User with name {name} has been updated</>,
         });
 
-        invalidateUserList({ page: 1 });
+        /**
+         * This query invalidetion updates all active queries
+         * which are connected with users:
+         * — list
+         * — user by id
+         */
+        queryClient.invalidateQueries([useUsersQueryMainKey]);
+
+        /**
+         * This query data optimistic updater updates data in a query cache only
+         * Uncomment it to see all problems with optimistic updates in action
+         */
         // userListOptimisticUpdate({
         //   id: userId,
         //   name,

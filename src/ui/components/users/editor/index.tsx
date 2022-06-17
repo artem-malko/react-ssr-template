@@ -4,6 +4,7 @@ import { UserForm } from '../form';
 import { UsersPage } from 'ui/pages/users';
 import { useUserById } from 'core/queries/users/useUserById';
 import { useEditUser } from 'core/queries/users/useEditUser';
+import { renderStatus } from '../utils';
 
 type Props = {
   userId: string;
@@ -59,16 +60,16 @@ export const UserEditor = memo<Props>(({ userId }) => {
         <h4>Current query isError: {userByIdResult.isError.toString()}</h4>
         <h4>Current query isSuccess: {userByIdResult.isSuccess.toString()}</h4>
         <br />
+        <h3>User data:</h3>
+        <div>
+          id: {userByIdResult.data.user.id}&nbsp;${renderStatus(userByIdResult.data.user.status)}
+        </div>
+        <hr />
+        <br />
+        <br />
         <UserForm
           onSubmit={(name, status) => {
-            editUser(
-              { name, status, id: userId },
-              {
-                onSettled() {
-                  disableActiveUser();
-                },
-              },
-            );
+            editUser({ name, status, id: userId });
           }}
           initialName={userByIdResult.data.user.name}
           initialStatus={userByIdResult.data.user.status}

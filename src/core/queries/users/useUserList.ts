@@ -23,17 +23,6 @@ export const useUserList = (params: UseUserListParams) => {
   });
 };
 
-export const useUserListInvalidate = () => {
-  const queryClient = useQueryClient();
-
-  return useCallback(
-    (params: UseUserListParams) => {
-      return queryClient.invalidateQueries(createUserListQueryKey(params));
-    },
-    [queryClient],
-  );
-};
-
 export const useUserListOptimisticUpdater = () => {
   const queryClient = useQueryClient();
 

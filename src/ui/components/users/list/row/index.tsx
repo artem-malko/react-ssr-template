@@ -1,8 +1,9 @@
 import { useDeleteUser } from 'core/queries/users/useDeleteUser';
-import { User, UserStatus } from 'core/services/fake/types';
+import { User } from 'core/services/fake/types';
 import { useAppRouter } from 'hooks/useAppRouter';
 import { memo, useCallback } from 'react';
 import { UsersPage } from 'ui/pages/users';
+import { renderStatus } from '../../utils';
 
 type Props = {
   user: User;
@@ -57,14 +58,3 @@ export const UserTableRow = memo<Props>(({ user, index, page }) => {
   );
 });
 UserTableRow.displayName = 'UserTableRow';
-
-function renderStatus(status: UserStatus) {
-  switch (status) {
-    case 'active':
-      return '🟢';
-    case 'inactive':
-      return '🟠';
-    case 'banned':
-      return '🔴';
-  }
-}

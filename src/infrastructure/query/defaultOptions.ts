@@ -7,6 +7,12 @@ export const defaultQueryOptions: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
+    /**
+     * @TODO check this:
+     * <Comp useQuery1>
+     * {!ifFetching && <Comp1 useQuery1></Comp1>
+     * </Comp>
+     */
     refetchOnMount: true,
 
     keepPreviousData: true,
