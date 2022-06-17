@@ -2,12 +2,12 @@ import { UserStatus } from 'core/services/fake/types';
 import { useServices } from 'core/services/shared/context';
 import { useMutation } from 'react-query';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
-import { useUserListInvalidate } from './useUserList';
+import { useUserQueriesInvalidate } from './common';
 
 export const useAddUser = () => {
   const { showToast } = useToast();
   const services = useServices();
-  const invalidateUserList = useUserListInvalidate();
+  const invalidateUsers = useUserQueriesInvalidate();
 
   return useMutation(
     (userToAdd: { name: string; status: UserStatus }) => {
@@ -20,7 +20,7 @@ export const useAddUser = () => {
         showToast({
           body: () => <>User with name {name} has been added</>,
         });
-        invalidateUserList({ page: 1 }).catch((error) => {
+        invalidateUsers().catch((error) => {
           showToast({
             body: () => (
               <>
