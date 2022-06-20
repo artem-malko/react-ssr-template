@@ -43,91 +43,96 @@ export const DevMenu = memo(() => {
   return (
     <>
       <div className={css('root')}>
-        <div className={css('link')}>
-          <Link page={{ name: 'root' }} inlineStyles={{ color: '#fff' }}>
-            Go to main
-          </Link>
-        </div>
-        <div className={css('link')} onClick={showScenariosPopup}>
-          Start popup scenario
-        </div>
-        <div className={css('link')}>
-          <div ref={reactInfoPopoverParentRef} onClick={() => setIsReactInfoShown(true)}>
-            Show project info
+        <div className={css('menu')}>
+          <div className={css('link')}>
+            <Link page={{ name: 'root' }} inlineStyles={{ color: '#fff' }}>
+              Go to main
+            </Link>
           </div>
-          <Popover
-            hide={() => setIsReactInfoShown(false)}
-            targetRef={reactInfoPopoverParentRef}
-            isShown={isReactInfoShown}
-            width={200}
-            alignment="center"
-          >
-            <ProjectInfo />
-          </Popover>
-        </div>
-        <div className={css('link')}>
-          <div ref={queriesControlsPopoverParentRef} onClick={() => setIsQueryControlsPanelShown(true)}>
-            Show react query controls
+          <div className={css('link')} onClick={showScenariosPopup}>
+            Start popup scenario
           </div>
-          <Popover
-            hide={() => {
-              setIsQueryControlsPanelShown(false);
-            }}
-            targetRef={queriesControlsPopoverParentRef}
-            isShown={isQueryControlsPanelShown}
-            width={450}
-            alignment="center"
-          >
-            <div style={{ padding: 10, background: '#fff', border: '2px solid #212121' }}>
-              {process.env.NODE_ENV !== 'production' && (
-                <div>
-                  <input
-                    type="checkbox"
-                    id="qdt"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const targetInput = e.nativeEvent.target as HTMLInputElement;
-                      if (targetInput.checked) {
-                        setIsQueryDevToolsUsed(true);
-                      } else {
-                        setIsQueryDevToolsUsed(false);
+          <div className={css('link')}>
+            <div ref={reactInfoPopoverParentRef} onClick={() => setIsReactInfoShown(true)}>
+              Show project info
+            </div>
+            <Popover
+              hide={() => setIsReactInfoShown(false)}
+              targetRef={reactInfoPopoverParentRef}
+              isShown={isReactInfoShown}
+              width={200}
+              alignment="center"
+            >
+              <ProjectInfo />
+            </Popover>
+          </div>
+          <div className={css('link')}>
+            <div
+              ref={queriesControlsPopoverParentRef}
+              onClick={() => setIsQueryControlsPanelShown(true)}
+            >
+              Show react query controls
+            </div>
+            <Popover
+              hide={() => {
+                setIsQueryControlsPanelShown(false);
+              }}
+              targetRef={queriesControlsPopoverParentRef}
+              isShown={isQueryControlsPanelShown}
+              width={450}
+              alignment="center"
+            >
+              <div style={{ padding: 10, background: '#fff', border: '2px solid #212121' }}>
+                {process.env.NODE_ENV !== 'production' && (
+                  <div>
+                    <input
+                      type="checkbox"
+                      id="qdt"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const targetInput = e.nativeEvent.target as HTMLInputElement;
+                        if (targetInput.checked) {
+                          setIsQueryDevToolsUsed(true);
+                        } else {
+                          setIsQueryDevToolsUsed(false);
+                        }
+                      }}
+                    />
+                    <label htmlFor="qdt">&nbsp;Enable React-Query devtools</label>
+                  </div>
+                )}
+                <hr />
+                <InvalidateQueryButton queryKey="news" key="invalidate_news" />
+                <hr />
+                <InvalidateQueryButton queryKey="users" key="invalidate_users" />
+                <hr />
+                <RefetchQueryButton queryKey="news" key="refetch_news" />
+                <hr />
+                <RefetchQueryButton queryKey="users" key="refetch_users" />
+                <hr />
+                <div style={{ padding: 10 }}>
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (userId) {
+                        fetchUserById({ userId });
                       }
                     }}
-                  />
-                  <label htmlFor="qdt">&nbsp;Enable React-Query devtools</label>
+                  >
+                    User id:{' '}
+                    <input
+                      name="userId"
+                      type="text"
+                      onChange={(e) => setUserId(e.target.value)}
+                      required
+                    />
+                    <br />
+                    <br />
+                    <button type="submit">fetch user</button>
+                  </form>
                 </div>
-              )}
-              <hr />
-              <InvalidateQueryButton queryKey="news" key="invalidate_news" />
-              <hr />
-              <InvalidateQueryButton queryKey="users" key="invalidate_users" />
-              <hr />
-              <RefetchQueryButton queryKey="news" key="refetch_news" />
-              <hr />
-              <RefetchQueryButton queryKey="users" key="refetch_users" />
-              <hr />
-              <div style={{ padding: 10 }}>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (userId) {
-                      fetchUserById({ userId });
-                    }
-                  }}
-                >
-                  User id:{' '}
-                  <input
-                    name="userId"
-                    type="text"
-                    onChange={(e) => setUserId(e.target.value)}
-                    required
-                  />
-                  <br />
-                  <br />
-                  <button type="submit">fetch user</button>
-                </form>
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </div>
         </div>
       </div>
       {isQueryDevToolsUsed && (

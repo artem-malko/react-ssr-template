@@ -3,7 +3,13 @@ import { colors } from 'ui/styles/shared';
 
 export const styles = createStyles({
   root: {
-    position: 'sticky',
+    position: 'relative',
+    zIndex: 1,
+    height: 50,
+  },
+
+  menu: {
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,

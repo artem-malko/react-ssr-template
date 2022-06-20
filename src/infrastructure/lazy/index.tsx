@@ -7,17 +7,21 @@ interface LazyComponentModule<Props> {
   ['default']: React.ComponentType<Props>;
 }
 
+export type LazyComponentLoader<Props> = () => Promise<LazyComponentModule<Props>>;
+
+export type LazyComponentLoaderFallback = (asyncStatus: LazyComponentLoaderAsyncStatus) => JSX.Element;
+
 interface LazyProps<Props> {
   loader: () => Promise<LazyComponentModule<Props>>;
   render: (component: LazyExoticComponent<ComponentType<Props>>) => JSX.Element | false;
-  fallback?: (asyncStatus: AsyncStatus) => JSX.Element;
+  fallback?: LazyComponentLoaderFallback;
 }
 
 interface LazyState<Props> {
   Comp: LazyExoticComponent<ComponentType<Props>>;
 }
 
-type AsyncStatus = 'loading' | 'error';
+type LazyComponentLoaderAsyncStatus = 'loading' | 'error';
 
 /**
  * Every React.lazy call inside render has to be:
@@ -30,7 +34,7 @@ type AsyncStatus = 'loading' | 'error';
  * — do not retry on offline mode
  */
 export function createLazyComponentLoader(
-  logError: (error: Error) => void = noopFunc,
+  logError: (error: Error) => void = process.env.NODE_ENV === 'development' ? console.error : noopFunc,
   defaultPlaceholder = <></>,
 ) {
   return class Lazy<Props> extends Component<LazyProps<Props>, LazyState<Props>> {

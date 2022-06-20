@@ -145,6 +145,9 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
          *
          * Much better!
          * More info is here https://github.com/reactwg/react-18/discussions/114
+         *
+         * You can manage, what should be preloaded via file name.
+         * Checkout isNeededToBePreloaded function for more info
          */
         const pageDependencies = dependencyStats[`${state.appContext.page.name}Page`] || [];
         const pageDependenciesScriptTags = pageDependencies

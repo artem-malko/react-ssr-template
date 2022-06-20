@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useId, useState } from 'react';
 import { useAppRouter } from 'hooks/useAppRouter';
 import { UserForm } from '../form';
 import { UsersPage } from 'ui/pages/users';
@@ -16,6 +16,8 @@ type Props = {
  */
 export const UserEditor = memo<Props>(({ userId }) => {
   const { patchPage } = useAppRouter();
+  const optimisticUpdateCheckboxId = useId();
+  const [useOptimisticUpdate, setUseOptimisticUpdate] = useState(false);
 
   const { queryResult: userByIdResult } = useUserById({ userId });
   const disableActiveUser = useCallback(
@@ -29,7 +31,7 @@ export const UserEditor = memo<Props>(({ userId }) => {
       })),
     [patchPage],
   );
-  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser();
+  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser({ useOptimisticUpdate });
 
   if (userByIdResult.data) {
     return (
@@ -67,6 +69,17 @@ export const UserEditor = memo<Props>(({ userId }) => {
         <hr />
         <br />
         <br />
+        <label htmlFor={optimisticUpdateCheckboxId}>Use optimistic update&nbsp;</label>
+        <input
+          type="checkbox"
+          id={optimisticUpdateCheckboxId}
+          defaultChecked={useOptimisticUpdate}
+          onChange={(e) => {
+            setUseOptimisticUpdate(e.target.checked);
+          }}
+        />
+        <br />
+        <br />
         <UserForm
           onSubmit={(name, status) => {
             editUser({ name, status, id: userId });
@@ -76,7 +89,8 @@ export const UserEditor = memo<Props>(({ userId }) => {
         />
         <br />
         <br />
-        <button onClick={disableActiveUser}>Cancel</button>
+
+        <button onClick={disableActiveUser}>Close editor</button>
       </div>
     );
   }

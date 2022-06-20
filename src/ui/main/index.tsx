@@ -39,7 +39,7 @@ export const Main = memo<Props>(({ renderCallback }) => {
         }
         base={
           <div style={{ padding: 10 }}>
-            <div style={{ margin: '-10px -10px 0', position: 'sticky', top: 0 }}>
+            <div style={{ margin: '-10px -10px 0' }}>
               <DevMenu />
             </div>
 

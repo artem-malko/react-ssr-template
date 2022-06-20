@@ -68,7 +68,7 @@ export class ReactStreamRenderEnhancer extends Writable {
        *
        * This data will be used as an initialQueryState in the hydration process
        */
-      if (readyQuery && isItSafeToWrite(chunk)) {
+      if (readyQuery) {
         this.queryStorage[readyQuery.queryHash] = true;
         this.queriesCache.push(readyQuery.queryHash);
 
@@ -98,7 +98,7 @@ export class ReactStreamRenderEnhancer extends Writable {
      * This should pick up any new styles that hasn't been previously
      * written to this stream.
      */
-    if (this.cssProviderStore.hasStyles() && isItSafeToWrite(chunk)) {
+    if (this.cssProviderStore.hasStyles()) {
       const styles = this.cssProviderStore.getStyles();
       const randomStyleElementVarName = generateRandomId('__style');
       const randomStyleIdName = generateRandomId('__style_id');
@@ -167,18 +167,4 @@ function wrapWithImmediateScript(code: string) {
 
 function generateRandomId(prefix?: string) {
   return `${prefix || ''}_${(Math.random() * 1000000).toFixed()}`;
-}
-
-/**
- * Somtimes it is not safe to write into writeable
- * For example, it can be inline style attr right now in a chunk
- * So, we have to wait until any tag will be in the beggining of the chunk
- *
- * Looks like it is a bug inside React
- * @TODO check after react 18.2.0 release
- */
-function isItSafeToWrite(chunk: any) {
-  const stringifiedChunk = chunk.toString();
-
-  return stringifiedChunk[0] === '<';
 }
