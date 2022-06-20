@@ -29,7 +29,11 @@ export default memo<{ page: UsersPage }>(({ page }) => {
       <div style={{ padding: 20, maxWidth: '50%' }}>
         <p>
           There is a list of users. These users are loaded via a fake API (checkout{' '}
-          <Link href="https://github.com/artem-malko/react-ssr-template/blob/main/src/applications/server/services/fakeCrud/index.ts">
+          <Link
+            href="https://github.com/artem-malko/react-ssr-template/blob/main/src/applications/server/services/fakeCrud/index.ts"
+            doNotPreventDefault
+            target="_blank"
+          >
             sources on github
           </Link>
           &nbsp;for more info).
