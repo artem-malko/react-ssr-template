@@ -55,17 +55,17 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   let didError = false;
 
   // @JUST_FOR_TEST
-  const forcedToUseOnComplete = req.query['render'] === 'useOnComplete';
+  const forcedToOnAllReadyRender = req.query['render'] === 'onAllReady';
 
   /**
    * For SEO specifically, where the correct status code is extra important,
-   * you can use onCompleteAll instead of onReadyToStream as the place
+   * you can use onAllReady instead of onReadyToStream as the place
    * where you flush the stream. By that point, you'll definitely know if it errored or not.
    * However, that also delays when you start giving content to the bot,
    * and giving it earlier may give you better rankings due to perf.
    */
-  const onCompleteAll = req.isSearchBot;
-  const reactSSRMethodName = forcedToUseOnComplete || onCompleteAll ? 'onAllReady' : 'onShellReady';
+  const useOnAllReadyRender = req.isSearchBot;
+  const reactSSRMethodName = forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
 
   const storePromise = restoreStore(req, res);
 

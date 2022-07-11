@@ -25,7 +25,6 @@ type AppLinkProps = GeneralProps & {
 type BaseLinkProps = GeneralProps & {
   page?: never;
   href?: string;
-  preventDefault?: boolean;
 };
 type Props = BaseLinkProps | AppLinkProps;
 /**
@@ -36,11 +35,8 @@ type Props = BaseLinkProps | AppLinkProps;
  * Moreover, that link with the page prop opens that page without a browser reload by default.
  *
  * For an internal link you can switch off preventDefault (doNotPreventDefault),
- * and for an external link you can switch on preventDefault (preventDefault)
  *
- * Such difference is used, cause preventDefault for the internal link is a default.
- * preventDefault for an external link — is a specfific behaviour.
- * By default we need to open a new page, if that page is external.
+ * Such difference is used, cause preventDefault for the internal link is a default behaviour.
  */
 export const Link = memo<React.PropsWithChildren<Props>>((props) => {
   if ('page' in props && !!props.page) {
@@ -53,7 +49,7 @@ export const Link = memo<React.PropsWithChildren<Props>>((props) => {
 Link.displayName = 'Link';
 
 const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
-  const { page, ...baseLinkProps } = props;
+  const { page, doNotPreventDefault, ...baseLinkProps } = props;
   const href = compileAppURL({
     page: props.page,
     URLQueryParams: {},
@@ -62,6 +58,10 @@ const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
   const dispatch = useDispatch();
   // @TODO use useEvent from React
   const onClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!doNotPreventDefault) {
+      e.preventDefault();
+    }
+
     if (props.onClick) {
       props.onClick(e);
     }
@@ -70,12 +70,7 @@ const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
   };
 
   return (
-    <BaseLink
-      {...baseLinkProps}
-      href={href}
-      onClick={onClick}
-      preventDefault={!props.doNotPreventDefault}
-    >
+    <BaseLink {...baseLinkProps} href={href} onClick={onClick}>
       {props.children}
     </BaseLink>
   );
@@ -83,29 +78,16 @@ const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
 AppLink.displayName = 'AppLink';
 
 const BaseLink = memo<PropsWithChildren<BaseLinkProps>>((props) => {
-  const {
-    href,
-    children,
-    theme = 'default',
-    tabIndex,
-    inlineStyles,
-    target,
-    onClick,
-    preventDefault,
-  } = props;
+  const { href, children, theme = 'default', tabIndex, inlineStyles, target, onClick } = props;
   const css = useStyles(styles);
   const dtValue = props[DATA_T_ATTRIBUTE_NAME];
   const onClickHandler = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
-      if (preventDefault) {
-        event.preventDefault();
-      }
-
       if (onClick) {
         onClick(event);
       }
     },
-    [onClick, preventDefault],
+    [onClick],
   );
   if (!props.href) {
     return (

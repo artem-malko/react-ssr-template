@@ -73,8 +73,8 @@ export default memo<{ page: NewsPage }>(({ page }) => {
       <br /> You can switch to a prev behavior, when client should wait,
       <br /> when all server side requests will be finished to send the first byte to client.
       <br /> Open{' '}
-      <Link href="/news?p=1&render=useOnComplete" target="_blank">
-        useOnComplete
+      <Link href="/news?p=1&render=onAllReady" target="_blank">
+        onAllReady
       </Link>{' '}
       to wait for the API response, and then send the first byte
       <br /> By the way, NewList component will be loaded with React.lazy and 10000ms timeout.
