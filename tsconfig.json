@@ -20,7 +20,7 @@
     "isolatedModules": true,
     "alwaysStrict": true,
     "pretty": false,
-    "jsx": "react-jsxdev",
+    "jsx": "react-jsx",
     "strict": true,
     "strictNullChecks": true,
     "target": "es6",
