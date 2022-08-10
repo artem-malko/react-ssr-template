@@ -1,6 +1,6 @@
 import { generateCss } from 'infrastructure/css/generator';
 import { CSSServerProviderStore } from 'infrastructure/css/provider/serverStore';
-import { Query, QueryClient } from 'react-query';
+import { Query, QueryClient } from '@tanstack/react-query';
 import { Writable } from 'node:stream';
 
 /**

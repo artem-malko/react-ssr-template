@@ -1,5 +1,5 @@
 import { memo, useRef, useState } from 'react';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useStyles } from 'infrastructure/css/hook';
 import { Popover } from 'ui/kit/popover';
 import { usePopup, usePopupActions } from 'ui/kit/popup/infrastructure/hook';

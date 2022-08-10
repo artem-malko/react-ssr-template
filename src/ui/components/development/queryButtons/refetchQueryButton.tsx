@@ -1,7 +1,7 @@
 import { useNewsQueryMainKey } from 'core/queries/news/common';
 import { useUsersQueryMainKey } from 'core/queries/users/common';
 import { memo, useCallback } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   queryKey: typeof useNewsQueryMainKey | typeof useUsersQueryMainKey;

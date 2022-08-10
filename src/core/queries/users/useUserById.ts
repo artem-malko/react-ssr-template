@@ -3,7 +3,7 @@ import { FetchUserByIdResponse, User } from 'core/services/fake/types';
 import { useServices } from 'core/services/shared/context';
 import { useAppQuery } from 'infrastructure/query/useAppQuery';
 import { useCallback } from 'react';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useUsersQueryMainKey } from './common';
 
 type UserByIdParams = {

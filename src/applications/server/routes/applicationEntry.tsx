@@ -1,7 +1,7 @@
 import { Writable } from 'node:stream';
 import express from 'express';
 import { Store } from 'redux';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppState } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
 import { restoreStore } from '../store';
@@ -65,7 +65,8 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
    * and giving it earlier may give you better rankings due to perf.
    */
   const useOnAllReadyRender = req.isSearchBot;
-  const reactSSRMethodName = forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
+  const reactSSRMethodName =
+    forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
 
   const storePromise = restoreStore(req, res);
 
@@ -215,6 +216,8 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                     );
 
               stream.once('finish', () => {
+                queryClient.clear();
+
                 if (renderTimeoutId) {
                   clearTimeout(renderTimeoutId);
                 }

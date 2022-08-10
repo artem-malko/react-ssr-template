@@ -1,6 +1,6 @@
 import { Services } from 'core/services';
 import { AnyServiceParsedError } from 'infrastructure/request/types';
-import { QueryFunctionContext, QueryKey, QueryFunction, UseQueryResult } from 'react-query';
+import { QueryFunctionContext, QueryKey, QueryFunction, UseQueryResult } from '@tanstack/react-query';
 
 export type AppQueryFunction<T = unknown, TQueryKey extends QueryKey = QueryKey> = (params: {
   services: Services;

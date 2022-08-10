@@ -17,6 +17,6 @@ export interface ApplicationConfig {
   // HackerNews API URL
   hackerNewsAPIURL: string;
 
-  // Fake API to demonstrate all react-query's advantages
+  // Fake API to demonstrate all @tanstack/react-querys advantages
   fakeCRUDAPI: string;
 }

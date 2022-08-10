@@ -1,5 +1,5 @@
 import { AnyServiceParsedError } from 'infrastructure/request/types';
-import { QueryKey, useInfiniteQuery, UseInfiniteQueryOptions } from 'react-query';
+import { QueryKey, useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query';
 import { AppQueryFunction } from './types';
 import { useQueryEnhancer } from './useQueryEnhancer';
 

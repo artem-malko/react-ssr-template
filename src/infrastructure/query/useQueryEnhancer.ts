@@ -1,5 +1,11 @@
 import { useServices } from 'core/services/shared/context';
-import { hashQueryKey, hydrate, QueryFunctionContext, QueryKey, useQueryClient } from 'react-query';
+import {
+  hashQueryKey,
+  hydrate,
+  QueryFunctionContext,
+  QueryKey,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { getDehydratedQueryStateFromDom } from './getDehydratedQueryStateFromDom';
 import { AppQueryFunction } from './types';
 /**

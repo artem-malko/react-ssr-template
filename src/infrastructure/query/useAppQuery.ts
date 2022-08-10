@@ -7,7 +7,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 import { AnyServiceParsedError } from 'infrastructure/request/types';
 import { AppQueryFunction } from './types';
 import { useQueryEnhancer } from './useQueryEnhancer';

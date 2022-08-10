@@ -1,7 +1,7 @@
 import { hydrateRoot } from 'react-dom/client';
 import { Provider as ReduxStoreProvider } from 'react-redux';
 import { Application } from 'applications/application';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { FC, StrictMode } from 'react';
 import { ConfigContext } from 'config/react';
 import { getClientApplicationConfig } from 'config/generator/client';

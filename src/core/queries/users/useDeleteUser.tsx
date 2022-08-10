@@ -1,5 +1,5 @@
 import { useServices } from 'core/services/shared/context';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useToast } from 'ui/kit/toast/infrastructure/hook';
 import { useUserQueriesInvalidate } from './common';
 

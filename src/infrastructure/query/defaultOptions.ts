@@ -1,4 +1,4 @@
-import { DefaultOptions } from 'react-query';
+import { DefaultOptions } from '@tanstack/react-query';
 
 /**
  * Just some reasonable default options for react-query
