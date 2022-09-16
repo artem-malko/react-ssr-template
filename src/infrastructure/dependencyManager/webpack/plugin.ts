@@ -145,6 +145,7 @@ const getFiles = (
   childrenIds?: (string | number)[],
 ) => {
   const mutableFoundFiles: string[] = [];
+  const mutabledProcessedChildren: Record<string, boolean> = {};
 
   function innerFunc(
     chunkIdToFileNameMap: { [chunkId: string]: string },
@@ -155,7 +156,15 @@ const getFiles = (
       return mutableFoundFiles;
     }
 
+    const hasUnProcessedChildren = !!childrenIds.find((childId) => !mutabledProcessedChildren[childId]);
+
+    if (!hasUnProcessedChildren) {
+      return mutableFoundFiles;
+    }
+
     childrenIds.forEach((childId) => {
+      mutabledProcessedChildren[childId] = true;
+
       const fileName = chunkIdToFileNameMap[childId];
 
       if (chunkIdToChildrenIds[childId]?.length) {

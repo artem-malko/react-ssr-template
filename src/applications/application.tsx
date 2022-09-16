@@ -15,7 +15,6 @@ export const Application = memo<{
     pathMapping: AssetsList;
     inlineContent: string;
   };
-  polyfillsSourceCode: string;
   session: Session;
   publicPath: string;
   clientApplicationConfig: ApplicationConfig;
@@ -24,7 +23,6 @@ export const Application = memo<{
   ({
     store,
     assets,
-    polyfillsSourceCode,
     session,
     publicPath,
     clientApplicationConfig,
@@ -41,9 +39,6 @@ export const Application = memo<{
         .replace(/</g, '\\u003c')};\
       var __staticResourcesPathMapping = ${JSON.stringify(assets)};\
       var __session = ${JSON.stringify(session)};\
-      var __polyfillsSourceCode = ${JSON.stringify({
-        code: polyfillsSourceCode,
-      })};\
       ${assets.inlineContent}
     `;
     const cssPath = getFullPathForStaticResource({
@@ -69,7 +64,6 @@ export const Application = memo<{
         />
 
         <script dangerouslySetInnerHTML={{ __html: inlineScript }} />
-        {!!polyfillsSourceCode && <script dangerouslySetInnerHTML={{ __html: polyfillsSourceCode }} />}
         {/* Insert a link to all stylesheets for searchbots and other users without JS */}
         <noscript>
           <link href={cssPath} rel="stylesheet" />

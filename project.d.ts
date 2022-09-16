@@ -10,9 +10,6 @@ interface Window {
     inlineContent: string;
   };
   __session: object;
-  __polyfillsSourceCode: {
-    code: string;
-  };
   __server_styles: string[];
 }
 

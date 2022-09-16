@@ -73,7 +73,7 @@ const serverConfig: webpack.Configuration = {
    * Client-side builder creates some stats files.
    * These files have some info about client build, its files.
    * This info can be used somewhere on the server-side.
-   * For example, for reading webpack runtime, polyfills and so on.
+   * For example, for reading webpack runtime and so on.
    */
   externals: [
     { [`./${ASSETS_STATS_FILE_NAME}`]: `commonjs ./${ASSETS_STATS_FILE_NAME}` },

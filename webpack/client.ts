@@ -27,13 +27,6 @@ const clientConfig: webpack.Configuration = {
   entry: {
     // The main entry point
     app: './src/applications/client/index.tsx',
-
-    // Polyfills
-    intersectionObserver: './src/polyfills/intersectionObserver.js',
-    requestidlecallback: './src/polyfills/requestidlecallback.js',
-    rafPolyfill: './src/polyfills/raf.js',
-    es6Shim: './src/polyfills/es6shim.js',
-    pad: './src/polyfills/pad.js',
   },
 
   output: {

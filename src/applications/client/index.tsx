@@ -69,7 +69,6 @@ const ApplicationWithProviders: FC<{ store: Store<AppState> }> = ({ store }) => 
                   <PopupControllerContext.Provider value={popupController}>
                     <Application
                       assets={window.__staticResourcesPathMapping}
-                      polyfillsSourceCode={window.__polyfillsSourceCode.code}
                       publicPath={config.publicPath}
                       session={session}
                       store={store}

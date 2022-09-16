@@ -6,7 +6,6 @@ import { AppState } from 'core/store/types';
 import { compileAppURL } from 'ui/main/routing';
 import { restoreStore } from '../store';
 import { AssetsData, readAssetsInfo, readPageDependenciesStats } from '../utils/assets';
-import { getAllPolyfillsSourceCode } from '../utils/getPolyfills';
 import { createRequest } from 'infrastructure/request';
 import { createServices } from 'core/services';
 import { createWindowApi } from 'core/platform/window/server';
@@ -43,8 +42,6 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
   res.set('X-Content-Type-Options', 'nosniff');
   res.set('X-XSS-Protection', '1');
   res.set('X-Frame-Options', 'deny');
-
-  const polyfillsSourceCode = getAllPolyfillsSourceCode(req);
 
   // @TODO
   res.socket?.on('error', (error) => {
@@ -173,7 +170,6 @@ export const createApplicationRouter: () => express.Handler = () => (req, res) =
                       <QueryClientProvider client={queryClient}>
                         <CSSProvider cssProviderStore={cssProviderStore}>
                           <Application
-                            polyfillsSourceCode={polyfillsSourceCode}
                             publicPath={publicPath}
                             assets={{
                               inlineContent: assetsInfo.inlineContent,
