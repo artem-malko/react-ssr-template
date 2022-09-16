@@ -165,7 +165,7 @@ tsc:
 # Build a docker image with NodeJS App inside
 .PHONY: build-nodejs-app-image
 build-nodejs-app-image:
-	docker build --build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) -t ghcr.io/artem-malko/react-ssr-template/node-app:latest .
+	docker build --platform linux/amd64 --build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) -t ghcr.io/artem-malko/react-ssr-template/node-app:latest .
 
 # Push a docker image with NodeJS App inside
 .PHONY: push-nodejs-app-image
