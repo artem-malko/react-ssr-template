@@ -16,9 +16,10 @@ function initLogger() {
           target: 'pino/file',
         }
       : {
-          // target: 'pino-pretty',
-          // @TODO move to pino-pretty, when pino fixes theier webpack plugin
-          target: 'pino/file',
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+          },
         },
   });
 
