@@ -32,7 +32,7 @@
     "@types/redux-logger": "3.0.9",
     "@types/uuid": "8.3.4",
     "@types/webpack-env": "1.18.0",
-    "axios": "0.27.2",
+    "axios": "1.0.0",
     "bidi-css-js": "3.1.0",
     "compression-webpack-plugin": "10.0.0",
     "cookie-parser": "1.4.6",
