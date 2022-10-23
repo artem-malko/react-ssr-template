@@ -43,3 +43,5 @@ node_modules/
 build
 
 .DS_Store
+
+src/local.ts
