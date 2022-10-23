@@ -14,4 +14,4 @@ build
 docs
 coverage
 
-/src/config/generator/local.ts
+.env.local

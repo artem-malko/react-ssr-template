@@ -44,4 +44,4 @@ build
 
 .DS_Store
 
-src/local.ts
+.env.local

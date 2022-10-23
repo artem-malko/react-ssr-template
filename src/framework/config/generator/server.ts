@@ -1,8 +1,6 @@
 import { parseEnvParams } from 'framework/config/utils/parseEnvParams';
-import { removeUndefinedFields } from 'framework/config/utils/removeUndefinedFields';
 
 import { BaseApplicationConfig, BaseServerConfig } from '../types';
-import localTemplate from './local_template';
 
 if (process.env.APP_ENV === 'client') {
   throw new Error('Config generator should not be existed on client!');
@@ -10,24 +8,13 @@ if (process.env.APP_ENV === 'client') {
 
 const envParams = (process && process.env) || {};
 
-let local = localTemplate;
-
-try {
-  if (process.env.NODE_ENV !== 'production') {
-    local = require('../../../local').default;
-  }
-} catch {
-  // No local config provided, nothing to do
-}
-
 /**
  * Build config for a server which serve an application
  */
 const buildServerConfig = <Config extends BaseServerConfig>(serverConfig: Config): Config => {
   return {
     ...serverConfig,
-    ...removeUndefinedFields(parseEnvParams(serverConfig, envParams, 'server')),
-    ...removeUndefinedFields(local.serverConfig),
+    ...parseEnvParams(serverConfig, envParams, 'server'),
   };
 };
 
@@ -39,8 +26,8 @@ const buildServerApplicationConfig = <Config extends BaseApplicationConfig>(
 ): Config => {
   return {
     ...serverApplicationConfig,
-    ...removeUndefinedFields(parseEnvParams(serverApplicationConfig, envParams, 'server_app')),
-    ...removeUndefinedFields(local.serverApplicationConfig),
+    ...parseEnvParams(serverApplicationConfig, envParams, 'app'),
+    ...parseEnvParams(serverApplicationConfig, envParams, 'server_app'),
   };
 };
 
@@ -52,8 +39,8 @@ const buildClientApplicationConfig = <Config extends BaseApplicationConfig>(
 ): Config => {
   return {
     ...clientApplicationConfig,
-    ...removeUndefinedFields(parseEnvParams(clientApplicationConfig, envParams, 'client_app')),
-    ...removeUndefinedFields(local.clientApplicationConfig),
+    ...parseEnvParams(clientApplicationConfig, envParams, 'app'),
+    ...parseEnvParams(clientApplicationConfig, envParams, 'client_app'),
   };
 };
 

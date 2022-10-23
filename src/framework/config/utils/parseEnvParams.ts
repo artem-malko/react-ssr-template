@@ -25,13 +25,13 @@ import { AnyConfig, AnyConfigValue } from '../types';
 export function parseEnvParams<T extends AnyConfig>(
   referenceConfig: T,
   envParams: NodeJS.ProcessEnv,
-  prefix: string,
+  prefix?: string,
 ): Partial<T> {
   const mutableResult: Partial<T> = {};
   const configKeys = Object.keys(referenceConfig);
 
   configKeys.forEach((key) => {
-    const unixKey = camel2unix(prefix, key);
+    const unixKey = camel2unix(key, prefix);
     // eslint-disable-next-line no-prototype-builtins
     const envValue = envParams.hasOwnProperty(unixKey) ? envParams[unixKey] : undefined;
     const referenceConfigValue = referenceConfig[key] as AnyConfigValue;
@@ -88,6 +88,8 @@ function resolveValue(baseValue: AnyConfigValue, envValue: string, key = 'unknow
  * utils.camel2unix('someprefix','base2ApiUrl'); =>
  * SOMEPREFIX_BASE_2_API_URL
  */
-function camel2unix(prefix: string, str: string) {
-  return snakeCase(prefix + '-' + str).toUpperCase();
+function camel2unix(str: string, prefix?: string) {
+  const variableName = prefix ? `${prefix}-${str}` : str;
+
+  return snakeCase(variableName).toUpperCase();
 }

@@ -1,3 +1,8 @@
+# Include all env variables from .env.local
+-include .env.local
+# And make them available for an application
+export
+
 DOCKER_HUB_PATH=ghcr.io/artem-malko/react-ssr-template/node-app
 CYAN=`tput bold && tput setaf 6`
 RESET=`tput sgr0`
