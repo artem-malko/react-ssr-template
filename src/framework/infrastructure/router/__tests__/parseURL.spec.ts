@@ -67,7 +67,6 @@ describe('parse URL', () => {
     const result = [
       openAnyPageAction({
         name: 'error404',
-        errorCode: 404,
       }),
     ];
 
@@ -87,7 +86,6 @@ describe('parse URL', () => {
     const result = [
       openAnyPageAction({
         name: 'error404',
-        errorCode: 404,
       }),
     ];
 
@@ -179,11 +177,9 @@ describe('parse URL', () => {
     const URL = 'page_with_required_params_with_query/100?query_param=query_value';
     const result = [
       {
-        type: 'setQueryStringParams',
+        type: 'setQueryStringParamsAction',
         payload: {
-          params: {
-            query_param: ['query_value'],
-          },
+          query_param: ['query_value'],
         },
       },
       openAnyPageAction({
@@ -210,11 +206,9 @@ describe('parse URL', () => {
     const URL = 'page_with_required_params_with_query/100?query_param';
     const result = [
       {
-        type: 'setQueryStringParams',
+        type: 'setQueryStringParamsAction',
         payload: {
-          params: {
-            query_param: [''],
-          },
+          query_param: [''],
         },
       },
       openAnyPageAction({
@@ -243,11 +237,9 @@ describe('parse URL', () => {
       'page_with_required_params_with_query/100?query_param=query_value1&query_param=query_value2';
     const result = [
       {
-        type: 'setQueryStringParams',
+        type: 'setQueryStringParamsAction',
         payload: {
-          params: {
-            query_param: ['query_value1', 'query_value2'],
-          },
+          query_param: ['query_value1', 'query_value2'],
         },
       },
       openAnyPageAction({
@@ -387,7 +379,6 @@ describe('parse URL', () => {
       const result = [
         openAnyPageAction({
           name: 'error404',
-          errorCode: 404,
         }),
       ];
 

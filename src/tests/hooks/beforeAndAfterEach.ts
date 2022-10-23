@@ -7,8 +7,6 @@ import { colorize } from 'lib/console';
 
 import { DATA_T_ATTRIBUTE_NAME } from '../dom/dt';
 
-
-
 let cleanupJSDOM: (() => any) | undefined;
 let currentTestTitle: string | undefined;
 let currentTestFileName: string | undefined;
@@ -25,7 +23,7 @@ exports.mochaHooks = {
     currentTestTitle = this.currentTest && this.currentTest.title;
 
     if ((currentTestFileName || 'dom.spec.tsx').endsWith('.tsx')) {
-      cleanupJSDOM = require('infrastructure/tests/dom/env')();
+      cleanupJSDOM = require('tests/dom/env')();
     }
   },
 

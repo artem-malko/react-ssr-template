@@ -13,24 +13,18 @@ describe('config / utils', () => {
 
     it(`Do not replace number value in initial config
         if there is an incorrect replacement in env params`, () => {
-      expect(parseEnvParams({ port: 3000 }, { SERVER_PORT: 'ase' }, 'server')).to.deep.eq({
-        port: 3000,
-      });
+      expect(parseEnvParams({ port: 3000 }, { SERVER_PORT: 'ase' }, 'server')).to.deep.eq({});
     });
 
     it(`Do not replace number value in initial config
         if there is no any replacement in env params
         (regExp is for client, env params for server)`, () => {
-      expect(parseEnvParams({ port: 3000 }, { SERVER_PORT: '5000' }, 'client')).to.deep.eq({
-        port: 3000,
-      });
+      expect(parseEnvParams({ port: 3000 }, { SERVER_PORT: '5000' }, 'client')).to.deep.eq({});
     });
 
     it(`Do not replace any value in initial config
         if there is no any replacement in env params`, () => {
-      expect(parseEnvParams({ port: 3000 }, { CLIENT_LABEL: 'label' }, 'client')).to.deep.eq({
-        port: 3000,
-      });
+      expect(parseEnvParams({ port: 3000 }, { CLIENT_LABEL: 'label' }, 'client')).to.deep.eq({});
     });
 
     it(`Replace string value in initial config
