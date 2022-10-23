@@ -33,7 +33,7 @@ FROM ghcr.io/artem-malko/react-ssr-template/node-app:latest AS exists-build
 
 # Production image, copy all the files and run it
 FROM node:alpine
-ARG  SERVER_PORT=5000
+ARG  SERVER_PORT=4000
 
 RUN apk update && apk add --no-cache make
 
@@ -52,4 +52,5 @@ COPY --from=builder /usr/app/build ./build
 COPY Makefile /usr/app/
 
 EXPOSE $SERVER_PORT
+
 CMD ["make", "start-prod"]
