@@ -3,10 +3,9 @@ import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { Provider as ReduxStoreProvider } from 'react-redux';
 
-
-import { getClientApplicationConfig } from 'config/generator/client';
-import { ConfigContext } from 'config/react';
 import { Shell } from 'framework/applications/shell';
+import { getClientApplicationConfig } from 'framework/config/generator/client';
+import { ConfigContext } from 'framework/config/react';
 import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';

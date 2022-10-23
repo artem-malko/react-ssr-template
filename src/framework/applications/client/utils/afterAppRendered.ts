@@ -1,9 +1,9 @@
-import { ApplicationConfig } from 'config/types';
+import { BaseApplicationConfig } from 'framework/config/types';
 import { loadAllStylesOnClient } from 'framework/infrastructure/css/loadAllStylesOnClient';
 import { sendInfoLog } from 'framework/infrastructure/logger';
 import { getFullPathForStaticResource } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 
-export const afterAppRendered = (config: ApplicationConfig) => {
+export const afterAppRendered = (config: BaseApplicationConfig) => {
   loadAllStylesOnClient({
     fileName: getFullPathForStaticResource({
       chunkName: 'stylesLtr',

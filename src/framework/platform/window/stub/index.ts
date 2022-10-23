@@ -1,7 +1,6 @@
-import { createMethodStubber } from 'framework/infrastructure/tests/stub';
+import { createMethodStubber } from 'tests/stub';
 
 import { WindowAPI } from '../types';
-
 
 export const createStubedWindowAPI = () => {
   const stubMethod = createMethodStubber('window');

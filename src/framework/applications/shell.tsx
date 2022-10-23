@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 
-
-import { APPLICATION_CONFIG_VAR_NAME } from 'config/generator/shared';
-import { ApplicationConfig } from 'config/types';
+import { APPLICATION_CONFIG_VAR_NAME } from 'framework/config/generator/shared';
+import { BaseApplicationConfig } from 'framework/config/types';
 import { AnyAppState } from 'framework/infrastructure/router/types';
 import { getFullPathForStaticResource } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 import { Session } from 'framework/session/types';
@@ -17,7 +16,7 @@ export const Shell = memo<{
   };
   session: Session;
   publicPath: string;
-  clientApplicationConfig: ApplicationConfig;
+  clientApplicationConfig: BaseApplicationConfig;
   mainComp: React.ReactNode;
   onRender?: () => void;
 }>(

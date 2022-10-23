@@ -1,10 +1,9 @@
 import { isServer } from 'lib/browser';
 
-import { ApplicationConfig } from '../types';
+import { BaseApplicationConfig } from '../types';
 import { APPLICATION_CONFIG_VAR_NAME } from './shared';
 
-
-export const getClientApplicationConfig = (): ApplicationConfig => {
+export const getClientApplicationConfig = <Config extends BaseApplicationConfig>(): Config => {
   if (isServer) {
     throw new Error('Can not get client config on a server!');
   }

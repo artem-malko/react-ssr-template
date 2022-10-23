@@ -1,3 +1,4 @@
+import { ApplicationConfig } from 'application/config/types';
 import { compileAppURL } from 'application/main/routing';
 import { createServices } from 'application/services';
 import { ServiceContext } from 'application/services/shared/context';
@@ -6,13 +7,13 @@ import { PopupController } from 'application/ui/kit/popup/infrastructure/control
 import { ToastControllerContext } from 'application/ui/kit/toast/infrastructure/context';
 import { ToastController } from 'application/ui/kit/toast/infrastructure/controller';
 import { Main } from 'application/ui/main';
-import { getClientApplicationConfig } from 'config/generator/client';
 import { startClientApplication } from 'framework/applications/client';
+import { getClientApplicationConfig } from 'framework/config/generator/client';
 import { createRequest } from 'framework/infrastructure/request';
 
 const toastController = new ToastController();
 const popupController = new PopupController();
-const config = getClientApplicationConfig();
+const config = getClientApplicationConfig<ApplicationConfig>();
 
 const requester = createRequest({
   networkTimeout: config.networkTimeout,

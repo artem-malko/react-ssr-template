@@ -7,10 +7,9 @@ import { renderToPipeableStream } from 'react-dom/server';
 import { Provider as ReduxStoreProvider } from 'react-redux';
 import { AnyAction, Store } from 'redux';
 
-
-import { clientApplicationConfig, serverApplicationConfig } from 'config/generator/server';
-import { ConfigContext } from 'config/react';
 import { Shell } from 'framework/applications/shell';
+import { ConfigContext } from 'framework/config/react';
+import { BaseApplicationConfig } from 'framework/config/types';
 import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
@@ -43,9 +42,11 @@ type Params = {
   parseURL: (URL: string) => AnyAction[];
   compileAppURL: (appContext: AnyAppContext) => string;
   MainComp: React.ReactNode;
+  serverApplicationConfig: BaseApplicationConfig;
+  clientApplicationConfig: BaseApplicationConfig;
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
-  ({ parseURL, compileAppURL, MainComp }) =>
+  ({ parseURL, compileAppURL, MainComp, serverApplicationConfig, clientApplicationConfig }) =>
   (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
     res.set('X-XSS-Protection', '1');

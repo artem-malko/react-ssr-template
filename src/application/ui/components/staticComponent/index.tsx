@@ -1,8 +1,8 @@
-import { memo, useCallback, useContext, useRef, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 
+import { useConfig } from 'application/config/hook';
 import { Alignment, Placement, Popover } from 'application/ui/kit/popover';
-import { useConfig } from 'config/react';
-import { SessionContext } from 'framework/session/context';
+import { useSession } from 'framework/session/hook';
 
 export const StaticComponent = memo(() => {
   const config = useConfig();
@@ -33,7 +33,7 @@ export const StaticComponent = memo(() => {
     },
     [toggle],
   );
-  const session = useContext(SessionContext);
+  const session = useSession();
 
   return (
     <div

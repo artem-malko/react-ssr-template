@@ -1,12 +1,20 @@
-
+import {
+  defaultClientApplicationConfig,
+  defaultServerApplicationConfig,
+} from 'application/config/defaults/application';
+import { defaultServerConfig } from 'application/config/defaults/server';
 import { compileAppURL, routes } from 'application/main/routing';
 import { createServices } from 'application/services';
 import { ServiceContext } from 'application/services/shared/context';
 import { Main } from 'application/ui/main';
-import { serverApplicationConfig } from 'config/generator/server';
 import { startServer } from 'framework/applications/server';
 import { createApplicationRouteHandler } from 'framework/applications/server/createApplicationRouteHandler';
 import { UAParser } from 'framework/applications/server/middlewares/uaParser';
+import {
+  buildClientApplicationConfig,
+  buildServerApplicationConfig,
+  buildServerConfig,
+} from 'framework/config/generator/server';
 import { createRequest } from 'framework/infrastructure/request';
 import { createURLParser } from 'framework/infrastructure/router/parseURL';
 
@@ -22,6 +30,10 @@ const parseURL = createURLParser({
   }),
 });
 
+const serverApplicationConfig = buildServerApplicationConfig(defaultServerApplicationConfig);
+const clientApplicationConfig = buildClientApplicationConfig(defaultClientApplicationConfig);
+const serverConfig = buildServerConfig(defaultServerConfig);
+
 const requester = createRequest({
   networkTimeout: serverApplicationConfig.networkTimeout,
 });
@@ -33,7 +45,21 @@ const services = createServices({
   },
 });
 
+const renderApplicationRouteHandler = createApplicationRouteHandler({
+  parseURL,
+  compileAppURL,
+  MainComp: (
+    <ServiceContext.Provider value={services}>
+      <Main />
+    </ServiceContext.Provider>
+  ),
+  clientApplicationConfig,
+  serverApplicationConfig,
+});
+
 startServer({
+  serverApplicationConfig,
+  serverConfig,
   enhanceServer: (server) => {
     // @JUST_FOR_TEST JUST FOR TEST
     server.use((req, _res, next) => {
@@ -54,18 +80,7 @@ startServer({
      * All services/static/etc routes have to be handled before with route
      * UAParse is used to have a parsed info about User Agent
      */
-    server.use(UAParser).get(
-      '*',
-      createApplicationRouteHandler({
-        parseURL,
-        compileAppURL,
-        MainComp: (
-          <ServiceContext.Provider value={services}>
-            <Main />
-          </ServiceContext.Provider>
-        ),
-      }),
-    );
+    server.use(UAParser).get('*', renderApplicationRouteHandler);
 
     return server;
   },

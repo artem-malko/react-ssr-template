@@ -1,13 +1,12 @@
 import { memo, useEffect, useRef, useState, useCallback, useContext } from 'react';
 
 import { useStyles } from 'framework/infrastructure/css/hook';
-import { SessionContext } from 'framework/session/context';
+import { useSession } from 'framework/session/hook';
 
 import { ToastControllerContext } from '../infrastructure/context';
 import { ToastItem } from '../toast';
 import { Toast } from '../types';
 import { styles } from './index.css';
-
 
 /**
  * This compoment is used as a container for all toasts.
@@ -17,7 +16,7 @@ import { styles } from './index.css';
  */
 export const Toasts = memo<{ gap?: number }>(({ gap = 20 }) => {
   const toastController = useContext(ToastControllerContext);
-  const { isMobile } = useContext(SessionContext);
+  const { isMobile } = useSession();
   const css = useStyles(styles);
   const [, rerender] = useState<number>(0);
   const toastsRef = useRef<Toast[]>([]);

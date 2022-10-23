@@ -1,7 +1,6 @@
-import { createMethodStubber } from 'framework/infrastructure/tests/stub';
+import { createMethodStubber } from 'tests/stub';
 
 import { createCookieAPI } from '../client';
-
 
 export const createStubedCookieAPI = () => {
   const stubMethod = createMethodStubber('cookie');

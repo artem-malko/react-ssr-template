@@ -1,7 +1,7 @@
-import { AnyConfig } from 'framework/config/types';
+import { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
 
 // Can be used on server side only to configure a server, which serve application
-export interface ServerConfig extends AnyConfig {
+export interface ServerConfig extends BaseServerConfig {
   port: number;
 
   // Cookies
@@ -12,9 +12,8 @@ export interface ServerConfig extends AnyConfig {
 }
 
 // Can be used on client and server side to configure application
-export interface ApplicationConfig extends AnyConfig {
+export interface ApplicationConfig extends BaseApplicationConfig {
   networkTimeout: number;
-  publicPath: string;
 
   // HackerNews API URL
   hackerNewsApiUrl: string;
