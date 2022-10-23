@@ -1,9 +1,10 @@
-import { UserStatus } from 'application/services/fake/types';
 
-import { RouteWithoutParams, URLQueryParams } from 'framework/infrastructure/router/types';
-import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
-import { UsersPage } from '.';
 import { AppRoute } from 'application/main/routing';
+import { UserStatus } from 'application/services/fake/types';
+import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
+import { RouteWithoutParams, URLQueryParams } from 'framework/infrastructure/router/types';
+
+import { UsersPage } from '.';
 
 const filterQueryParamName = 'filter[status]';
 

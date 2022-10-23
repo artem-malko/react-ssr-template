@@ -1,6 +1,7 @@
 import { assert, expect } from 'chai';
-import { isObject, get, keysOf, debounce } from '..';
 import { SinonFakeTimers, useFakeTimers } from 'sinon';
+
+import { isObject, get, keysOf, debounce } from '..';
 
 describe('lodash', () => {
   describe('isObject', () => {

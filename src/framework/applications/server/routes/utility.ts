@@ -1,5 +1,6 @@
-import { frameworkCookies } from 'framework/constants/cookies';
 import { Router } from 'express';
+
+import { frameworkCookies } from 'framework/constants/cookies';
 import { handleLogFromClient } from 'framework/infrastructure/logger/serverLog';
 
 export const utilityRouter = Router();

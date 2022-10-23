@@ -1,4 +1,5 @@
 import { v4 } from 'uuid';
+
 import { Toast } from '../types';
 
 type Subscriber = (toast: Toast) => void;

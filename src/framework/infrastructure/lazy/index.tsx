@@ -1,7 +1,10 @@
-import { noopFunc } from 'lib/lodash';
 import { Component, ComponentType, lazy, LazyExoticComponent, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+
+import { noopFunc } from 'lib/lodash';
+
 import { dynamicImportRetryCreator } from './retry';
+
 
 interface LazyComponentModule<Props> {
   ['default']: React.ComponentType<Props>;

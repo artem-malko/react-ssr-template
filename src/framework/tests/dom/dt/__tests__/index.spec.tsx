@@ -1,5 +1,6 @@
-import { expect } from 'chai';
 import { render } from '@testing-library/react';
+import { expect } from 'chai';
+
 import { dt } from '..';
 
 describe('dt util', () => {

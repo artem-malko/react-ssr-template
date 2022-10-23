@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import { patchUrl } from '../utils';
-import { requestMock } from '../forTests';
+
 import { createRequest } from '..';
+import { requestMock } from '../forTests';
+import { patchUrl } from '../utils';
 
 describe('Request', () => {
   describe('patchUrl', () => {

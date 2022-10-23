@@ -1,10 +1,14 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+
+
+import { useAppQuery } from 'application/main/query';
 import { Services } from 'application/services';
 import { FetchUserByIdResponse, User } from 'application/services/fake/types';
 import { useServices } from 'application/services/shared/context';
-import { useAppQuery } from 'application/main/query';
-import { useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+
 import { useUsersQueryMainKey } from './common';
+
 
 type UserByIdParams = {
   userId: string;

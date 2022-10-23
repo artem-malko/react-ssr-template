@@ -1,6 +1,9 @@
+import { memo, version } from 'react';
+
+
 import { useActivePage } from 'application/main/hooks/useActivePage';
 import { useURLQueryParams } from 'framework/infrastructure/router/hooks/useURLQueryParams';
-import { memo, version } from 'react';
+
 import { SourceSpoiler } from '../sourceSpoiler';
 
 export const ProjectInfo = memo(() => {

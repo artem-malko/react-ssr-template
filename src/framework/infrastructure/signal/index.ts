@@ -1,4 +1,5 @@
 import { AnyAction } from 'redux';
+
 import {
   SIGNAL_ACTION,
   SEQUENCE_ACTION,

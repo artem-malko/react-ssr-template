@@ -1,15 +1,16 @@
-import { CommonPage } from 'application/main/types';
-import { historyPush } from 'framework/infrastructure/router/redux/actions/router';
-import { sequence } from 'framework/infrastructure/signal';
 import { memo, useCallback, useState } from 'react';
+
+import { CommonPage } from 'application/main/types';
 import { Search } from 'application/ui/components/search';
 import { StaticComponent } from 'application/ui/components/staticComponent';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';
-import { setQueryStringParamsAction } from 'framework/infrastructure/router/redux/actions/appContext/setQueryStringParams';
 import { useURLQueryParams } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { setQueryStringParamsAction } from 'framework/infrastructure/router/redux/actions/appContext/setQueryStringParams';
+import { historyPush } from 'framework/infrastructure/router/redux/actions/router';
 import { useRouterReduxDispatch } from 'framework/infrastructure/router/redux/hooks';
+import { sequence } from 'framework/infrastructure/signal';
 
 export interface NewsPage extends CommonPage {
   name: 'news';

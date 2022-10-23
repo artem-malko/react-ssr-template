@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { FadeIn } from 'application/ui/kit/fadeIn';
 import { Spoiler } from 'application/ui/kit/spoiler';
 

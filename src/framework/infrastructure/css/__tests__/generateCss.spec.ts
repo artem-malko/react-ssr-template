@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { generateCss } from '../generator';
 import { createStyles } from '../hook';
 

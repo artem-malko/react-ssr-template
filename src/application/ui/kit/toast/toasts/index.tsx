@@ -1,10 +1,13 @@
 import { memo, useEffect, useRef, useState, useCallback, useContext } from 'react';
-import { styles } from './index.css';
-import { Toast } from '../types';
-import { ToastItem } from '../toast';
-import { ToastControllerContext } from '../infrastructure/context';
+
 import { useStyles } from 'framework/infrastructure/css/hook';
 import { SessionContext } from 'framework/session/context';
+
+import { ToastControllerContext } from '../infrastructure/context';
+import { ToastItem } from '../toast';
+import { Toast } from '../types';
+import { styles } from './index.css';
+
 
 /**
  * This compoment is used as a container for all toasts.

@@ -1,5 +1,7 @@
+
 import { colorize } from 'lib/console';
 import { keysOf } from 'lib/lodash';
+
 import { AnyPage, Route, RouteParams, Routes } from './types';
 
 export function stringifyParams<Key extends string>(params: Record<Key, any> | undefined) {

@@ -1,8 +1,10 @@
 import { commonWithSelectors, noop, sequence } from 'framework/infrastructure/signal';
-import { AnyPage } from '../types';
-import { openPageSignal, patchPageSignal } from '../redux/signals/page';
-import { selectAnyPage } from '../redux/selectors';
+
 import { useRouterReduxDispatch } from '../redux/hooks';
+import { selectAnyPage } from '../redux/selectors';
+import { openPageSignal, patchPageSignal } from '../redux/signals/page';
+import { AnyPage } from '../types';
+
 
 export const useCommonNavigate = <
   AppPage extends AnyPage<string>,

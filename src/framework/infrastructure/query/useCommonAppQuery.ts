@@ -10,9 +10,12 @@ import {
   useQueryClient,
   UseQueryOptions,
 } from '@tanstack/react-query';
-import { ParsedError } from 'framework/infrastructure/request/types';
-import { useHydrateQuery } from './useHydrateQuery';
 import { useEffect } from 'react';
+
+import { ParsedError } from 'framework/infrastructure/request/types';
+
+import { useHydrateQuery } from './useHydrateQuery';
+
 
 export const useCommonAppQuery = <TResult, TError extends ParsedError>(
   key: QueryKey,

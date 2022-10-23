@@ -1,30 +1,34 @@
 import { Writable } from 'node:stream';
-import express from 'express';
-import { AnyAction, Store } from 'redux';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { restoreStore } from '../store';
-import { AssetsData, readAssetsInfo, readPageDependenciesStats } from '../utils/assets';
-import { createWindowApi } from 'framework/platform/window/server';
-import { createCookieAPI } from 'framework/platform/cookie/server';
-import { clientApplicationConfig, serverApplicationConfig } from 'config/generator/server';
-import { createPlatformAPI } from 'framework/platform';
-import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
-import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
-import { ReactStreamRenderEnhancer } from '../utils/reactStreamRenderEnhancer';
-import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
+import express from 'express';
 import { StrictMode } from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { Provider as ReduxStoreProvider } from 'react-redux';
-import { PlatformAPIContext } from 'framework/platform/shared/context';
-import { SessionContext } from 'framework/session/context';
+import { AnyAction, Store } from 'redux';
+
+
+import { clientApplicationConfig, serverApplicationConfig } from 'config/generator/server';
 import { ConfigContext } from 'config/react';
-import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { Shell } from 'framework/applications/shell';
-import { generateHead } from '../utils/generateHead';
-import { createServerSessionObject } from '../utils/createServerSessionObject';
-import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
-import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
 import { ApplicationContainerId } from 'framework/constants/application';
+import { CSSProvider } from 'framework/infrastructure/css/provider';
+import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
+import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
+import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
+import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
+import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
+import { createPlatformAPI } from 'framework/platform';
+import { createCookieAPI } from 'framework/platform/cookie/server';
+import { PlatformAPIContext } from 'framework/platform/shared/context';
+import { createWindowApi } from 'framework/platform/window/server';
+import { SessionContext } from 'framework/session/context';
+
+import { restoreStore } from './store';
+import { AssetsData, readAssetsInfo, readPageDependenciesStats } from './utils/assets';
+import { createServerSessionObject } from './utils/createServerSessionObject';
+import { generateHead } from './utils/generateHead';
+import { ReactStreamRenderEnhancer } from './utils/reactStreamRenderEnhancer';
 
 const assetsInfoPromise = readAssetsInfo();
 const pageDependenciesStatsPromise = readPageDependenciesStats();

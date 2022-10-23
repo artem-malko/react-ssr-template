@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { normalizePath } from '../utils';
 
 describe('router utils', () => {

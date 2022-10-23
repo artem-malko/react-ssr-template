@@ -1,8 +1,12 @@
 import { applyMiddleware, legacy_createStore, Middleware, compose, StoreEnhancer, Store } from 'redux';
-import { createSignalMiddleware } from 'framework/infrastructure/signal/middleware';
+
+
 import { createNavigationMiddleware } from 'framework/infrastructure/router/redux/middlewares';
 import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
+import { createSignalMiddleware } from 'framework/infrastructure/signal/middleware';
+
 import { createReducer } from './reducer';
+
 
 export function configureStore(params: {
   initialState: AnyAppState;

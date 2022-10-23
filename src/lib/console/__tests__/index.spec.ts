@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { colorize } from '..';
 
 describe('colorize lib', () => {

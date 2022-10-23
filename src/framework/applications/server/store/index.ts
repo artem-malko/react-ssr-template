@@ -1,9 +1,12 @@
 import { Request, Response } from 'express';
-import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
-import { logger } from '../utils/reduxLogger';
 import { AnyAction, Middleware } from 'redux';
-import { startup } from './startup';
+
+import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
 import { AnyAppContext } from 'framework/infrastructure/router/types';
+
+import { logger } from '../utils/reduxLogger';
+import { startup } from './startup';
+
 
 type Params = {
   parseURL: (URL: string) => AnyAction[];

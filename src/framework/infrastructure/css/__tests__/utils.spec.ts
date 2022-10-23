@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { isValidStyleObject } from '../generator/utils';
 
 describe('generator / utils/ isValidStyleObject', () => {

@@ -1,12 +1,15 @@
 import { memo, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useSession } from 'framework/session/hook';
-import { useStyles } from 'framework/infrastructure/css/hook';
+
+
+import { useOutsideClick } from 'application/ui/hooks/useOutsideClick';
 import { FadeIn } from 'application/ui/kit/fadeIn';
+import { useStyles } from 'framework/infrastructure/css/hook';
+import { useSession } from 'framework/session/hook';
+import { noopFunc } from 'lib/lodash';
+
 import { PopupControllerContext } from '../infrastructure/context';
 import { Popup as PopupType } from '../types';
 import { styles } from './index.css';
-import { noopFunc } from 'lib/lodash';
-import { useOutsideClick } from 'application/ui/hooks/useOutsideClick';
 
 /**
  * This is just a controller for any popup

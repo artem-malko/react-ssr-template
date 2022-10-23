@@ -1,7 +1,8 @@
 import { Request } from 'express';
-import { isObject } from 'lib/lodash';
+
 import { logger } from 'framework/infrastructure/logger/init';
 import { addAppVersion, getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
+import { isObject } from 'lib/lodash';
 
 /**
  * Only server log methods

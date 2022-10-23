@@ -1,7 +1,10 @@
-import { usePlatformAPI } from 'framework/platform/shared/context';
+import { memo, useEffect } from 'react';
+
+
 import { useNewsItem } from 'application/queries/news/useNewsItem';
 import { useStyles } from 'framework/infrastructure/css/hook';
-import { memo, useEffect } from 'react';
+import { usePlatformAPI } from 'framework/platform/shared/context';
+
 import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {

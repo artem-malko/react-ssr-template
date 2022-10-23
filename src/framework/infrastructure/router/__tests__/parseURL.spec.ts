@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { createURLParser } from '../parseURL';
 import { openAnyPageAction } from '../redux/actions/appContext/openPageAction';
 import { Route, RouteWithoutParams, RouteWithParams } from '../types';

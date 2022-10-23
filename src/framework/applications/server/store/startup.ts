@@ -1,5 +1,6 @@
-import { createSignal, parallel } from 'framework/infrastructure/signal';
 import { Action } from 'redux';
+
+import { createSignal, parallel } from 'framework/infrastructure/signal';
 
 /**
  * Signal, which will be dispatched before hydration

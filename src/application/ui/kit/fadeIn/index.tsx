@@ -1,7 +1,10 @@
 import { memo, PropsWithChildren, useState, useEffect, useMemo } from 'react';
-import { styles } from './index.css';
+
+
 import { midTransitionDuration } from 'application/ui/styles/shared';
 import { useStyles } from 'framework/infrastructure/css/hook';
+
+import { styles } from './index.css';
 
 type Props = {
   transitionDuration?: number;

@@ -1,9 +1,13 @@
+import { memo, useCallback, useEffect, useId, useState } from 'react';
+
+
+import { useNavigate } from 'application/main/hooks/useNavigate';
 import { useUserList } from 'application/queries/users/useUserList';
 import { UserStatus } from 'application/services/fake/types';
-import { useNavigate } from 'application/main/hooks/useNavigate';
-import { memo, useCallback, useEffect, useId, useState } from 'react';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
+
 import { UserTableRow } from './row';
+
 
 type Props = {
   page: number;

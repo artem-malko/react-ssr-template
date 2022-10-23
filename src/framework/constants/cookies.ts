@@ -1,5 +1,6 @@
 import { CookieOptions } from 'express';
 import { CookieAttributes } from 'js-cookie';
+
 import { baseDomain } from './application';
 
 type FrameworkCookieName = 'user' | 'sid' | 'pushedResources';

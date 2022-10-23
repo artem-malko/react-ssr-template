@@ -1,4 +1,5 @@
 import snakeCase from 'lodash.snakecase';
+
 import { AnyConfig, AnyConfigValue } from '../types';
 
 /**

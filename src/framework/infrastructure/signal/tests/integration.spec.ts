@@ -1,8 +1,11 @@
 import { expect } from 'chai';
 import { applyMiddleware, createStore, compose, StoreEnhancer, AnyAction } from 'redux';
-import { createSignalMiddleware } from '../middleware';
-import { sequence, parallel, commonWithSelectors, createSignal, noop } from '..';
+
 import { waitForResolve } from 'framework/infrastructure/tests/utils/wait';
+
+import { sequence, parallel, commonWithSelectors, createSignal, noop } from '..';
+import { createSignalMiddleware } from '../middleware';
+
 
 describe('Siglan integration tests', () => {
   interface State {

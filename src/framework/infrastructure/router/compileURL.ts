@@ -1,7 +1,10 @@
-import { keysOf } from 'lib/lodash';
 import { compile, PathFunction } from 'path-to-regexp';
+
+import { keysOf } from 'lib/lodash';
+
 import { AnyPage, AnyAppContext, URLQueryParams, Routes, Route, RouteParams } from './types';
 import { stringifyParams } from './utils';
+
 
 /**
  * Compile new url, which is based on the appContext

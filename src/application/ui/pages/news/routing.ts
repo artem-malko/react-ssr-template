@@ -1,7 +1,9 @@
-import { RouteWithoutParams } from 'framework/infrastructure/router/types';
-import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
-import { NewsPage } from '.';
+
 import { AppRoute } from 'application/main/routing';
+import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
+import { RouteWithoutParams } from 'framework/infrastructure/router/types';
+
+import { NewsPage } from '.';
 
 export const newsPageRoute: AppRoute<RouteWithoutParams, NewsPage> = {
   path: '/news',

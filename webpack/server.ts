@@ -1,7 +1,9 @@
 import path from 'path';
+
 import webpack from 'webpack';
-import { universalConfig } from './universal';
 import esbuild from 'esbuild';
+
+import { universalConfig } from './universal';
 import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 import { PAGE_DEPENDENCIES_FILE_NAME } from './plugins/dependencyManager/plugin';
 import { pinoBannerPlugin, pinoEntries } from './utils/pino';

@@ -1,9 +1,13 @@
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+
+
+import { useAppQuery } from 'application/main/query';
 import { Services } from 'application/services';
 import { FetchUsersResponse, User, UserStatus } from 'application/services/fake/types';
-import { useAppQuery } from 'application/main/query';
-import { useCallback } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+
 import { useUsersQueryMainKey } from './common';
+
 
 type UseUserListParams = {
   page: number;

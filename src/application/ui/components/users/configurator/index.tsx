@@ -1,6 +1,7 @@
+import { memo } from 'react';
+
 import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'application/constants/cookies';
 import { usePlatformAPI } from 'framework/platform/shared/context';
-import { memo } from 'react';
 
 export const FakeAPIConfigurator = memo(() => {
   const { cookies } = usePlatformAPI();

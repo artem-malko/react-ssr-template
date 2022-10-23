@@ -1,4 +1,5 @@
 import clientCookie from 'js-cookie';
+
 import { Cookie } from './types';
 
 export const createCookieAPI = (): Cookie => ({

@@ -1,10 +1,13 @@
 import { memo, useCallback, useId, useState } from 'react';
+
+
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { UserForm } from '../form';
-import { useUserById } from 'application/queries/users/useUserById';
 import { useEditUser } from 'application/queries/users/useEditUser';
-import { renderStatus } from '../utils';
+import { useUserById } from 'application/queries/users/useUserById';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
+
+import { UserForm } from '../form';
+import { renderStatus } from '../utils';
 
 type Props = {
   userId: string;

@@ -1,7 +1,10 @@
 import { AxiosError } from 'axios';
-import { isServer } from 'lib/browser';
 import { v4 as uuid } from 'uuid';
+
+import { isServer } from 'lib/browser';
+
 import { ParsedError, ErrorResponseCode } from './types';
+
 
 /**
  * Add http for server-side requests to protocol-less urls

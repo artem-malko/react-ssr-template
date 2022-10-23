@@ -1,11 +1,16 @@
+import path from 'node:path';
+
 import cookieParser from 'cookie-parser';
 import express from 'express';
-import path from 'node:path';
+
+
 import { serverApplicationConfig } from 'config/generator/server';
+
 import { clientIp } from './middlewares/clientIP';
-import { isSearchBot } from './middlewares/searchBots';
 import { createRouterErrorHandlerMiddleware } from './middlewares/routerErrorHandler';
+import { isSearchBot } from './middlewares/searchBots';
 import { utilityRouter } from './routes/utility';
+
 
 const publicPath = serverApplicationConfig.publicPath;
 const ONE_MONTH = 2592000000;

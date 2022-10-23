@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { Express } from 'express';
-import { server } from 'framework/applications/server/server';
+
 import { serverConfig } from 'config/generator/server';
+import { server } from 'framework/applications/server/server';
 import {
   logServerUncaughtException,
   logServerUnhandledRejection,

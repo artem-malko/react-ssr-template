@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { CommonPage } from 'application/main/types';
 import { HttpErrorCode } from 'framework/types/http';
 

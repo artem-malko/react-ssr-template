@@ -9,11 +9,14 @@ import {
   useLayoutEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
+
 import { useOutsideClick } from 'application/ui/hooks/useOutsideClick';
 import { useResizeObserver } from 'application/ui/hooks/useResizeObserver';
+
 import { FadeIn } from '../fadeIn';
 import { popoverContainerId } from './shared';
 import { getPositionViewAttrs } from './utils';
+
 
 export type Placement = 'top' | 'end' | 'bottom' | 'start';
 export type Alignment = 'start' | 'center' | 'end';

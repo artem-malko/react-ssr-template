@@ -1,17 +1,20 @@
 import { lazy, memo, Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+
+
+import { useActivePage } from 'application/main/hooks/useActivePage';
 import { Page } from 'application/main/types';
-import { useStyles } from 'framework/infrastructure/css/hook';
+import { DevMenu } from 'application/ui/components/development/devMenu';
+import { Popup } from 'application/ui/kit/popup/popup';
 import { Preloader } from 'application/ui/kit/preloader';
 import { Toasts } from 'application/ui/kit/toast/toasts';
+import { ZIndexLayout } from 'application/ui/kit/zIndex';
 import ErrorPage from 'application/ui/pages/error';
 import { styles as globalStyles } from 'application/ui/styles/global.css';
-import { styles } from './index.css';
-import { Popup } from 'application/ui/kit/popup/popup';
-import { ZIndexLayout } from 'application/ui/kit/zIndex';
-import { DevMenu } from 'application/ui/components/development/devMenu';
-import { ErrorBoundary } from 'react-error-boundary';
+import { useStyles } from 'framework/infrastructure/css/hook';
+
 import { popoverContainerId } from '../kit/popover/shared';
-import { useActivePage } from 'application/main/hooks/useActivePage';
+import { styles } from './index.css';
 
 export const Main = memo(() => {
   useStyles(globalStyles)(':global');

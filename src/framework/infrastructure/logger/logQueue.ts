@@ -1,6 +1,8 @@
-import { InfoLogParams, PerformanceLogParams, ErrorLogParams } from './types';
-import { Queue } from 'lib/queue';
+
 import { createRequest } from 'framework/infrastructure/request';
+import { Queue } from 'lib/queue';
+
+import { InfoLogParams, PerformanceLogParams, ErrorLogParams } from './types';
 
 type QueueLogParams = { environment: 'client'; level: 'info' | 'error' | 'performance' } & (
   | ErrorLogParams

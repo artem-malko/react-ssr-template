@@ -1,4 +1,5 @@
 import { memo } from 'react';
+
 import { CommonPage, Page } from 'application/main/types';
 import { Link } from 'application/ui/kit/link';
 

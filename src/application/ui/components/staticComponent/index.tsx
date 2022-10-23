@@ -1,7 +1,8 @@
+import { memo, useCallback, useContext, useRef, useState } from 'react';
+
+import { Alignment, Placement, Popover } from 'application/ui/kit/popover';
 import { useConfig } from 'config/react';
 import { SessionContext } from 'framework/session/context';
-import { memo, useCallback, useContext, useRef, useState } from 'react';
-import { Alignment, Placement, Popover } from 'application/ui/kit/popover';
 
 export const StaticComponent = memo(() => {
   const config = useConfig();

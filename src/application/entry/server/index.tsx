@@ -1,14 +1,16 @@
-import { Main } from 'application/ui/main';
-import { startServer } from 'framework/applications/server';
-import { UAParser } from 'framework/applications/server/middlewares/uaParser';
-import { createApplicationRouteHandler } from 'framework/applications/server/routes/applicationEntry';
+
 import { compileAppURL, routes } from 'application/main/routing';
-import { createURLParser } from 'framework/infrastructure/router/parseURL';
-import { fakeCRUDRouter } from './routes/fakeCrud';
-import { createRequest } from 'framework/infrastructure/request';
 import { createServices } from 'application/services';
 import { ServiceContext } from 'application/services/shared/context';
+import { Main } from 'application/ui/main';
 import { serverApplicationConfig } from 'config/generator/server';
+import { startServer } from 'framework/applications/server';
+import { createApplicationRouteHandler } from 'framework/applications/server/createApplicationRouteHandler';
+import { UAParser } from 'framework/applications/server/middlewares/uaParser';
+import { createRequest } from 'framework/infrastructure/request';
+import { createURLParser } from 'framework/infrastructure/router/parseURL';
+
+import { fakeCRUDRouter } from './routes/fakeCrud';
 
 const parseURL = createURLParser({
   routes,

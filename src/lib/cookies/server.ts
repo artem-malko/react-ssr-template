@@ -1,4 +1,5 @@
 import { Request, Response, CookieOptions } from 'express';
+
 import { Cookie } from './types';
 
 export const createCookieAPI = (req: Request, res: Response): Cookie => ({

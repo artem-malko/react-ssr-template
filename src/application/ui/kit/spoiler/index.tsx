@@ -1,5 +1,5 @@
 import { useState, useCallback, memo } from 'react';
-import * as React from 'react';
+
 import { DATA_T_ATTRIBUTE_NAME } from 'framework/tests/dom/dt';
 
 type Props = {
@@ -10,12 +10,13 @@ type Props = {
 };
 export const Spoiler = memo<Props>((props) => {
   const [isExpanded, setIsExpanded] = useState(!!props.initiallyExpanded);
+  const onToggle = props.onToggle;
   const toggle = useCallback(() => {
-    if (props.onToggle) {
-      props.onToggle(!isExpanded);
+    if (onToggle) {
+      onToggle(!isExpanded);
     }
     setIsExpanded(!isExpanded);
-  }, [props.onToggle, isExpanded]);
+  }, [onToggle, isExpanded]);
 
   const dtValue = props[DATA_T_ATTRIBUTE_NAME];
 

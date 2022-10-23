@@ -1,9 +1,11 @@
-import { Router, Request, Response, NextFunction } from 'express';
 import { existsSync, writeFileSync } from 'fs';
 import { readFile, writeFile } from 'fs/promises';
-import { createCookieAPI } from 'framework/platform/cookie/server';
+
+import { Router, Request, Response, NextFunction } from 'express';
 import { v4 } from 'uuid';
+
 import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'application/constants/cookies';
+import { createCookieAPI } from 'framework/platform/cookie/server';
 
 const dataJSONPath = `./data.json`;
 const isDataJSONExists = existsSync(dataJSONPath);

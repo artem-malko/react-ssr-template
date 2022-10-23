@@ -4,6 +4,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
+    'plugin:import/typescript',
   ],
   env: {
     browser: true,
@@ -20,8 +21,12 @@ module.exports = {
   },
   settings: {
     react: { version: 'detect' },
+    'import/resolver': {
+      typescript: true,
+      node: true,
+    },
   },
-  plugins: ['@typescript-eslint', 'functional'],
+  plugins: ['@typescript-eslint', 'functional', 'import'],
   overrides: [
     {
       files: ['*.spec.tsx', '*.spec.ts'],
@@ -43,10 +48,30 @@ module.exports = {
     'react/no-unstable-nested-components': ['warn', { allowAsProps: true }],
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
+    'import/no-restricted-paths': [
+      'error',
+      {
+        zones: [
+          {
+            target: './src/framework',
+            from: './src/application',
+            message: 'Imports to the framework directory from an application directory are not allowed!',
+          },
+        ],
+      },
+    ],
     'react-hooks/exhaustive-deps': [
       'warn',
       {
         additionalHooks: '(^usePopup$)',
+      },
+    ],
+    'import/order': [
+      'warn',
+      {
+        groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index'], 'object', 'type'],
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc' },
       },
     ],
     'functional/immutable-data': [

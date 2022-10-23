@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { SinonFakeTimers, useFakeTimers } from 'sinon';
+
 import { Timer } from '..';
 
 describe('Timer', () => {

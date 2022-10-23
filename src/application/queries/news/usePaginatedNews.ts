@@ -1,5 +1,7 @@
 import { useAppQuery } from 'application/main/query';
+
 import { useNewsQueryMainKey } from './common';
+
 
 type UsePaginatedNewsParams = {
   page: number;

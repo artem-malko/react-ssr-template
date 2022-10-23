@@ -1,13 +1,16 @@
 import path from 'node:path';
+
 import webpack from 'webpack';
-import { universalConfig } from './universal';
 import TerserPlugin from 'terser-webpack-plugin';
-import type { TransformOptions as EsbuildOptions } from 'esbuild';
 import esbuild from 'esbuild';
+
+import { universalConfig } from './universal';
 import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
 import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
 import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 import { merge } from './utils/merge';
+
+import type { TransformOptions as EsbuildOptions } from 'esbuild';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;

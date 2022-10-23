@@ -1,11 +1,13 @@
 import React, { memo } from 'react';
 
+
 import { APPLICATION_CONFIG_VAR_NAME } from 'config/generator/shared';
 import { ApplicationConfig } from 'config/types';
-import { Session } from 'framework/session/types';
-import { getFullPathForStaticResource } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
-import { AssetsList } from './server/utils/assets';
 import { AnyAppState } from 'framework/infrastructure/router/types';
+import { getFullPathForStaticResource } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
+import { Session } from 'framework/session/types';
+
+import { AssetsList } from './server/utils/assets';
 
 export const Shell = memo<{
   state: AnyAppState;

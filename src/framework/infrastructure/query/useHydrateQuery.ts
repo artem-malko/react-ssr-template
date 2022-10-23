@@ -1,4 +1,5 @@
 import { hydrate, useQueryClient } from '@tanstack/react-query';
+
 import { getDehydratedQueryStateFromDom } from './getDehydratedQueryStateFromDom';
 
 /**

@@ -1,8 +1,10 @@
-import { logQueue } from './logQueue';
+import { isTest } from 'lib/browser';
+
 import { logger } from './init';
+import { logQueue } from './logQueue';
 import { ErrorLogParams, InfoLogParams, PerformanceLogParams } from './types';
 import { addAppVersion } from './utils';
-import { isTest } from 'lib/browser';
+
 
 /**
  * Can be used on server and client

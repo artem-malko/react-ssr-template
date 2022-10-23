@@ -1,5 +1,6 @@
 import { useAppQuery } from 'application/main/query';
 import { FetchNewsItemResponse } from 'application/services/hackerNews/types';
+
 import { useNewsQueryMainKey } from './common';
 
 type UseNewsItemParams = {

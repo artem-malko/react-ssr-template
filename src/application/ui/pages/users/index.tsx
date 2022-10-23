@@ -1,6 +1,7 @@
-import { UserStatus } from 'application/services/fake/types';
-import { CommonPage } from 'application/main/types';
 import { memo, Suspense } from 'react';
+
+import { CommonPage } from 'application/main/types';
+import { UserStatus } from 'application/services/fake/types';
 import { AddUser } from 'application/ui/components/users/add';
 import { FakeAPIConfigurator } from 'application/ui/components/users/configurator';
 import { UserList } from 'application/ui/components/users/list';

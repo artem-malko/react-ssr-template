@@ -1,10 +1,13 @@
-import { keysOf } from 'lib/lodash';
 import { match, MatchFunction } from 'path-to-regexp';
 import { AnyAction } from 'redux';
+
+import { keysOf } from 'lib/lodash';
+
 import { openAnyPageAction } from './redux/actions/appContext/openPageAction';
 import { setQueryStringParamsAction } from './redux/actions/appContext/setQueryStringParams';
 import { AnyPage, Route, RouteParams, Routes, URLQueryParams } from './types';
 import { normalizePath, patchLeadingSlashInPath, printRouterConfig } from './utils';
+
 
 const rootPageIndexName = '/';
 

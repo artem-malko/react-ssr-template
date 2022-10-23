@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { djb2a, murmurhash2 } from '..';
 
 describe('getStringHash', () => {

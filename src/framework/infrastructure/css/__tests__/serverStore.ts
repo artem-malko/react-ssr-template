@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { CSSServerProviderStore } from '../provider/serverStore';
 
 describe('generator / generateCss', () => {

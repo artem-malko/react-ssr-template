@@ -1,4 +1,5 @@
 import express from 'express';
+
 import { sendErrorLog } from 'framework/infrastructure/logger';
 import { getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
 

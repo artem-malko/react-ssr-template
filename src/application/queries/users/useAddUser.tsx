@@ -1,8 +1,12 @@
+import { useMutation } from '@tanstack/react-query';
+
+
 import { UserStatus } from 'application/services/fake/types';
 import { useServices } from 'application/services/shared/context';
-import { useMutation } from '@tanstack/react-query';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
+
 import { useUserQueriesInvalidate } from './common';
+
 
 export const useAddUser = () => {
   const { showToast } = useToast();

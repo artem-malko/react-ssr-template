@@ -1,9 +1,11 @@
-import { ApplicationConfig, ServerConfig } from '../types';
-import { defaultServerConfig } from '../defaults/server';
-import { defaultServerApplicationConfig, defaultClientApplicationConfig } from '../defaults/application';
-import localTemplate from './local_template';
 import { parseEnvParams } from 'framework/config/utils/parseEnvParams';
 import { removeUndefinedFields } from 'framework/config/utils/removeUndefinedFields';
+
+import { defaultServerApplicationConfig, defaultClientApplicationConfig } from '../defaults/application';
+import { defaultServerConfig } from '../defaults/server';
+import { ApplicationConfig, ServerConfig } from '../types';
+import localTemplate from './local_template';
+
 
 if (process.env.APP_ENV === 'client') {
   throw new Error('Config generator should not be existed on client!');

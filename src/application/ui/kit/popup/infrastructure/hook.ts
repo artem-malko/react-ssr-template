@@ -1,5 +1,6 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { v4 } from 'uuid';
+
 import { Popup } from '../types';
 import { PopupControllerContext } from './context';
 

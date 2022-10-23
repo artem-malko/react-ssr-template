@@ -1,8 +1,11 @@
 import { expect } from 'chai';
+
 import { createRequest } from 'framework/infrastructure/request';
 import { requestMock } from 'framework/infrastructure/request/forTests';
+
 import { createHackerNewsService } from '..';
 import { mocks } from '../mocks';
+
 
 describe('Hacker news service', () => {
   const request = createRequest({ networkTimeout: 10000 });

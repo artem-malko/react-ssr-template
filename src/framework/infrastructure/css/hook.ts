@@ -1,6 +1,7 @@
 import { useContext, useMemo } from 'react';
-import { Styles } from './types';
+
 import { CSSProviderContext } from './provider';
+import { Styles } from './types';
 
 export const useStyles = <ClassNames extends string, StyleDescriptor extends Styles<ClassNames>>(
   styles: StyleDescriptor,

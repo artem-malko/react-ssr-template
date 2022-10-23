@@ -1,6 +1,8 @@
-import { APPLICATION_CONFIG_VAR_NAME } from './shared';
-import { ApplicationConfig } from '../types';
 import { isServer } from 'lib/browser';
+
+import { ApplicationConfig } from '../types';
+import { APPLICATION_CONFIG_VAR_NAME } from './shared';
+
 
 export const getClientApplicationConfig = (): ApplicationConfig => {
   if (isServer) {

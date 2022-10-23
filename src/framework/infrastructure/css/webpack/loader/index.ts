@@ -1,12 +1,14 @@
 /* eslint-disable functional/immutable-data */
 
+import NativeModule from 'module';
+
 import { Dependency, LoaderContext } from 'webpack';
-import { storeInstance } from '../store';
+
 import { isValidStyleObject } from '../../generator/utils';
 import { STYLE_DESCRIPTOR } from '../shared';
+import { storeInstance } from '../store';
 
 // NodeJS Module
-import NativeModule from 'module';
 
 // Replacement for loader.exec
 // https://github.com/webpack/webpack.js.org/issues/1268#issuecomment-313513988

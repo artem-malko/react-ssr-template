@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+
 import { Session } from './types';
 
 export const defaultSession: Session = {

@@ -7,7 +7,6 @@ type Action = OpenAnyPageActionType | SetQueryStringParamsActionType | ReturnTyp
 
 export const createReducer = (initialState: AnyAppState) => {
   return (state: AnyAppState | undefined, action: Action): AnyAppState => {
-    console.log('ROUTER ACTION: ', action);
     if (!state) {
       return initialState;
     }

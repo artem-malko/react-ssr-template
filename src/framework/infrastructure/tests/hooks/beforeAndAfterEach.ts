@@ -1,9 +1,13 @@
 /* eslint-disable no-console, functional/immutable-data */
 
-import { resetHistory } from 'sinon';
 import { cleanup, configure } from '@testing-library/react';
+import { resetHistory } from 'sinon';
+
 import { colorize } from 'lib/console';
+
 import { DATA_T_ATTRIBUTE_NAME } from '../dom/dt';
+
+
 
 let cleanupJSDOM: (() => any) | undefined;
 let currentTestTitle: string | undefined;

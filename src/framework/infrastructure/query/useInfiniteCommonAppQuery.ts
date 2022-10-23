@@ -1,4 +1,3 @@
-import { ParsedError } from 'framework/infrastructure/request/types';
 import {
   hashQueryKey,
   QueryFunction,
@@ -6,7 +5,11 @@ import {
   useInfiniteQuery,
   UseInfiniteQueryOptions,
 } from '@tanstack/react-query';
+
+import { ParsedError } from 'framework/infrastructure/request/types';
+
 import { useHydrateQuery } from './useHydrateQuery';
+
 
 /**
  * A tiny wrapper around useInfiniteQuery

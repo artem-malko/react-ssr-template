@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { sequence, parallel, commonWithSelectors, noop, createSignal } from '..';
 
 describe('Signal', () => {

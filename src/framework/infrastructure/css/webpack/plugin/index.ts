@@ -1,11 +1,12 @@
 /* eslint-disable functional/immutable-data */
 
-import { Compiler, Compilation, sources, Chunk } from 'webpack';
 import { getHashDigest } from 'loader-utils';
-import { storeInstance } from '../store';
+import { Compiler, Compilation, sources, Chunk } from 'webpack';
+
 import { generateCss } from '../../generator';
-import { STYLE_DESCRIPTOR } from '../shared';
 import { Style, Styles } from '../../types';
+import { STYLE_DESCRIPTOR } from '../shared';
+import { storeInstance } from '../store';
 
 const ConcatSource = sources.ConcatSource;
 

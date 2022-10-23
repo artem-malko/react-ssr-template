@@ -1,5 +1,6 @@
-import { CommonPage } from 'application/main/types';
 import { memo } from 'react';
+
+import { CommonPage } from 'application/main/types';
 import NewsItem from 'application/ui/components/newsItem';
 
 export interface NewsItemPage extends CommonPage {

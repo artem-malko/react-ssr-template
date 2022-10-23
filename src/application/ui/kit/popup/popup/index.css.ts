@@ -1,5 +1,5 @@
-import { createStyles } from 'framework/infrastructure/css/hook';
 import { colors, midTransitionDuration } from 'application/ui/styles/shared';
+import { createStyles } from 'framework/infrastructure/css/hook';
 
 export const styles = createStyles({
   root: {

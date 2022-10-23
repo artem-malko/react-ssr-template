@@ -1,24 +1,27 @@
-import { hydrateRoot } from 'react-dom/client';
-import { Provider as ReduxStoreProvider } from 'react-redux';
-import { Shell } from 'framework/applications/shell';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StrictMode } from 'react';
-import { ConfigContext } from 'config/react';
+import { hydrateRoot } from 'react-dom/client';
+import { Provider as ReduxStoreProvider } from 'react-redux';
+
+
 import { getClientApplicationConfig } from 'config/generator/client';
-import { restoreStore } from './store';
-import { createWindowApi } from 'framework/platform/window/client';
-import { createCookieAPI } from 'framework/platform/cookie/client';
-import { createPlatformAPI } from 'framework/platform';
-import { PlatformAPIContext } from 'framework/platform/shared/context';
-import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
-import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
-import { CSSProvider } from 'framework/infrastructure/css/provider';
-import { afterAppRendered } from './utils/afterAppRendered';
-import { SessionContext } from 'framework/session/context';
-import { createClientSessionObject } from './utils/createClientSessionObject';
-import { AnyAppContext } from 'framework/infrastructure/router/types';
-import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
+import { ConfigContext } from 'config/react';
+import { Shell } from 'framework/applications/shell';
 import { ApplicationContainerId } from 'framework/constants/application';
+import { CSSProvider } from 'framework/infrastructure/css/provider';
+import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
+import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
+import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
+import { AnyAppContext } from 'framework/infrastructure/router/types';
+import { createPlatformAPI } from 'framework/platform';
+import { createCookieAPI } from 'framework/platform/cookie/client';
+import { PlatformAPIContext } from 'framework/platform/shared/context';
+import { createWindowApi } from 'framework/platform/window/client';
+import { SessionContext } from 'framework/session/context';
+
+import { restoreStore } from './store';
+import { afterAppRendered } from './utils/afterAppRendered';
+import { createClientSessionObject } from './utils/createClientSessionObject';
 
 const queryClient = new QueryClient({
   defaultOptions: defaultQueryOptions,

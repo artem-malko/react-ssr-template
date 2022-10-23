@@ -1,7 +1,9 @@
-import { HttpErrorCode } from 'framework/types/http';
-import { RouteWithParams } from 'framework/infrastructure/router/types';
-import { ErrorPage } from '.';
+
 import { AppRoute } from 'application/main/routing';
+import { RouteWithParams } from 'framework/infrastructure/router/types';
+import { HttpErrorCode } from 'framework/types/http';
+
+import { ErrorPage } from '.';
 
 export const errorPageRoute: AppRoute<RouteWithParams<{ code: string }>, ErrorPage> = {
   path: '/error/:code',

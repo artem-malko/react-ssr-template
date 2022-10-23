@@ -1,7 +1,9 @@
+import { Writable } from 'node:stream';
+
+import { Query, QueryClient } from '@tanstack/react-query';
+
 import { generateCss } from 'framework/infrastructure/css/generator';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
-import { Query, QueryClient } from '@tanstack/react-query';
-import { Writable } from 'node:stream';
 
 /**
  * This is just a copy from react-query repo

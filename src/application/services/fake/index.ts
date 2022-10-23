@@ -1,4 +1,5 @@
 import { Requester } from 'framework/infrastructure/request/types';
+
 import {
   FetchUserByIdResponse,
   FetchUsersResponse,
@@ -6,6 +7,7 @@ import {
   User,
   UserStatus,
 } from './types';
+
 
 type Config = {
   apiURL: string;

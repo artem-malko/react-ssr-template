@@ -1,6 +1,9 @@
-import { useStyles } from 'framework/infrastructure/css/hook';
 import { memo, useState } from 'react';
+
+import { useStyles } from 'framework/infrastructure/css/hook';
+
 import { styles } from './index.css';
+
 
 export const Search = memo(() => {
   const css = useStyles(styles);

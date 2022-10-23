@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+
 import { PlatformAPI } from '..';
 
 export const PlatformAPIContext = createContext<PlatformAPI>({} as PlatformAPI);

@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import { ToastControllerContext } from './context';
 
 export const useToast = () => {

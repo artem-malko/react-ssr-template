@@ -1,5 +1,6 @@
-import { ParsedError } from 'framework/infrastructure/request/types';
 import { UseQueryResult } from '@tanstack/react-query';
+
+import { ParsedError } from 'framework/infrastructure/request/types';
 
 export type QueryDataResult<
   T extends (params: any) => { queryResult: UseQueryResult<any, ParsedError> },

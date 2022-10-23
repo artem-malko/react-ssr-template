@@ -1,15 +1,18 @@
-import { memo, useRef, useState } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { Popover } from 'application/ui/kit/popover';
-import { usePopup, usePopupActions } from 'application/ui/kit/popup/infrastructure/hook';
-import { ProjectInfo } from '../projectInfo';
-import { styles } from './index.css';
-import { BasePopup } from 'application/ui/kit/popup/basePopup';
+import { memo, useRef, useState } from 'react';
+
+
+import { useUserByIdFetcher } from 'application/queries/users/useUserById';
 import { Link } from 'application/ui/kit/link';
+import { Popover } from 'application/ui/kit/popover';
+import { BasePopup } from 'application/ui/kit/popup/basePopup';
+import { usePopup, usePopupActions } from 'application/ui/kit/popup/infrastructure/hook';
+import { useStyles } from 'framework/infrastructure/css/hook';
+
+import { ProjectInfo } from '../projectInfo';
 import { InvalidateQueryButton } from '../queryButtons/invalidateQueryButton';
 import { RefetchQueryButton } from '../queryButtons/refetchQueryButton';
-import { useUserByIdFetcher } from 'application/queries/users/useUserById';
+import { styles } from './index.css';
 
 export const DevMenu = memo(() => {
   const css = useStyles(styles);
