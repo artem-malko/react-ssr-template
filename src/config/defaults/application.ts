@@ -4,18 +4,18 @@ export const defaultApplicationConfig: ApplicationConfig = {
   networkTimeout: 10000,
   publicPath: '/public/',
 
-  hackerNewsAPIURL: '//node-hnapi.herokuapp.com',
-  fakeCRUDAPI: '//127.0.0.1:5000',
+  hackerNewsApiUrl: '//node-hnapi.herokuapp.com',
+  fakeCrudApi: '/api/fakecrud',
 };
 
 export const defaultServerApplicationConfig: ApplicationConfig = {
   ...defaultApplicationConfig,
   networkTimeout: 2000,
-  fakeCRUDAPI: '//127.0.0.1:5000',
+  fakeCrudApi: '//127.0.0.1:4000/api/fakecrud',
 };
 
 export const defaultClientApplicationConfig: ApplicationConfig = {
   ...defaultApplicationConfig,
   networkTimeout: 10000,
-  fakeCRUDAPI: '',
+  fakeCrudApi: '/api/fakecrud',
 };

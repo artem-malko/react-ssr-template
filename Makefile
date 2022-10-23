@@ -1,3 +1,4 @@
+DOCKER_HUB_PATH=ghcr.io/artem-malko/react-ssr-template/node-app
 CYAN=`tput bold && tput setaf 6`
 RESET=`tput sgr0`
 TEST_FILES ?= src/**/__tests__/*.ts \
@@ -165,12 +166,12 @@ tsc:
 # Build a docker image with NodeJS App inside
 .PHONY: build-nodejs-app-image
 build-nodejs-app-image:
-	docker build --platform linux/amd64 --build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) -t ghcr.io/artem-malko/react-ssr-template/node-app:latest .
+	docker build --platform linux/amd64 --build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) -t ${DOCKER_HUB_PATH}:latest .
 
 # Push a docker image with NodeJS App inside
 .PHONY: push-nodejs-app-image
 push-nodejs-app-image:
-	docker push ghcr.io/artem-malko/react-ssr-template/node-app:latest
+	docker push ${DOCKER_HUB_PATH}:latest
 
 # Build and push a docker image with NodeJS App inside
 .PHONY: dockerize-nodejs-app

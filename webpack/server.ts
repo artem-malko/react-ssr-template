@@ -2,8 +2,8 @@ import path from 'path';
 import webpack from 'webpack';
 import { universalConfig } from './universal';
 import esbuild from 'esbuild';
-import { ASSETS_STATS_FILE_NAME } from '../src/infrastructure/webpack/stats';
-import { PAGE_DEPENDENCIES_FILE_NAME } from '../src/infrastructure/dependencyManager/webpack/plugin';
+import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
+import { PAGE_DEPENDENCIES_FILE_NAME } from './plugins/dependencyManager/plugin';
 import { pinoBannerPlugin, pinoEntries } from './utils/pino';
 import { merge } from './utils/merge';
 
@@ -11,7 +11,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const serverConfig: webpack.Configuration = {
   entry: {
-    server: './src/applications/server/index.ts',
+    server: './src/application/entry/server/index.tsx',
     ...pinoEntries,
   },
 

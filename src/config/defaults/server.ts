@@ -1,5 +1,5 @@
+import { baseDomain } from 'framework/constants/application';
 import { ServerConfig } from '../types';
-import { baseDomain } from '../constants';
 
 export const defaultServerConfig: ServerConfig = {
   port: 4000,

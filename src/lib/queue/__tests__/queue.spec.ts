@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Queue } from '../';
 import { stub, useFakeTimers, SinonFakeTimers } from 'sinon';
-import { waitForNextTickWithMockedTimers } from 'infrastructure/tests/utils/wait';
+import { waitForNextTickWithMockedTimers } from 'framework/infrastructure/tests/utils/wait';
 
 describe('Queue', () => {
   let clock: SinonFakeTimers;

@@ -1,5 +1,7 @@
+import { AnyConfig } from 'framework/config/types';
+
 // Can be used on server side only to configure a server, which serve application
-export interface ServerConfig {
+export interface ServerConfig extends AnyConfig {
   port: number;
 
   // Cookies
@@ -10,13 +12,13 @@ export interface ServerConfig {
 }
 
 // Can be used on client and server side to configure application
-export interface ApplicationConfig {
+export interface ApplicationConfig extends AnyConfig {
   networkTimeout: number;
   publicPath: string;
 
   // HackerNews API URL
-  hackerNewsAPIURL: string;
+  hackerNewsApiUrl: string;
 
   // Fake API to demonstrate all @tanstack/react-querys advantages
-  fakeCRUDAPI: string;
+  fakeCrudApi: string;
 }

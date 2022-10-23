@@ -4,9 +4,9 @@ import { universalConfig } from './universal';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 import esbuild from 'esbuild';
-import { CSSInJSPlugin } from '../src/infrastructure/css/webpack/plugin';
-import { PageDependenciesManagerPlugin } from '../src/infrastructure/dependencyManager/webpack/plugin';
-import { ASSETS_STATS_FILE_NAME } from '../src/infrastructure/webpack/stats';
+import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
+import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
+import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 import { merge } from './utils/merge';
 
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
@@ -26,7 +26,7 @@ const bundleStatsPlugins = withBundleStats
 const clientConfig: webpack.Configuration = {
   entry: {
     // The main entry point
-    app: './src/applications/client/index.tsx',
+    app: './src/application/entry/client/index.tsx',
   },
 
   output: {
@@ -62,7 +62,11 @@ const clientConfig: webpack.Configuration = {
         exclude: /node_modules/,
         use: [
           {
-            loader: path.resolve(__dirname, '..', 'src/infrastructure/css/webpack/loader/index.ts'),
+            loader: path.resolve(
+              __dirname,
+              '..',
+              'src/framework/infrastructure/css/webpack/loader/index.ts',
+            ),
             options: {
               resolveModules: universalConfig.resolve!.modules,
             },

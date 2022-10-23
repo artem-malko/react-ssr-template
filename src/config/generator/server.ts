@@ -1,8 +1,9 @@
 import { ApplicationConfig, ServerConfig } from '../types';
 import { defaultServerConfig } from '../defaults/server';
-import { parseEnvParams } from '../utils';
 import { defaultServerApplicationConfig, defaultClientApplicationConfig } from '../defaults/application';
 import localTemplate from './local_template';
+import { parseEnvParams } from 'framework/config/utils/parseEnvParams';
+import { removeUndefinedFields } from 'framework/config/utils/removeUndefinedFields';
 
 if (process.env.APP_ENV === 'client') {
   throw new Error('Config generator should not be existed on client!');
@@ -19,13 +20,15 @@ try {
 } catch {
   // No local config provided, nothing to do
 }
+
 /**
  * Build config for a server which serve an application
  */
 const buildServerConfig = (): ServerConfig => {
   return {
-    ...parseEnvParams(defaultServerConfig, envParams, /^server_/i),
-    ...local.serverConfig,
+    ...defaultServerConfig,
+    ...removeUndefinedFields(parseEnvParams(defaultServerConfig, envParams, 'server')),
+    ...removeUndefinedFields(local.serverConfig),
   };
 };
 
@@ -34,8 +37,9 @@ const buildServerConfig = (): ServerConfig => {
  */
 const buildServerApplicationConfig = (): ApplicationConfig => {
   return {
-    ...parseEnvParams(defaultServerApplicationConfig, envParams, /^server_/i),
-    ...local.serverApplicationConfig,
+    ...defaultServerApplicationConfig,
+    ...removeUndefinedFields(parseEnvParams(defaultServerApplicationConfig, envParams, 'server_app')),
+    ...removeUndefinedFields(local.serverApplicationConfig),
   };
 };
 
@@ -44,8 +48,9 @@ const buildServerApplicationConfig = (): ApplicationConfig => {
  */
 const buildClientApplicationConfig = (): ApplicationConfig => {
   return {
-    ...parseEnvParams(defaultClientApplicationConfig, envParams, /^client_/i),
-    ...local.clientApplicationConfig,
+    ...defaultClientApplicationConfig,
+    ...removeUndefinedFields(parseEnvParams(defaultClientApplicationConfig, envParams, 'client_app')),
+    ...removeUndefinedFields(local.clientApplicationConfig),
   };
 };
 
