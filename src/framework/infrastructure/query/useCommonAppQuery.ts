@@ -16,7 +16,6 @@ import { ParsedError } from 'framework/infrastructure/request/types';
 
 import { useHydrateQuery } from './useHydrateQuery';
 
-
 export const useCommonAppQuery = <TResult, TError extends ParsedError>(
   key: QueryKey,
   queryFunction: QueryFunction<TResult, QueryKey>,
@@ -32,9 +31,14 @@ export const useCommonAppQuery = <TResult, TError extends ParsedError>(
    */
   useEffect(() => {
     return () => {
-      const status = queryClient.getQueryState(key, { exact: true });
+      const queryState = queryClient.getQueryState<TResult, TError>(key, { exact: true });
+      const errorCode = queryState?.error && queryState?.error.code;
+      /**
+       * It's quite useless to retry a request with 404 response
+       */
+      const isErrorCodeOkToResetCache = errorCode ? errorCode >= 500 : true;
 
-      if (status?.status === 'error') {
+      if (queryState?.status === 'error' && isErrorCodeOkToResetCache) {
         queryClient.getQueryCache().find(key, { exact: true })?.reset();
       }
     };

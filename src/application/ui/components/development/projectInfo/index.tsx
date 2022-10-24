@@ -1,14 +1,13 @@
 import { memo, version } from 'react';
 
-
 import { useActivePage } from 'application/main/hooks/useActivePage';
-import { useURLQueryParams } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
 
 import { SourceSpoiler } from '../sourceSpoiler';
 
 export const ProjectInfo = memo(() => {
   const page = useActivePage();
-  const { URLQueryParams } = useURLQueryParams();
+  const { URLQueryParams } = useURLQuery();
 
   return (
     <div

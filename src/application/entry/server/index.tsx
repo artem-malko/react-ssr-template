@@ -55,6 +55,12 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   ),
   clientApplicationConfig,
   serverApplicationConfig,
+  initialAppContext: {
+    page: {
+      name: 'root',
+    },
+    URLQueryParams: undefined,
+  },
 });
 
 startServer({

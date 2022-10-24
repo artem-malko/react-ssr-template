@@ -14,6 +14,8 @@ import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
 import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
+import { RaiseErrorContext } from 'framework/infrastructure/raise/react/context';
+import { createRaiseErrorStore } from 'framework/infrastructure/raise/store';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
 import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
 import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
@@ -44,9 +46,17 @@ type Params = {
   MainComp: React.ReactNode;
   serverApplicationConfig: BaseApplicationConfig;
   clientApplicationConfig: BaseApplicationConfig;
+  initialAppContext: AnyAppContext;
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
-  ({ parseURL, compileAppURL, MainComp, serverApplicationConfig, clientApplicationConfig }) =>
+  ({
+    parseURL,
+    compileAppURL,
+    MainComp,
+    serverApplicationConfig,
+    clientApplicationConfig,
+    initialAppContext,
+  }) =>
   (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
     res.set('X-XSS-Protection', '1');
@@ -74,7 +84,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     const reactSSRMethodName =
       forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
 
-    const storePromise = restoreStore({ compileAppURL, parseURL, req, res });
+    const storePromise = restoreStore({ req, res, compileAppURL, parseURL, initialAppContext });
 
     Promise.all<
       [Promise<Store<AnyAppState>>, Promise<AssetsData>, Promise<{ [pageChunkName: string]: string[] }>]
@@ -94,6 +104,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
           }
           res.redirect(301, compiledUrl);
         } else {
+          const errorRiseStore = createRaiseErrorStore();
           const platformAPI = createPlatformAPI({
             envSpecificAPIs: {
               cookies: createCookieAPI(req, res),
@@ -112,7 +123,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
           const reactPath = getFullPathForJSFile('react');
           const appPath = getFullPathForJSFile('app');
           const vendorPath = getFullPathForJSFile('vendor');
-          const infrastructurePath = getFullPathForJSFile('infrastructure');
+          const frameworkPath = getFullPathForJSFile('framework');
           const libPath = getFullPathForJSFile('lib');
           const rarelyPath = getFullPathForJSFile('rarely');
 
@@ -167,17 +178,19 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                     <ConfigContext.Provider value={serverApplicationConfig}>
                       <QueryClientProvider client={queryClient}>
                         <CSSProvider cssProviderStore={cssProviderStore}>
-                          <Shell
-                            publicPath={publicPath}
-                            assets={{
-                              inlineContent: assetsInfo.inlineContent,
-                              pathMapping: assetsInfo.pathMapping,
-                            }}
-                            state={store.getState()}
-                            mainComp={MainComp}
-                            session={session}
-                            clientApplicationConfig={clientApplicationConfig}
-                          />
+                          <RaiseErrorContext.Provider value={errorRiseStore}>
+                            <Shell
+                              publicPath={publicPath}
+                              assets={{
+                                inlineContent: assetsInfo.inlineContent,
+                                pathMapping: assetsInfo.pathMapping,
+                              }}
+                              state={store.getState()}
+                              mainComp={MainComp}
+                              session={session}
+                              clientApplicationConfig={clientApplicationConfig}
+                            />
+                          </RaiseErrorContext.Provider>
                         </CSSProvider>
                       </QueryClientProvider>
                     </ConfigContext.Provider>
@@ -186,21 +199,34 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
               </PlatformAPIContext.Provider>
             </StrictMode>,
             {
-              bootstrapScripts: [
-                reactPath,
-                appPath,
-                vendorPath,
-                infrastructurePath,
-                libPath,
-                rarelyPath,
-              ],
+              bootstrapScripts: [reactPath, appPath, vendorPath, frameworkPath, libPath, rarelyPath],
               [reactSSRMethodName]() {
-                // If something errored before we started streaming, we set the error code appropriately.
-                // @TODO_FRAMEWORK add 404 eror from state
-                res.status(didError ? 500 : 200);
+                /**
+                 * raisedError can be set in `onAllReady` mode only
+                 * In `onShellReady` raisedError is undefined,
+                 * cause application is not started to render,
+                 * when getRaisedError is called
+                 */
+                const raisedError = errorRiseStore.getRaisedError();
+
+                /**
+                 * If something errored before we started streaming,
+                 * we set the error code appropriately.
+                 */
+                if (didError) {
+                  res.status(500);
+                  /**
+                   * In other case we can try to read raisedError
+                   */
+                } else {
+                  res.status(raisedError ? raisedError : 200);
+                }
+
                 res.setHeader('Content-type', 'text/html');
-                // We will send main shell like html>head+body before react starts to stream
-                // to allow adding styles and scripts to the existed dom
+                /**
+                 * We will send main shell like html>head+body before react starts to stream
+                 * to allow adding styles and scripts to the existed dom
+                 */
                 res.write(
                   `<!DOCTYPE html><html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative">${pageDependenciesScriptTags}<div id="${ApplicationContainerId}">`,
                 );
@@ -235,6 +261,22 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                   if (!res.writableEnded) {
                     res.end();
                   }
+
+                  /**
+                   * In case you are creating the QueryClient for every request,
+                   * React Query creates the isolated cache for this client,
+                   * which is preserved in memory for the cacheTime period.
+                   * That may lead to high memory consumption on server
+                   * in case of high number of requests during that period.
+                   *
+                   * On the server, cacheTime defaults to Infinity
+                   *  which disables manual garbage collection and will automatically clear
+                   * memory once a request has finished.
+                   * If you are explicitly setting a non-Infinity cacheTime
+                   * then you will be responsible for clearing the cache early.
+                   * https://tanstack.com/query/v4/docs/guides/ssr#high-memory-consumption-on-server
+                   */
+                  queryClient.clear();
                 });
               },
 

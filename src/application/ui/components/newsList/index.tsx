@@ -1,13 +1,12 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
-
 import { useNavigate } from 'application/main/hooks/useNavigate';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Preloader } from 'application/ui/kit/preloader';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 import { newsPageDefaultParams } from 'application/ui/pages/news';
 import { useStyles } from 'framework/infrastructure/css/hook';
-import { useURLQueryParams } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
 
 import { styles } from './index.css';
 
@@ -18,7 +17,7 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
     // Just to try a new hook)
     const id = useId();
     const { showToast } = useToast();
-    const { URLQueryParams } = useURLQueryParams();
+    const { URLQueryParams } = useURLQuery();
     const URLQueryParamsCount = Object.keys(URLQueryParams || {}).length;
     const [listType, setListType] = useState<'paginated' | 'infinity'>(
       useInfinityList ? 'infinity' : 'paginated',

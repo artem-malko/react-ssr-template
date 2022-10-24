@@ -58,11 +58,11 @@ export class ReactStreamRenderEnhancer extends Writable {
       /**
        * Ok, queryClientCache has more queries to dehydrate, than we dehydrated already
        * Let's try to find a query ready to be dehydrated
+       * It can be any query in a `success` or `error` status
        */
-      const readyQuery = queryClientCache.find((q) => {
-        // @TODO Do we need to use fetchStatus?
-        return q.state.status === 'success' && !this.queryStorage[q.queryHash];
-      });
+      const readyQuery = queryClientCache.find(
+        (q) => q.state.status !== 'loading' && !this.queryStorage[q.queryHash],
+      );
 
       /**
        * The query ready to be dehydrated was found.

@@ -1,4 +1,5 @@
 import path from 'node:path';
+
 import webpack from 'webpack';
 
 export const universalConfig: webpack.Configuration = {

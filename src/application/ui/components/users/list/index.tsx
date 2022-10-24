@@ -1,13 +1,12 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
-
 import { useNavigate } from 'application/main/hooks/useNavigate';
 import { useUserList } from 'application/queries/users/useUserList';
 import { UserStatus } from 'application/services/fake/types';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
+import { RaiseError } from 'framework/infrastructure/raise/react/component';
 
 import { UserTableRow } from './row';
-
 
 type Props = {
   page: number;
@@ -20,7 +19,6 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
     statusFilter: filterStatusState,
   });
   const { navigate } = useNavigate();
-
   const onPageChange = useCallback(
     (action: 'inc' | 'dec') => {
       const newPageNumber = action === 'inc' ? page + 1 : page - 1;
@@ -55,6 +53,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
           setFilterStatus={setFilterStatusState}
         />
         <h1>ERROR!</h1>
+        <RaiseError code={queryResult.error.code} />
         <strong>{JSON.stringify(queryResult.error)}</strong>
         <button onClick={() => invalidateQuery()}>Retry</button>
       </>

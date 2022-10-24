@@ -27,7 +27,7 @@ const services = createServices({
 });
 
 startClientApplication({
-  Comp: (
+  MainComp: (
     <ServiceContext.Provider value={services}>
       <ToastControllerContext.Provider value={toastController}>
         <PopupControllerContext.Provider value={popupController}>

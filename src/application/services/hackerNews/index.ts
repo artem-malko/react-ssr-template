@@ -2,7 +2,6 @@ import { Requester } from 'framework/infrastructure/request/types';
 
 import { FetchNewsResponse, FetchNewsItemResponse } from './types';
 
-
 type Config = {
   apiURL: string;
 };

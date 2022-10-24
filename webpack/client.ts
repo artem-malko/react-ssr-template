@@ -1,21 +1,21 @@
 import path from 'node:path';
 
-import webpack from 'webpack';
-import TerserPlugin from 'terser-webpack-plugin';
 import esbuild from 'esbuild';
+import TerserPlugin from 'terser-webpack-plugin';
+import webpack from 'webpack';
 
-import { universalConfig } from './universal';
 import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
-import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
 import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
+import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
+import { universalConfig } from './universal';
 import { merge } from './utils/merge';
 
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 
-const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
+const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
 const isProduction = process.env.NODE_ENV === 'production';
 const withBundleStats = process.env.BUNDLE_STATS === 'true';
@@ -116,8 +116,8 @@ const clientConfig: webpack.Configuration = {
 
       cacheGroups: {
         infrastructure: {
-          name: 'infrastructure',
-          test: /infrastructure/,
+          name: 'framework',
+          test: /framework/,
           chunks: 'all',
           enforce: true,
         },

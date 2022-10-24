@@ -44,12 +44,12 @@ type Params = {
   compileAppURL: (appContext: AnyAppContext) => string;
   onAppRendered?: () => void;
   onRecoverableError?: (args: unknown) => void;
-  Comp: React.ReactNode;
+  MainComp: React.ReactNode;
 };
 export const startClientApplication = ({
   onAppRendered,
   onRecoverableError,
-  Comp,
+  MainComp,
   compileAppURL,
 }: Params) => {
   return restoreStore({ compileAppURL }).then((store) => {
@@ -76,7 +76,7 @@ export const startClientApplication = ({
                         afterAppRendered(config);
                         onAppRendered?.();
                       }}
-                      mainComp={Comp}
+                      mainComp={MainComp}
                     />
                   </QueryClientProvider>
                 </ConfigContext.Provider>

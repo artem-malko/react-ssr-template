@@ -6,11 +6,7 @@ import { StaticComponent } from 'application/ui/components/staticComponent';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';
-import { useURLQueryParams } from 'framework/infrastructure/router/hooks/useURLQueryParams';
-import { setQueryStringParamsAction } from 'framework/infrastructure/router/redux/actions/appContext/setQueryStringParams';
-import { historyPush } from 'framework/infrastructure/router/redux/actions/router';
-import { useRouterReduxDispatch } from 'framework/infrastructure/router/redux/hooks';
-import { sequence } from 'framework/infrastructure/signal';
+import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
 
 export interface NewsPage extends CommonPage {
   name: 'news';
@@ -27,24 +23,16 @@ export const newsPageDefaultParams: NewsPage['params'] = {
 
 export default memo<{ page: NewsPage }>(({ page }) => {
   const [n, s] = useState(0);
-  const dispatch = useRouterReduxDispatch();
-  const { URLQueryParams } = useURLQueryParams();
-
-  // @TODO_FRAMEWORK
+  const { URLQueryParams, updateURLQuery } = useURLQuery();
   const addURLQuery = useCallback(() => {
-    dispatch(
-      sequence(
-        setQueryStringParamsAction(
-          Object.keys(URLQueryParams || {}).length
-            ? {}
-            : {
-                test_mode_attr: ['2'],
-              },
-        ),
-        historyPush(),
-      ),
-    );
-  }, [dispatch, URLQueryParams]);
+    updateURLQuery({
+      queryParams: Object.keys(URLQueryParams || {}).length
+        ? {}
+        : {
+            test_mode_attr: ['2'],
+          },
+    });
+  }, [updateURLQuery, URLQueryParams]);
 
   return (
     <>

@@ -7,23 +7,19 @@ import { AnyAppContext } from 'framework/infrastructure/router/types';
 import { logger } from '../utils/reduxLogger';
 import { startup } from './startup';
 
-
 type Params = {
-  parseURL: (URL: string) => AnyAction[];
-  compileAppURL: (appContext: AnyAppContext) => string;
   req: Request;
   res: Response;
+  parseURL: (URL: string) => AnyAction[];
+  compileAppURL: (appContext: AnyAppContext) => string;
+  initialAppContext: AnyAppContext;
 };
-export async function restoreStore({ parseURL, compileAppURL, req }: Params) {
+export async function restoreStore({ parseURL, compileAppURL, req, initialAppContext }: Params) {
   const middlewares: Middleware[] = process.env.NODE_ENV !== 'production' ? [logger] : [];
   const routerActions = parseURL(req.url);
   const store = configureStore({
-    // @TODO_FRAMEWORK
     initialState: {
-      appContext: {
-        page: { name: 'root' },
-        URLQueryParams: undefined,
-      },
+      appContext: initialAppContext,
     },
     middlewares,
     enhancers: [],
