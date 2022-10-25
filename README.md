@@ -29,7 +29,7 @@ So, let's talk about base commands.
 * [React](https://reactjs.org/) as a view layer. Render to a stream is used for SSR.
 * [React-query](https://react-query.tanstack.com/) as a layer for working with external data.
 * Own version of CSS-in-JS. Inspired by [aphrodite](https://github.com/Khan/aphrodite). You can find an implementation [here](https://github.com/artem-malko/react-ssr-template/blob/main/src/framework/infrastructure/css). I need my own implementation, cause there is no any other ready solutions in CSS-in-JS, which will work with new React SSR API.
-* My own router, which was created to work with redux. Find more info [here](https://github.com/artem-malko/react-ssr-template/blob/main/src/framework/infrastructure/router). Checkout tests, you will find all cases there.
+* My own router, which was created to work with redux. Find more info [here](https://github.com/artem-malko/react-ssr-template/blob/main/src/framework/infrastructure/router). Checkout tests, you will find all cases there. Redux us used under the hood. Acutally, you can use the template and do not know about that fact) If you'd like to use redux for your own state — you can wrap your application with a Provider. Redux in the router uses its own context.
 * [webpack](https://webpack.js.org/) + [esbuild](https://esbuild.github.io/) to build the project.
 * [pino](https://github.com/pinojs/pino) as fast and light logger.
 * [mocha](https://mochajs.org/) + [chai](https://www.chaijs.com/) + [sinon](https://sinonjs.org/) + [React testing library](https://testing-library.com/docs/react-testing-library/intro/) to work with tests.
