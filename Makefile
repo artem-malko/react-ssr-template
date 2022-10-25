@@ -1,4 +1,6 @@
 # Include all env variables from .env.local
+# Just create such file with a content of config override variables like
+# SERVER_PORT=5000
 -include .env.local
 # And make them available for an application
 export
@@ -46,7 +48,7 @@ start-prod:
 
 # Prebuild phase
 .PHONY: prebuild
-prebuild: clean create-build-dir create-serverjs copy-public
+prebuild: clean prepare-build-dir
 
 
 ### Subtasks
@@ -57,19 +59,11 @@ clean:
 	rm -rf ./build
 
 # Create dir for new build
-.PHONY: create-build-dir
-create-build-dir:
-	mkdir build
-
 # Create empty server.js file for nodemon
-.PHONY: create-serverjs
-create-serverjs:
-	touch ./build/server.js
-
 # Copy public files to build dir
-.PHONY: copy-public
-copy-public:
-	cp -r public build
+.PHONY: prepare-build-dir
+prepare-build-dir:
+	mkdir build && touch ./build/server.js && cp -r public build
 
 # Start nodemon
 .PHONY: start-dev-server
