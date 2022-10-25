@@ -110,7 +110,7 @@ unit:
 	node_modules/.bin/mocha \
 		--require ts-node/register \
 		--require ./tools/setupChaiDomAsserions.js \
-		--require ./src/tests/hooks/beforeAndAfterEach.ts \
+		--require ./src/framework/infrastructure/tests/hooks/beforeAndAfterEach.ts \
 		--require source-map-support/register \
 		--bail \
 		--recursive \
@@ -127,7 +127,7 @@ unit-coverage:
 	node_modules/.bin/mocha \
 		--require ts-node/register \
 		--require ./tools/setupChaiDomAsserions.js \
-		--require ./src/tests/hooks/beforeAndAfterEach.ts \
+		--require ./src/framework/infrastructure/tests/hooks/beforeAndAfterEach.ts \
 		--require source-map-support/register \
 		--bail \
 		--recursive \

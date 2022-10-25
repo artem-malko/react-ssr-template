@@ -23,7 +23,7 @@ exports.mochaHooks = {
     currentTestTitle = this.currentTest && this.currentTest.title;
 
     if ((currentTestFileName || 'dom.spec.tsx').endsWith('.tsx')) {
-      cleanupJSDOM = require('tests/dom/env')();
+      cleanupJSDOM = require('../dom/env/index.js')();
     }
   },
 

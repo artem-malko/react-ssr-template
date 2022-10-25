@@ -46,7 +46,7 @@
       "args": [
           "--require", "ts-node/register",
           "--require", "./tools/setupChaiDomAsserions.js",
-          "--require", "src/tests/hooks/beforeAndAfterEach.ts",
+          "--require", "src/tests/framework/infrastructure/hooks/beforeAndAfterEach.ts",
           "--require", "source-map-support/register",
           "--bail",
           "--recursive",

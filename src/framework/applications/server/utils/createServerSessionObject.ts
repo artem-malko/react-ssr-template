@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
-import { defaultSession } from 'framework/session/context';
-import { Session } from 'framework/session/types';
+import { defaultSession } from 'framework/infrastructure/session/context';
+import { Session } from 'framework/infrastructure/session/types';
 
 export const createServerSessionObject = (req: Request): Session => {
   const userAgentHeader = req.headers['user-agent'];

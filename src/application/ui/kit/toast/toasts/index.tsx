@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef, useState, useCallback, useContext } from 'react';
 
 import { useStyles } from 'framework/infrastructure/css/hook';
-import { useSession } from 'framework/session/hook';
+import { useSession } from 'framework/infrastructure/session/hook';
 
 import { ToastControllerContext } from '../infrastructure/context';
 import { ToastItem } from '../toast';

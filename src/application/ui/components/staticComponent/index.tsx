@@ -2,7 +2,7 @@ import { memo, useCallback, useRef, useState } from 'react';
 
 import { useConfig } from 'application/config/hook';
 import { Alignment, Placement, Popover } from 'application/ui/kit/popover';
-import { useSession } from 'framework/session/hook';
+import { useSession } from 'framework/infrastructure/session/hook';
 
 export const StaticComponent = memo(() => {
   const config = useConfig();

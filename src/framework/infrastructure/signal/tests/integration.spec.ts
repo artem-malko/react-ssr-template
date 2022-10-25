@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { applyMiddleware, createStore, compose, StoreEnhancer, AnyAction } from 'redux';
 
-import { waitForResolve } from 'tests/utils/wait';
+import { waitForResolve } from 'lib/tests/wait';
 
 import { sequence, parallel, commonWithSelectors, createSignal, noop } from '..';
 import { createSignalMiddleware } from '../middleware';

@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { v4 } from 'uuid';
 
 import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'application/constants/cookies';
-import { createCookieAPI } from 'framework/platform/cookie/server';
+import { createCookieAPI } from 'framework/infrastructure/platform/cookie/server';
 
 import { mutableUsersData } from './data';
 

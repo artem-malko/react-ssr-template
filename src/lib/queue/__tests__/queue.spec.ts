@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { stub, useFakeTimers, SinonFakeTimers } from 'sinon';
 
-import { waitForNextTickWithMockedTimers } from 'tests/utils/wait';
+import { waitForNextTickWithMockedTimers } from 'lib/tests/wait';
 
 import { Queue } from '../';
 
