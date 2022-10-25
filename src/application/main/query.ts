@@ -24,15 +24,15 @@ export const useAppQuery = <TResult, TError extends ParsedError>(
 ) => {
   const services = useServices();
 
-  return useCommonAppQuery(
+  return useCommonAppQuery({
     key,
-    (context: QueryFunctionContext<QueryKey>) =>
+    queryFunction: (context: QueryFunctionContext<QueryKey>) =>
       queryFunction({
         context,
         services,
       }),
-    options,
-  );
+    queryOptions: options,
+  });
 };
 
 export const useInfiniteAppQuery = <TResult, TError extends ParsedError>(
@@ -42,13 +42,13 @@ export const useInfiniteAppQuery = <TResult, TError extends ParsedError>(
 ) => {
   const services = useServices();
 
-  return useInfiniteCommonAppQuery(
+  return useInfiniteCommonAppQuery({
     key,
-    (context: QueryFunctionContext<QueryKey>) =>
+    queryFunction: (context: QueryFunctionContext<QueryKey>) =>
       queryFunction({
         context,
         services,
       }),
-    options,
-  );
+    queryOptions: options,
+  });
 };

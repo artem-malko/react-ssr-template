@@ -4,11 +4,12 @@ import { Query, QueryClient } from '@tanstack/react-query';
 
 import { generateCss } from 'framework/infrastructure/css/generator';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
+import { ParsedError } from 'framework/infrastructure/request/types';
 
 /**
  * This is just a copy from react-query repo
  */
-function dehydrateQuery(query: Query) {
+function dehydrateQuery(query: Query<unknown, ParsedError | Error>) {
   return {
     state: query.state,
     queryKey: query.queryKey,
@@ -46,7 +47,9 @@ export class ReactStreamRenderEnhancer extends Writable {
       return;
     }
 
-    const queryClientCache = this.queryClient.getQueryCache().getAll();
+    const queryClientCache = this.queryClient.getQueryCache().getAll() as Array<
+      Query<unknown, ParsedError | Error>
+    >;
 
     /**
      * We have to do as less work as we can,
@@ -60,7 +63,7 @@ export class ReactStreamRenderEnhancer extends Writable {
        * Let's try to find a query ready to be dehydrated
        * It can be any query in a `success` or `error` status
        */
-      const readyQuery = queryClientCache.find(
+      const queryToDehydrate = queryClientCache.find(
         (q) => q.state.status !== 'loading' && !this.queryStorage[q.queryHash],
       );
 
@@ -70,29 +73,49 @@ export class ReactStreamRenderEnhancer extends Writable {
        *
        * This data will be used as an initialQueryState in the hydration process
        */
-      if (readyQuery) {
-        this.queryStorage[readyQuery.queryHash] = true;
-        this.queriesCache.push(readyQuery.queryHash);
+      if (queryToDehydrate) {
+        this.queryStorage[queryToDehydrate.queryHash] = true;
+        this.queriesCache.push(queryToDehydrate.queryHash);
 
-        const randomScriptElementVarName = generateRandomId('__script');
-        const queryHash = JSON.stringify(readyQuery.queryHash);
-        const queryData = JSON.stringify({
-          queries: [dehydrateQuery(readyQuery)],
-        });
-        const scriptContent = JSON.stringify(`window[${queryHash}] = ${queryData}`);
+        const queryState = queryToDehydrate.state;
+        const queryStateStatus = queryState.status;
+        const possibleErrorCode =
+          queryState.error && 'code' in queryState.error && queryState.error.code;
         /**
-         * This script executes right before the next chunk
-         * so nothing else can observe it. Including React.
-         * This script creates style element, adds queryData and removes itself from the dom
-         * So, hydration won't be broken.
+         * Lets give a chance to retry request on a client side for any error code, but not 404
+         * It's almost impossible, that 404 on the server
+         * side will be changed to something else on the client.
+         * It's possible only in two cases:
+         *  1. You're using different backend for the server and for the client
+         *  2. The requested entity was added after a request from the server side
+         *
+         * But! You can dehydrate any error you want, just remove `isOkToDehydrate` check
          */
-        this._writable.write(
-          wrapWithImmediateScript(`
+        const isErrorCodeOkToDehydrate = possibleErrorCode ? possibleErrorCode === 404 : true;
+        const isOkToDehydrate =
+          queryStateStatus === 'success' || (queryStateStatus === 'error' && isErrorCodeOkToDehydrate);
+
+        if (isOkToDehydrate) {
+          const randomScriptElementVarName = generateRandomId('__script');
+          const queryHash = JSON.stringify(queryToDehydrate.queryHash);
+          const queryData = JSON.stringify({
+            queries: [dehydrateQuery(queryToDehydrate)],
+          });
+          const scriptContent = JSON.stringify(`window[${queryHash}] = ${queryData}`);
+          /**
+           * This script executes right before the next chunk
+           * so nothing else can observe it. Including React.
+           * This script creates style element, adds queryData and removes itself from the dom
+           * So, hydration won't be broken.
+           */
+          this._writable.write(
+            wrapWithImmediateScript(`
             var ${randomScriptElementVarName} = document.createElement('script');
             ${randomScriptElementVarName}.innerHTML = ${scriptContent};
             document.body.appendChild(${randomScriptElementVarName});
           `),
-        );
+          );
+        }
       }
     }
 

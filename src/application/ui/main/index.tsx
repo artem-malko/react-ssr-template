@@ -1,7 +1,6 @@
 import { lazy, memo, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-
 import { useActivePage } from 'application/main/hooks/useActivePage';
 import { Page } from 'application/main/types';
 import { DevMenu } from 'application/ui/components/development/devMenu';
