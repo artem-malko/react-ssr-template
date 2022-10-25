@@ -28,7 +28,6 @@ So, let's talk about base commands.
 * [Express.js](https://expressjs.com/) as a server. I think about fastify as a replacement for Express.js.
 * [React](https://reactjs.org/) as a view layer. Render to a stream is used for SSR.
 * [React-query](https://react-query.tanstack.com/) as a layer for working with external data.
-* Own router, which uses [Redux](https://redux.js.org/) as a store for a state for the application context: current page, query string etc. But you can use your own Redux Provider, if you want to use it for your appliaction state managment.
 * Own version of CSS-in-JS. Inspired by [aphrodite](https://github.com/Khan/aphrodite). You can find an implementation [here](https://github.com/artem-malko/react-ssr-template/blob/main/src/framework/infrastructure/css). I need my own implementation, cause there is no any other ready solutions in CSS-in-JS, which will work with new React SSR API.
 * My own router, which was created to work with redux. Find more info [here](https://github.com/artem-malko/react-ssr-template/blob/main/src/framework/infrastructure/router). Checkout tests, you will find all cases there.
 * [webpack](https://webpack.js.org/) + [esbuild](https://esbuild.github.io/) to build the project.
