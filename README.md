@@ -11,6 +11,17 @@ If you want to see this project in action: http://158.101.223.0:5000/
 
 🚧 🛠️ Work In Progress 🛠️ 🚧
 
+## Base commands
+
+First off, I'm using make) It's not necessary, but as I think it is much powerful than npm from the box.
+
+So, let's talk about base commands.
+
+* `make dev` — starts a dev-server with a file-watcher + tsc in a watch mode.
+* `make prod` — builds a production version of your application.
+* `make start-prod` — starts built application. Quite useful after `make prod`.
+* `make test` — starts eslint, prettier, tsc and unit-tests
+
 ## Technologies
 
 * [typescript](https://www.typescriptlang.org/) as the main language.

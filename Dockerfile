@@ -1,3 +1,9 @@
+# This is a build-arg to store an image with previous build
+# to get files from it
+# Can be quite usefull, when your users or bots request files
+# from previous releases
+ARG DOCKER_IMAGE_WITH_EXISTS_BUILD=undefined
+
 # Install dependencies stage
 # Install dependencies only when needed
 FROM node:alpine AS deps
@@ -11,6 +17,10 @@ RUN npm ci
 # Rebuild the source code only when needed
 FROM node:alpine AS builder
 
+# This is a build-arg to store an application version
+# This SHA is used in logs, to help you to realize,
+# which release broke your production.
+# Just checkout make production below.
 ARG GITHUB_SHA=undefined_version
 RUN echo ${GITHUB_SHA}
 
@@ -28,7 +38,7 @@ RUN APP_VERSION=${GITHUB_SHA:0:7} make production
 # That builds will be used to store prev files,
 # which can be requested by browser cache, bots and so on
 # You have to specify your own image here
-FROM ghcr.io/artem-malko/react-ssr-template/node-app:latest AS exists-build
+FROM ${DOCKER_IMAGE_WITH_EXISTS_BUILD} AS exists-build
 
 
 # Production image, copy all the files and run it
