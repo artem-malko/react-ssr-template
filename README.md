@@ -1,6 +1,6 @@
 # React application with Streaming Server Side Rendering
 
-Simple template for a website with SSR (with streams) and React 18 with a brand new API — https://github.com/reactwg/react-18/discussions 🔥🔥🔥
+A simple template for a website with SSR (with streams) and React 18 with a brand new API — https://github.com/reactwg/react-18/discussions 🔥🔥🔥
 
 🚀 Just start with
 
