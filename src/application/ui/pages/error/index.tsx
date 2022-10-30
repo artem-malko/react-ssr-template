@@ -15,7 +15,7 @@ export default memo<{ page: ErrorPage }>(({ page }) => {
   return (
     <>
       <RaiseError code={page.params.code} />
-      Error Page
+      Error Page {page.params.code}
     </>
   );
 });

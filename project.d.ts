@@ -1,8 +1,8 @@
 // Global object / window variables
 interface Window {
-  __initialReduxState: any;
+  __initialRouterState: any;
   __REDUX_DEVTOOLS_EXTENSION__: any;
-  __cfg: any;
+  __application_cfg: any;
   onunhandledrejection: (error: PromiseRejectionEvent) => void;
 
   __staticResourcesPathMapping: {
@@ -10,7 +10,6 @@ interface Window {
     inlineContent: string;
   };
   __session: object;
-  __server_styles: string[];
 }
 
 declare namespace Express {

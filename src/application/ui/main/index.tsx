@@ -21,7 +21,18 @@ export const Main = memo(() => {
   const page = useActivePage();
 
   return (
-    <>
+    //  @TODO fix hardcode of the error page's params
+    <ErrorBoundary
+      // If we are here, it means, where is something happen with request for a chunck
+      fallback={
+        <ErrorPage
+          page={{
+            name: 'error',
+            params: { code: 500 },
+          }}
+        />
+      }
+    >
       <div>
         <ZIndexLayout
           top={
@@ -39,23 +50,9 @@ export const Main = memo(() => {
               <div style={{ margin: '-10px -10px 0' }}>
                 <DevMenu />
               </div>
-
-              {/* @TODO fix hardcode of the error page's params */}
-              <ErrorBoundary
-                // If we are here, it means, where is something happen with request for a chunck
-                fallback={
-                  <ErrorPage
-                    page={{
-                      name: 'error',
-                      params: { code: 500 },
-                    }}
-                  />
-                }
-              >
-                <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
-                  <Page page={page} />
-                </Suspense>
-              </ErrorBoundary>
+              <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
+                <Page page={page} />
+              </Suspense>
             </div>
           }
         />
@@ -71,7 +68,7 @@ export const Main = memo(() => {
           right: 0,
         }}
       />
-    </>
+    </ErrorBoundary>
   );
 });
 Main.displayName = 'Main';

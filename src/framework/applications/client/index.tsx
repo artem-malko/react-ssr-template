@@ -60,7 +60,7 @@ export const startClientApplication = ({
           <SessionContext.Provider value={session}>
             <ReduxStoreProvider
               store={store}
-              serverState={window.__initialReduxState}
+              serverState={window.__initialRouterState}
               context={RouterReduxContext}
             >
               <CSSProvider cssProviderStore={cssProviderStore}>

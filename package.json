@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/artem-malko/react-ssr-template#readme",
   "dependencies": {
-    "@tanstack/react-query": "4.13.0",
+    "@tanstack/react-query": "4.13.4",
     "@types/cookie-parser": "1.4.3",
     "@types/express": "4.17.14",
     "@types/express-useragent": "1.0.2",
@@ -25,10 +25,10 @@
     "@types/js-cookie": "3.0.2",
     "@types/loader-utils": "2.0.3",
     "@types/lodash.snakecase": "4.1.7",
-    "@types/node": "18.11.5",
+    "@types/node": "18.11.7",
     "@types/pino": "7.0.5",
-    "@types/react": "18.0.22",
-    "@types/react-dom": "18.0.7",
+    "@types/react": "18.0.24",
+    "@types/react-dom": "18.0.8",
     "@types/react-redux": "7.1.24",
     "@types/redux-logger": "3.0.9",
     "@types/uuid": "8.3.4",
@@ -63,10 +63,10 @@
     "uuid": "9.0.0",
     "webpack": "5.74.0",
     "webpack-cli": "4.10.0",
-    "webpack-stats-plugin": "1.1.0"
+    "webpack-stats-plugin": "1.1.1"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "4.13.0",
+    "@tanstack/react-query-devtools": "4.13.4",
     "@testing-library/react": "13.4.0",
     "@types/chai": "4.3.3",
     "@types/chai-dom": "0.0.13",
@@ -93,7 +93,7 @@
     "prettier": "2.7.1",
     "sinon": "14.0.1",
     "source-map-support": "0.5.21",
-    "webpack-bundle-analyzer": "4.6.1",
+    "webpack-bundle-analyzer": "4.7.0",
     "webpack-npm-dependencies-analyzer": "1.0.1"
   }
 }

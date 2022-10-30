@@ -33,7 +33,7 @@ export const Shell = memo<{
   }) => {
     const inlineScript = `
       var ${APPLICATION_CONFIG_VAR_NAME} = ${JSON.stringify(clientApplicationConfig)};\
-      var __initialReduxState = ${JSON.stringify(state)
+      var __initialRouterState = ${JSON.stringify(state)
         // http://timelessrepo.com/json-isnt-a-javascript-subset
         .replace(/\u2028|\u2029/g, (c) => (c === '\u2028' ? '\\u2028' : '\\u2029'))
         // https://github.com/reduxjs/redux/blob/master/docs/recipes/ServerRendering.md#security-considerations

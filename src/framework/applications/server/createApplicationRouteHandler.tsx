@@ -244,8 +244,6 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                       );
 
                 stream.once('finish', () => {
-                  queryClient.clear();
-
                   if (renderTimeoutId) {
                     clearTimeout(renderTimeoutId);
                   }

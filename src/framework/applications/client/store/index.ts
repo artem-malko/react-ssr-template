@@ -4,12 +4,11 @@ import { AnyAppContext } from 'framework/infrastructure/router/types';
 import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 import { startup } from './startup';
 
-
 type Params = {
   compileAppURL: (appContext: AnyAppContext) => string;
 };
 export function restoreStore({ compileAppURL }: Params) {
-  const initialState = window.__initialReduxState;
+  const initialState = window.__initialRouterState;
   const mutableEnhancers = [];
 
   if (process.env.NODE_ENV === 'development') {
