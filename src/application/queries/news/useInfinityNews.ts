@@ -2,7 +2,6 @@ import { useInfiniteAppQuery } from 'application/main/query';
 
 import { useNewsQueryMainKey } from './common';
 
-
 type UseInfinityNewsParams = {
   initialPage: number;
 };

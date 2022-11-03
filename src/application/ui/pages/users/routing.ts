@@ -1,14 +1,13 @@
-
-import { AppRoute } from 'application/main/routing';
+import { createRoute } from 'application/main/routing/utils';
 import { UserStatus } from 'application/services/fake/types';
 import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
-import { RouteWithoutParams, URLQueryParams } from 'framework/infrastructure/router/types';
+import { URLQueryParams } from 'framework/infrastructure/router/types';
 
 import { UsersPage } from '.';
 
 const filterQueryParamName = 'filter[status]';
 
-export const usersPageRoute: AppRoute<RouteWithoutParams, UsersPage> = {
+export const usersPageRoute = createRoute<UsersPage>({
   path: '/users',
   mapURLToPage: (_, queryParams) => ({
     name: 'users',
@@ -25,7 +24,7 @@ export const usersPageRoute: AppRoute<RouteWithoutParams, UsersPage> = {
       'filter[status]': filterStatus || [],
     };
   },
-};
+});
 
 function parseFilterStatus(queryParams: URLQueryParams): UserStatus[] {
   return (queryParams[filterQueryParamName] || []).reduce<UserStatus[]>((mutableRes, param) => {

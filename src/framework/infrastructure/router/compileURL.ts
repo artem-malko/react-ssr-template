@@ -5,7 +5,6 @@ import { keysOf } from 'lib/lodash';
 import { AnyPage, AnyAppContext, URLQueryParams, Routes, Route, RouteParams } from './types';
 import { stringifyParams } from './utils';
 
-
 /**
  * Compile new url, which is based on the appContext
  * The main idea is to transform the AppContext version of a page to a path string
@@ -22,7 +21,7 @@ import { stringifyParams } from './utils';
  * /page/10
  *
  * If a route config does not have its own `mapPageToPathParams` function,
- * simple stringifyParams will be called
+ * simple stringifyParams is called
  */
 export function createURLCompiler<PageName extends string>(routes: Routes<AnyPage<PageName>>) {
   /**
@@ -51,32 +50,42 @@ export function createURLCompiler<PageName extends string>(routes: Routes<AnyPag
     const routeConfigForPage = routeConfigToPageNameMap[appContext.page.name];
 
     // It is not possible, actually
-    // But we will check to prevent any runtime errors
+    // But we check it to prevent any runtime errors
     if (!routeConfigForPage) {
       return '/';
     }
 
-    // If there is no mapPageToPathParams stringifyParams will be used
+    // If there is no mapPageToPathParams stringifyParams is used
     // to transform page params to a string
-    const paramsForPath = routeConfigForPage.mapPageToPathParams
-      ? routeConfigForPage.mapPageToPathParams(appContext.page.params)
-      : stringifyParams(appContext.page.params);
+    const paramsForPath =
+      'mapPageToPathParams' in routeConfigForPage &&
+      typeof routeConfigForPage.mapPageToPathParams === 'function'
+        ? routeConfigForPage.mapPageToPathParams(appContext.page.params)
+        : stringifyParams(appContext.page.params);
     // The same flow for a query string
     const paramsForQuery = routeConfigForPage.mapPageToQueryParams
-      ? routeConfigForPage.mapPageToQueryParams(appContext.page.params)
+      ? /**
+         * as any as never, cause mapPageToQueryParams has two defenitions:
+         * mapPageToQueryParams(params: PageParams), when a page has params
+         * mapPageToQueryParams(params: never), when where are no params in a page
+         *
+         * It's not possible to infer correct type here.
+         * But it's explicit for developer in a router config
+         */
+        routeConfigForPage.mapPageToQueryParams(appContext.page.params as any as never)
       : {};
 
     const compiledPath = routeConfigForPage.transformPageToPath(paramsForPath);
     /**
-     * Interesting moment, appContext.URLQueryParams collects all query params
-     * from the current URL
-     * But mapPageToQueryParams can override it with a new value
+     * Interesting moment, appContext.URLQueryParams collects query allowed params
+     * from the current URL, which could be used in a page
+     * mapPageToQueryParams can override it with a new value
      * Its important, that mapPageToQueryParams has to override full URLQueryParam array from
      * the appContext
      * Let's imagine the simple situation:
      * appContext.URLQueryParams has { paramName: [value1, value2] }
      * paramsForQuery has { paramName: [value1] }, but does not have value2
-     * If we will merge with arrays via deep merge, we will have { paramName: [value1, value2] }
+     * If we will merge these arrays via deep merge, we will have { paramName: [value1, value2] }
      * But mapPageToQueryParams returns another result. So, we will have wrong result here
      */
     const compiledQuery = compileQueryString({

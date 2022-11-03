@@ -1,4 +1,3 @@
-
 import { colorize } from 'lib/console';
 import { keysOf } from 'lib/lodash';
 
@@ -31,17 +30,17 @@ export function patchLeadingSlashInPath<
 }
 
 /**
- * Paths /users/:name, /users/:id, /users/:id/:name?
- * will be normalized to /users/:p
+ * Pathes /users/:name, /users/:id, /users/:id/:name?
+ * is normalized to /users/:p
  *
- * Every required param will be replaced with :p placeholder
- * Every optional param will be filtered out
+ * Every required param is replaced with :p placeholder
+ * Every optional param is filtered out
  */
 export function normalizePath(routePath: string): string {
   return (
     routePath
       .split('/')
-      // Every optional param will be filtered out
+      // Every optional param is filtered out
       // These params do not affect uniqueness
       .filter((part) => {
         return part[part.length - 1] !== '?';

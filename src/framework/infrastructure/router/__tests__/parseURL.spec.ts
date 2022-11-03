@@ -325,7 +325,7 @@ describe('parse URL', () => {
     expect(parseURL(URL)).to.deep.eq(result);
   });
 
-  describe('routes with similar prefix', () => {
+  describe('routes with a similar prefix', () => {
     const parseURL = createURLParser<'root' | 'items' | 'itemsById' | 'error404'>({
       routes: {
         root: testsOnlyRootPageRoute,

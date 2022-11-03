@@ -1,10 +1,8 @@
-
-import { AppRoute } from 'application/main/routing';
-import { RouteWithParams } from 'framework/infrastructure/router/types';
+import { createRoute } from 'application/main/routing/utils';
 
 import { NewsItemPage } from '.';
 
-export const newsItemPageRoute: AppRoute<RouteWithParams<{ id: string }>, NewsItemPage> = {
+export const newsItemPageRoute = createRoute<NewsItemPage, { id: string }>({
   path: '/news/:id',
   mapURLToPage: ({ id: rawId }) => {
     const id = parseInt(rawId, 10);
@@ -23,4 +21,4 @@ export const newsItemPageRoute: AppRoute<RouteWithParams<{ id: string }>, NewsIt
       },
     };
   },
-};
+});

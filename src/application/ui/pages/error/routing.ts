@@ -1,11 +1,9 @@
-
-import { AppRoute } from 'application/main/routing';
-import { RouteWithParams } from 'framework/infrastructure/router/types';
+import { createRoute } from 'application/main/routing/utils';
 import { HttpErrorCode } from 'framework/types/http';
 
 import { ErrorPage } from '.';
 
-export const errorPageRoute: AppRoute<RouteWithParams<{ code: string }>, ErrorPage> = {
+export const errorPageRoute = createRoute<ErrorPage, { code: string }>({
   path: '/error/:code',
   mapURLToPage: ({ code }) => ({
     name: 'error',
@@ -18,4 +16,4 @@ export const errorPageRoute: AppRoute<RouteWithParams<{ code: string }>, ErrorPa
       code: code.toString(),
     };
   },
-};
+});

@@ -39,10 +39,8 @@ export type RouteWithParams<T = { [key: string]: string }> = RouteParams<T>;
 
 export type Route<
   /**
-   * Actually, with type is not required,
-   * cause every param for a route has to be described in params for page types.
-   * This type is used just for an explicit connection between args in the route path
-   * and args for the route signal.
+   * This type is used for an explicit connection between args in the route path
+   * and args for a page.
    * So, Route type could be like this:
    *
    * @example
@@ -56,13 +54,18 @@ export type Route<
    * }
    *
    * const route Route<SpecificPage> = {
-   *   path: 'specific_page/:id/:name',
+   *   path: 'specific_page/:id/:name?',
    *   mapURLToPage: ({ id, name }) => { ... },
    *   mapPageToPathParams: (pageParams: Page['params']) => {
    *     return {
-   *       id: pageParams.id,
-   *       // A potential error here, cause pageParams.name is not required in SpecificPage
-   *       name: pageParams.name,
+   *       name: 'SpecificPage',
+   *       params: {
+   *         // A potential error here,
+   *         // cause pageParams.name is not required in the path,
+   *         // but required in the page params
+   *         name: pageParams.name,
+   *         id: pageParams.id,
+   *       }
    *     };
    *   }
    * }
@@ -73,17 +76,40 @@ export type Route<
    *
    * RoutePathParams is here to prevent such potential errors
    * and to make the explicit connection between path args and page params
+   * So, the previous example should be look like:
+   *
+   * const route Route<RouteWithParams<{ id: string; name?: string }>, SpecificPage> = {
+   *   path: 'specific_page/:id/:name?',
+   *   mapURLToPage: ({ id, name }) => { ... },
+   *   mapPageToPathParams: (pageParams: Page['params']) => {
+   *     return {
+   *       name: 'SpecificPage',
+   *       params: {
+   *         name: pageParams.name || 'fallback',
+   *         id: pageParams.id,
+   *       }
+   *     };
+   *   }
+   * }
    */
   RoutePathParams extends RouteWithoutParams | RouteWithParams<{ [key: string]: string }>,
-  Page extends AnyPage<string, { [key in keyof RoutePathParams]: any }>,
+  Page extends AnyPage<string>,
   URLToPageResult extends AnyPage<string> = Page,
+  PageParams = keyof Page['params'] extends never ? never : Page['params'],
 > = {
   path: string;
   mapURLToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
-  mapPageToPathParams?: (pageParams: Page['params']) => RoutePathParams;
   // @TODO Array<string | true> true — for empty value
-  mapPageToQueryParams?: (pageParams: Page['params']) => { [key: string]: QueryParamValue };
-};
+  mapPageToQueryParams?: (pageParams: PageParams) => URLQueryParams;
+} & (RoutePathParams extends RouteWithoutParams
+  ? Record<string, unknown>
+  : RoutePathParams extends RouteWithParams
+  ? PageParams extends never
+    ? Record<string, unknown>
+    : {
+        mapPageToPathParams?: (pageParams: PageParams) => RoutePathParams;
+      }
+  : Record<string, unknown>);
 
 /**
  * This type allows to be ensure, what all pages from Page type has its own route config
@@ -96,3 +122,16 @@ export type Routes<
 > = {
   [key in keyof PMap]: Route<RouteParams<any>, PMap[key], Page>;
 };
+
+export function createRouteCreator<AppPage extends AnyPage<string>>() {
+  return <
+    Page extends AppPage,
+    RoutePathParams extends { [key: string]: string } = Record<string, never>,
+  >(
+    route: Route<
+      keyof RoutePathParams extends never ? RouteWithoutParams : RouteWithParams<RoutePathParams>,
+      Page,
+      AppPage
+    >,
+  ) => route;
+}

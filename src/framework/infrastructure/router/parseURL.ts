@@ -8,7 +8,6 @@ import { setQueryStringParamsAction } from './redux/actions/appContext/setQueryS
 import { AnyPage, Route, RouteParams, Routes, URLQueryParams } from './types';
 import { normalizePath, patchLeadingSlashInPath, printRouterConfig } from './utils';
 
-
 const rootPageIndexName = '/';
 
 type CreateURLParserParams<PageName extends string = 'root'> = {

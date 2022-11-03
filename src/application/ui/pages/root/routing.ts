@@ -1,10 +1,8 @@
-
-import { AppRoute } from 'application/main/routing';
-import { RouteWithoutParams } from 'framework/infrastructure/router/types';
+import { createRoute } from 'application/main/routing/utils';
 
 import { RootPage } from '.';
 
-export const rootPageRoute: AppRoute<RouteWithoutParams, RootPage> = {
+export const rootPageRoute = createRoute<RootPage>({
   path: '/',
   mapURLToPage: () => ({ name: 'root' }),
-};
+});

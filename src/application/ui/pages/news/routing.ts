@@ -1,11 +1,9 @@
-
-import { AppRoute } from 'application/main/routing';
+import { createRoute } from 'application/main/routing/utils';
 import { parsePageQueryParam } from 'application/ui/utils/routing/parsePageQueryParam';
-import { RouteWithoutParams } from 'framework/infrastructure/router/types';
 
 import { NewsPage } from '.';
 
-export const newsPageRoute: AppRoute<RouteWithoutParams, NewsPage> = {
+export const newsPageRoute = createRoute<NewsPage>({
   path: '/news',
   mapURLToPage: (_, queryParams) => ({
     name: 'news',
@@ -14,10 +12,18 @@ export const newsPageRoute: AppRoute<RouteWithoutParams, NewsPage> = {
       useInfinity: !!queryParams['useInfinity'],
     },
   }),
+  /**
+   * mapPageToURLParams: ({ page, useInfinity }) => {
+   *   return {
+   *     path: {}
+   *     query: []
+   *   };
+   * }
+   */
   mapPageToQueryParams: ({ page, useInfinity }) => {
     return {
       p: [page.toString()],
       useInfinity: useInfinity ? [''] : [],
     };
   },
-};
+});
