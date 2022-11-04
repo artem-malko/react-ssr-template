@@ -5,15 +5,17 @@ import { ErrorPage } from '.';
 
 export const errorPageRoute = createRoute<ErrorPage, { code: string }>({
   path: '/error/:code',
-  mapURLToPage: ({ code }) => ({
+  mapURLParamsToPage: ({ code }) => ({
     name: 'error',
     params: {
       code: parseInt(code, 10) as HttpErrorCode,
     },
   }),
-  mapPageToPathParams: ({ code }) => {
+  mapPageToURLParams: ({ code }) => {
     return {
-      code: code.toString(),
+      path: {
+        code: code.toString(),
+      },
     };
   },
 });

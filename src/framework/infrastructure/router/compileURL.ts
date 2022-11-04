@@ -47,41 +47,40 @@ export function createURLCompiler<PageName extends string>(routes: Routes<AnyPag
   }, {});
 
   return (appContext: AnyAppContext) => {
-    const routeConfigForPage = routeConfigToPageNameMap[appContext.page.name];
+    const page = appContext.page;
+    const routeConfigForPage = routeConfigToPageNameMap[page.name];
 
-    // It is not possible, actually
-    // But we check it to prevent any runtime errors
+    /**
+     * It is not possible, actually.
+     * But we check it to prevent any runtime errors
+     */
     if (!routeConfigForPage) {
       return '/';
     }
 
-    // If there is no mapPageToPathParams stringifyParams is used
-    // to transform page params to a string
-    const paramsForPath =
-      'mapPageToPathParams' in routeConfigForPage &&
-      typeof routeConfigForPage.mapPageToPathParams === 'function'
-        ? routeConfigForPage.mapPageToPathParams(appContext.page.params)
-        : stringifyParams(appContext.page.params);
-    // The same flow for a query string
-    const paramsForQuery = routeConfigForPage.mapPageToQueryParams
-      ? /**
-         * as any as never, cause mapPageToQueryParams has two defenitions:
-         * mapPageToQueryParams(params: PageParams), when a page has params
-         * mapPageToQueryParams(params: never), when where are no params in a page
-         *
-         * It's not possible to infer correct type here.
-         * But it's explicit for developer in a router config
-         */
-        routeConfigForPage.mapPageToQueryParams(appContext.page.params as any as never)
-      : {};
+    // @ts-ignore
+    const { query: paramsForQuery, path: pathParams } =
+      // @ts-ignore
+      routeConfigForPage.mapPageToURLParams?.(page.params) || {
+        query: undefined,
+        pathParams: undefined,
+      };
 
-    const compiledPath = routeConfigForPage.transformPageToPath(paramsForPath);
     /**
-     * Interesting moment, appContext.URLQueryParams collects query allowed params
+     * If there is no mapPageToPathParams stringifyParams is used
+     * to transform page params to a string
+     */
+    const compiledPath = routeConfigForPage.transformPageToPath(
+      pathParams || stringifyParams(page.params),
+    );
+
+    /**
+     * Interesting moment, appContext.URLQueryParams collects allowed query-params
      * from the current URL, which could be used in a page
      * mapPageToQueryParams can override it with a new value
      * Its important, that mapPageToQueryParams has to override full URLQueryParam array from
      * the appContext
+     *
      * Let's imagine the simple situation:
      * appContext.URLQueryParams has { paramName: [value1, value2] }
      * paramsForQuery has { paramName: [value1] }, but does not have value2

@@ -170,7 +170,9 @@ function createURLPathParser<PageName extends string>(
         continue;
       }
 
-      return openAnyPageAction(possibleMatchedConfig.mapURLToPage(matchPathResult.params, queryParams));
+      return openAnyPageAction(
+        possibleMatchedConfig.mapURLParamsToPage(matchPathResult.params, queryParams),
+      );
     }
 
     // No matched config found

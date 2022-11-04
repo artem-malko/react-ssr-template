@@ -5,25 +5,19 @@ import { NewsPage } from '.';
 
 export const newsPageRoute = createRoute<NewsPage>({
   path: '/news',
-  mapURLToPage: (_, queryParams) => ({
+  mapURLParamsToPage: (_, queryParams) => ({
     name: 'news',
     params: {
       page: parsePageQueryParam(queryParams),
       useInfinity: !!queryParams['useInfinity'],
     },
   }),
-  /**
-   * mapPageToURLParams: ({ page, useInfinity }) => {
-   *   return {
-   *     path: {}
-   *     query: []
-   *   };
-   * }
-   */
-  mapPageToQueryParams: ({ page, useInfinity }) => {
+  mapPageToURLParams: ({ page, useInfinity }) => {
     return {
-      p: [page.toString()],
-      useInfinity: useInfinity ? [''] : [],
+      query: {
+        p: [page.toString()],
+        useInfinity: useInfinity ? [''] : [],
+      },
     };
   },
 });

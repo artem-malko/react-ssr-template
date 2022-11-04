@@ -4,7 +4,7 @@ import { NewsItemPage } from '.';
 
 export const newsItemPageRoute = createRoute<NewsItemPage, { id: string }>({
   path: '/news/:id',
-  mapURLToPage: ({ id: rawId }) => {
+  mapURLParamsToPage: ({ id: rawId }) => {
     const id = parseInt(rawId, 10);
 
     if (Number.isNaN(id)) {

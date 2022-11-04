@@ -98,18 +98,19 @@ export type Route<
   PageParams = keyof Page['params'] extends never ? never : Page['params'],
 > = {
   path: string;
-  mapURLToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
+  mapURLParamsToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
   // @TODO Array<string | true> true — for empty value
-  mapPageToQueryParams?: (pageParams: PageParams) => URLQueryParams;
-} & (RoutePathParams extends RouteWithoutParams
-  ? Record<string, unknown>
-  : RoutePathParams extends RouteWithParams
-  ? PageParams extends never
-    ? Record<string, unknown>
-    : {
-        mapPageToPathParams?: (pageParams: PageParams) => RoutePathParams;
-      }
-  : Record<string, unknown>);
+  mapPageToURLParams?: (pageParams: PageParams) => RoutePathParams extends RouteWithoutParams
+    ? { query?: URLQueryParams }
+    : RoutePathParams extends RouteWithParams
+    ? PageParams extends never
+      ? { query?: URLQueryParams }
+      : {
+          query?: URLQueryParams;
+          path?: RoutePathParams;
+        }
+    : { query?: URLQueryParams };
+};
 
 /**
  * This type allows to be ensure, what all pages from Page type has its own route config

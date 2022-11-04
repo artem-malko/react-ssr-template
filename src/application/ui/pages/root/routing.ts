@@ -4,5 +4,5 @@ import { RootPage } from '.';
 
 export const rootPageRoute = createRoute<RootPage>({
   path: '/',
-  mapURLToPage: () => ({ name: 'root' }),
+  mapURLParamsToPage: () => ({ name: 'root' }),
 });

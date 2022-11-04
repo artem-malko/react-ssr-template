@@ -70,9 +70,11 @@ describe('Routing compile URL', () => {
       PageWithRequiredParams
     > = {
       ...pageWithRequiredParamsRoute,
-      mapPageToPathParams: ({ id }) => {
+      mapPageToURLParams: ({ id }) => {
         return {
-          id: `${id}_${id}`,
+          path: {
+            id: `${id}_${id}`,
+          },
         };
       },
     };
@@ -122,9 +124,11 @@ describe('Routing compile URL', () => {
       PageWithRequiredParamsWithQuery
     > = {
       ...pageWithRequiredParamsWithQueryRoute,
-      mapPageToQueryParams: ({ id }) => {
+      mapPageToURLParams: ({ id }) => {
         return {
-          query_param: [`${id}_${id}`],
+          query: {
+            query_param: [`${id}_${id}`],
+          },
         };
       },
     };
@@ -155,9 +159,11 @@ describe('Routing compile URL', () => {
       PageWithRequiredParamsWithQuery
     > = {
       ...pageWithRequiredParamsWithQueryRoute,
-      mapPageToQueryParams: () => {
+      mapPageToURLParams: () => {
         return {
-          query_param: [''],
+          query: {
+            query_param: [''],
+          },
         };
       },
     };

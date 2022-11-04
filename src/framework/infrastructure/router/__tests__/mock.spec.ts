@@ -9,14 +9,14 @@ export type TestsOnlyRootPage = {
 };
 export const testsOnlyRootPageRoute: Route<RouteWithoutParams, TestsOnlyRootPage> = {
   path: '/',
-  mapURLToPage: () => ({ name: 'root' }),
+  mapURLParamsToPage: () => ({ name: 'root' }),
 };
 export type TestsOnlyError404Page = {
   name: 'error404';
 };
 export const testsOnlyError404PageRoute: Route<RouteWithoutParams, TestsOnlyError404Page> = {
   path: '/error404',
-  mapURLToPage: () => ({ name: 'error404' }),
+  mapURLParamsToPage: () => ({ name: 'error404' }),
 };
 
 export type PageWithRequiredParams = {
@@ -30,7 +30,7 @@ export const pageWithRequiredParamsRoute: Route<
   PageWithRequiredParams
 > = {
   path: '/page_with_required_params/:id',
-  mapURLToPage: ({ id }) => ({
+  mapURLParamsToPage: ({ id }) => ({
     name: 'pageWithRequiredParams',
     params: {
       id,
@@ -49,7 +49,7 @@ export const pageWithRequiredParamsWithQueryRoute: Route<
   PageWithRequiredParamsWithQuery
 > = {
   path: '/page_with_required_params_with_query/:id',
-  mapURLToPage: ({ id }, queryParams) => ({
+  mapURLParamsToPage: ({ id }, queryParams) => ({
     name: 'pageWithRequiredParamsWithQuery',
     params: {
       id: queryParams['query_param'] ? `${id}_query_param_${queryParams['query_param'].join('_')}` : id,
@@ -69,7 +69,7 @@ export const pageWithNotRequiredParamsRoute: Route<
   PageWithNotRequiredParams
 > = {
   path: '/page_with_not_required_params/:id/:name?',
-  mapURLToPage: ({ id, name }) => ({
+  mapURLParamsToPage: ({ id, name }) => ({
     name: 'pageWithNotRequiredParams',
     params: {
       id,

@@ -331,13 +331,13 @@ describe('parse URL', () => {
         root: testsOnlyRootPageRoute,
         items: {
           path: '/items',
-          mapURLToPage: () => ({
+          mapURLParamsToPage: () => ({
             name: 'items',
           }),
         } as Route<RouteWithoutParams, { name: 'items' }>,
         itemsById: {
           path: '/items/:id',
-          mapURLToPage: ({ id }) => ({
+          mapURLParamsToPage: ({ id }) => ({
             name: 'itemsById',
             params: {
               id,

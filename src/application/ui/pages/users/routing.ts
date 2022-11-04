@@ -9,7 +9,7 @@ const filterQueryParamName = 'filter[status]';
 
 export const usersPageRoute = createRoute<UsersPage>({
   path: '/users',
-  mapURLToPage: (_, queryParams) => ({
+  mapURLParamsToPage: (_, queryParams) => ({
     name: 'users',
     params: {
       page: parsePageQueryParam(queryParams),
@@ -17,11 +17,13 @@ export const usersPageRoute = createRoute<UsersPage>({
       filterStatus: parseFilterStatus(queryParams),
     },
   }),
-  mapPageToQueryParams: ({ page, activeUserId, filterStatus }) => {
+  mapPageToURLParams: ({ page, activeUserId, filterStatus }) => {
     return {
-      p: [page.toString()],
-      userId: [activeUserId],
-      'filter[status]': filterStatus || [],
+      query: {
+        p: [page.toString()],
+        userId: [activeUserId],
+        'filter[status]': filterStatus || [],
+      },
     };
   },
 });
