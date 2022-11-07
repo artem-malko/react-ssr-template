@@ -1,3 +1,4 @@
+import { AppLogger } from 'framework/infrastructure/logger';
 import { Requester } from 'framework/infrastructure/request/types';
 
 import {
@@ -8,16 +9,20 @@ import {
   UserStatus,
 } from './types';
 
-
 type Config = {
   apiURL: string;
 };
 
+type CreateFakeAPIServiceParams = {
+  request: Requester;
+  config: Config;
+  appLogger: AppLogger;
+};
 /**
  * This service is made to demonstrate useMutation/invalidate queries with react-query
  * You can delete it at any time
  */
-export const createFakeAPIService = (request: Requester, config: Config) => {
+export const createFakeAPIService = ({ request, config }: CreateFakeAPIServiceParams) => {
   const baseURL = `${config.apiURL}/users`;
 
   return {

@@ -15,6 +15,13 @@ export const routes: Routes<Page> = {
   users: usersPageRoute,
 };
 
+// const r = {
+//   '/news/:id': {
+//     pageName: 'newsItem',
+//     config: {},
+//   },
+// };
+
 /**
  * createURLParser is used on the server side only
  * So, we do not need to create it here

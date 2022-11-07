@@ -1,7 +1,6 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { memo, useRef, useState } from 'react';
 
-
 import { useUserByIdFetcher } from 'application/queries/users/useUserById';
 import { Link } from 'application/ui/kit/link';
 import { Popover } from 'application/ui/kit/popover';

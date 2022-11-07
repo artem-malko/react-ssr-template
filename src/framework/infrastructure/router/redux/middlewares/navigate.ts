@@ -5,7 +5,6 @@ import { isServer } from 'lib/browser';
 import { AnyAppState, AnyAppContext } from '../../types';
 import { push, replace, back } from './historyActons';
 
-
 /**
  * Push or replace an application state to a browser history.
  * Returns true if server-side redirect occured, false otherwise.

@@ -1,16 +1,20 @@
 import { expect } from 'chai';
 
+import { appLoggerStub } from 'framework/infrastructure/logger/stub';
 import { createRequest } from 'framework/infrastructure/request';
 import { requestMock } from 'framework/infrastructure/request/forTests';
 
 import { createHackerNewsService } from '..';
 import { mocks } from '../mocks';
 
-
 describe('Hacker news service', () => {
   const request = createRequest({ networkTimeout: 10000 });
-  const hackerNews = createHackerNewsService(request, {
-    apiURL: '',
+  const hackerNews = createHackerNewsService({
+    request,
+    config: {
+      apiURL: '',
+    },
+    appLogger: appLoggerStub,
   });
 
   afterEach(() => {

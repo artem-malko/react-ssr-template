@@ -9,6 +9,8 @@ import { ConfigContext } from 'framework/config/react';
 import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
+import { AppLogger } from 'framework/infrastructure/logger';
+import { AppLoggerContext } from 'framework/infrastructure/logger/react/context';
 import { createPlatformAPI } from 'framework/infrastructure/platform';
 import { createCookieAPI } from 'framework/infrastructure/platform/cookie/client';
 import { PlatformAPIContext } from 'framework/infrastructure/platform/shared/context';
@@ -44,6 +46,7 @@ type Params = {
   compileAppURL: (appContext: AnyAppContext) => string;
   onAppRendered?: () => void;
   onRecoverableError?: (args: unknown) => void;
+  appLogger: AppLogger;
   MainComp: React.ReactNode;
 };
 export const startClientApplication = ({
@@ -51,39 +54,42 @@ export const startClientApplication = ({
   onRecoverableError,
   MainComp,
   compileAppURL,
+  appLogger,
 }: Params) => {
   return restoreStore({ compileAppURL }).then((store) => {
     hydrateRoot(
       container,
       <StrictMode>
-        <PlatformAPIContext.Provider value={platformAPI}>
-          <SessionContext.Provider value={session}>
-            <ReduxStoreProvider
-              store={store}
-              serverState={window.__initialRouterState}
-              context={RouterReduxContext}
-            >
-              <CSSProvider cssProviderStore={cssProviderStore}>
-                <ConfigContext.Provider value={config}>
-                  <QueryClientProvider client={queryClient}>
-                    <Shell
-                      assets={window.__staticResourcesPathMapping}
-                      publicPath={config.publicPath}
-                      session={session}
-                      state={store.getState()}
-                      clientApplicationConfig={config}
-                      onRender={() => {
-                        afterAppRendered(config);
-                        onAppRendered?.();
-                      }}
-                      mainComp={MainComp}
-                    />
-                  </QueryClientProvider>
-                </ConfigContext.Provider>
-              </CSSProvider>
-            </ReduxStoreProvider>
-          </SessionContext.Provider>
-        </PlatformAPIContext.Provider>
+        <AppLoggerContext.Provider value={appLogger}>
+          <PlatformAPIContext.Provider value={platformAPI}>
+            <SessionContext.Provider value={session}>
+              <ReduxStoreProvider
+                store={store}
+                serverState={window.__initialRouterState}
+                context={RouterReduxContext}
+              >
+                <CSSProvider cssProviderStore={cssProviderStore}>
+                  <ConfigContext.Provider value={config}>
+                    <QueryClientProvider client={queryClient}>
+                      <Shell
+                        assets={window.__staticResourcesPathMapping}
+                        publicPath={config.publicPath}
+                        session={session}
+                        state={store.getState()}
+                        clientApplicationConfig={config}
+                        onRender={() => {
+                          afterAppRendered({ config, logger: appLogger });
+                          onAppRendered?.();
+                        }}
+                        mainComp={MainComp}
+                      />
+                    </QueryClientProvider>
+                  </ConfigContext.Provider>
+                </CSSProvider>
+              </ReduxStoreProvider>
+            </SessionContext.Provider>
+          </PlatformAPIContext.Provider>
+        </AppLoggerContext.Provider>
       </StrictMode>,
       {
         onRecoverableError: (...args) => {

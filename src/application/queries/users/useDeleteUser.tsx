@@ -1,11 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 
-
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 
 import { useUserQueriesInvalidate } from './common';
-
 
 export const useDeleteUser = () => {
   const { showToast } = useToast();

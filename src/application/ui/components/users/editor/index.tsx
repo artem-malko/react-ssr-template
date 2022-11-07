@@ -1,6 +1,5 @@
 import { memo, useCallback, useId, useState } from 'react';
 
-
 import { useNavigate } from 'application/main/hooks/useNavigate';
 import { useEditUser } from 'application/queries/users/useEditUser';
 import { useUserById } from 'application/queries/users/useUserById';

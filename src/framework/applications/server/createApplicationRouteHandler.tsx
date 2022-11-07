@@ -13,6 +13,8 @@ import { BaseApplicationConfig } from 'framework/config/types';
 import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
+import { AppLogger } from 'framework/infrastructure/logger';
+import { AppLoggerContext } from 'framework/infrastructure/logger/react/context';
 import { createPlatformAPI } from 'framework/infrastructure/platform';
 import { createCookieAPI } from 'framework/infrastructure/platform/cookie/server';
 import { PlatformAPIContext } from 'framework/infrastructure/platform/shared/context';
@@ -47,6 +49,7 @@ type Params = {
   serverApplicationConfig: BaseApplicationConfig;
   clientApplicationConfig: BaseApplicationConfig;
   initialAppContext: AnyAppContext;
+  appLogger: AppLogger;
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
   ({
@@ -56,6 +59,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     serverApplicationConfig,
     clientApplicationConfig,
     initialAppContext,
+    appLogger,
   }) =>
   (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
@@ -172,31 +176,33 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
 
           const pipeableStream = renderToPipeableStream(
             <StrictMode>
-              <PlatformAPIContext.Provider value={platformAPI}>
-                <SessionContext.Provider value={session}>
-                  <ReduxStoreProvider store={store} context={RouterReduxContext}>
-                    <ConfigContext.Provider value={serverApplicationConfig}>
-                      <QueryClientProvider client={queryClient}>
-                        <CSSProvider cssProviderStore={cssProviderStore}>
-                          <RaiseErrorContext.Provider value={errorRiseStore}>
-                            <Shell
-                              publicPath={publicPath}
-                              assets={{
-                                inlineContent: assetsInfo.inlineContent,
-                                pathMapping: assetsInfo.pathMapping,
-                              }}
-                              state={store.getState()}
-                              mainComp={MainComp}
-                              session={session}
-                              clientApplicationConfig={clientApplicationConfig}
-                            />
-                          </RaiseErrorContext.Provider>
-                        </CSSProvider>
-                      </QueryClientProvider>
-                    </ConfigContext.Provider>
-                  </ReduxStoreProvider>
-                </SessionContext.Provider>
-              </PlatformAPIContext.Provider>
+              <AppLoggerContext.Provider value={appLogger}>
+                <PlatformAPIContext.Provider value={platformAPI}>
+                  <SessionContext.Provider value={session}>
+                    <ReduxStoreProvider store={store} context={RouterReduxContext}>
+                      <ConfigContext.Provider value={serverApplicationConfig}>
+                        <QueryClientProvider client={queryClient}>
+                          <CSSProvider cssProviderStore={cssProviderStore}>
+                            <RaiseErrorContext.Provider value={errorRiseStore}>
+                              <Shell
+                                publicPath={publicPath}
+                                assets={{
+                                  inlineContent: assetsInfo.inlineContent,
+                                  pathMapping: assetsInfo.pathMapping,
+                                }}
+                                state={store.getState()}
+                                mainComp={MainComp}
+                                session={session}
+                                clientApplicationConfig={clientApplicationConfig}
+                              />
+                            </RaiseErrorContext.Provider>
+                          </CSSProvider>
+                        </QueryClientProvider>
+                      </ConfigContext.Provider>
+                    </ReduxStoreProvider>
+                  </SessionContext.Provider>
+                </PlatformAPIContext.Provider>
+              </AppLoggerContext.Provider>
             </StrictMode>,
             {
               bootstrapScripts: [reactPath, appPath, vendorPath, frameworkPath, libPath, rarelyPath],

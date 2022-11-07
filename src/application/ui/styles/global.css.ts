@@ -2,7 +2,6 @@ import { createStyles } from 'framework/infrastructure/css/hook';
 
 import { keyframeNames } from './shared';
 
-
 export const styles = createStyles({
   ':global': {
     [`@keyframes ${keyframeNames.opacity}`]: {

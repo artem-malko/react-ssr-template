@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { sendErrorLog } from 'framework/infrastructure/logger';
-import { getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
+import { logger } from 'framework/infrastructure/logger/init';
+import { addAppVersion, getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
 
 export function createRouterErrorHandlerMiddleware(): express.ErrorRequestHandler {
   return (error, _req, res, _next) => {
@@ -10,11 +10,14 @@ export function createRouterErrorHandlerMiddleware(): express.ErrorRequestHandle
       stackSize: 1024,
     });
 
-    sendErrorLog({
-      'error.type': 'router',
+    logger.error({
+      level: 'error',
+      environment: 'server',
       id: 'vzowo',
-      message,
+      'error.type': 'router',
+      'error.message': message,
       'error.stack': stack,
+      ...addAppVersion(),
     });
 
     // @TODO add 500 page render

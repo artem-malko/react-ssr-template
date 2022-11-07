@@ -1,6 +1,5 @@
 import { memo, PropsWithChildren, useState, useEffect, useMemo } from 'react';
 
-
 import { midTransitionDuration } from 'application/ui/styles/shared';
 import { useStyles } from 'framework/infrastructure/css/hook';
 

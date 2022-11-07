@@ -17,7 +17,6 @@ import { FadeIn } from '../fadeIn';
 import { popoverContainerId } from './shared';
 import { getPositionViewAttrs } from './utils';
 
-
 export type Placement = 'top' | 'end' | 'bottom' | 'start';
 export type Alignment = 'start' | 'center' | 'end';
 

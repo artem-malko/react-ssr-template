@@ -2,7 +2,7 @@
 
 import NativeModule from 'module';
 
-import { Dependency, LoaderContext } from 'webpack';
+import { LoaderContext } from 'webpack';
 
 import { isValidStyleObject } from '../../generator/utils';
 import { STYLE_DESCRIPTOR } from '../shared';
@@ -27,16 +27,18 @@ const exec = <T>(
 
   module._compile(code, filename);
 
-  Object.keys(require.cache).forEach((key) => {
-    if (key.includes('src/ui')) {
-      delete require.cache[key];
-    }
-  });
-
   const deps: string[] = [];
 
-  module.children.forEach((c: any) => {
+  module.children.forEach((c: { filename: string }) => {
+    if (!c.filename.endsWith('css.ts')) {
+      return;
+    }
+
     deps.push(c.filename);
+
+    if (require.cache[c.filename]) {
+      delete require.cache[c.filename];
+    }
   });
 
   return {
@@ -71,9 +73,9 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
   const { resource } = this;
   const callback = this.async();
 
-  // @TODO enable cache!
-  this.cacheable(false);
-
+  /**
+   * CSS.TS files allowed only!
+   */
   if (!resource.includes('css.ts')) {
     callback(null, source);
     return;
@@ -92,29 +94,13 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
     const executedModuleResult = exec(this, source.toString(), resource, loaderParams.resolveModules);
     executedModuleExports = executedModuleResult.exports;
 
+    /**
+     * Any additional css-file, which is not imported in a component
+     * has to be added as a dependency
+     */
     if (executedModuleResult.deps && executedModuleResult.deps.length) {
       executedModuleResult.deps.forEach((dep) => {
-        // Process the first level imports to any .css file
         this.addDependency(dep);
-
-        // Process its dependencies
-        this.loadModule(dep, (err, _source, _sourceMap, module) => {
-          if (err) {
-            return;
-          }
-
-          module.dependencies.forEach((dep: Dependency & { request?: string }) => {
-            if (dep.request) {
-              this.resolve(this.context, dep.request, (err, res) => {
-                if (err || !res) {
-                  return;
-                }
-
-                this.addDependency(res);
-              });
-            }
-          });
-        });
       });
     }
   } catch (e) {
@@ -130,7 +116,7 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
 
   this._module!.buildInfo[STYLE_DESCRIPTOR] = styleDescriptor;
   const classNames = Object.keys(styleDescriptor);
-  const hashMap: { [key: string]: any } = {};
+  const hashMap: Record<string, string> = {};
 
   classNames.forEach((className) => {
     const hash = storeInstance.generateHash(className, styleDescriptor[className]);

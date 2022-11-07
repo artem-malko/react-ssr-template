@@ -1,6 +1,5 @@
 import { memo, useRef, useState, useCallback, useEffect } from 'react';
 
-
 import { useStyles } from 'framework/infrastructure/css/hook';
 import { noopFunc } from 'lib/lodash';
 import { Timer } from 'lib/timer';

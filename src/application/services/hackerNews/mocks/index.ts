@@ -2,7 +2,6 @@ import { ParsedError } from 'framework/infrastructure/request/types';
 
 import { FetchNewsResponse } from '../types';
 
-
 const getNewsListWithOneItem: FetchNewsResponse = [
   { id: 2, time: 2, title: 'title', user: 'user', time_ago: 'time', url: 'url' },
 ];

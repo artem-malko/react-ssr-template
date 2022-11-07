@@ -6,7 +6,6 @@ import { useStyles } from 'framework/infrastructure/css/hook';
 import { usePopupActions } from '../infrastructure/hook';
 import { styles } from './index.css';
 
-
 type Props = {
   hideCloseButton?: boolean;
   popupId: string;

@@ -5,7 +5,6 @@ import { selectAnyPage } from '../redux/selectors';
 import { openPageSignal, patchPageSignal } from '../redux/signals/page';
 import { AnyPage } from '../types';
 
-
 export const useCommonNavigate = <
   AppPage extends AnyPage<string>,
   DestinationPage extends AppPage,

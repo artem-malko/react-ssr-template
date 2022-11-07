@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 
 import { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
+import { utilityRouterPath } from 'framework/constants/application';
 import {
   logServerUncaughtException,
   logServerUnhandledRejection,
@@ -90,7 +91,7 @@ export const startServer = ({ enhanceServer, serverConfig, serverApplicationConf
   /**
    * Utility routes, like log, healthcheck and so on
    */
-  server.use('/_', utilityRouter);
+  server.use(utilityRouterPath, utilityRouter);
 
   // robots.txt has to be in the root for search bots
   server.get('/robots.txt', (_req, res) => {

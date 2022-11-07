@@ -4,7 +4,6 @@ import { useStyles } from 'framework/infrastructure/css/hook';
 
 import { styles } from './index.css';
 
-
 interface ZIndexLayoutProps {
   base: JSX.Element;
   middle?: JSX.Element;

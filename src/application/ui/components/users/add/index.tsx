@@ -4,7 +4,6 @@ import { useAddUser } from 'application/queries/users/useAddUser';
 
 import { UserForm } from '../form';
 
-
 export const AddUser = memo(() => {
   const { mutate: addUser, isLoading: isMutationInProgress } = useAddUser();
 

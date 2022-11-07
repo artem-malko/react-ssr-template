@@ -1,9 +1,13 @@
 import { BaseApplicationConfig } from 'framework/config/types';
 import { loadAllStylesOnClient } from 'framework/infrastructure/css/loadAllStylesOnClient';
-import { sendInfoLog } from 'framework/infrastructure/logger';
+import { AppLogger } from 'framework/infrastructure/logger';
 import { getFullPathForStaticResource } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 
-export const afterAppRendered = (config: BaseApplicationConfig) => {
+type Params = {
+  config: BaseApplicationConfig;
+  logger: AppLogger;
+};
+export const afterAppRendered = ({ config, logger }: Params) => {
   loadAllStylesOnClient({
     fileName: getFullPathForStaticResource({
       chunkName: 'stylesLtr',
@@ -15,7 +19,7 @@ export const afterAppRendered = (config: BaseApplicationConfig) => {
 
   console.log('afterAppRendered callback executed');
 
-  sendInfoLog({
+  logger.sendInfoLog({
     id: 'startup-log',
     message: 'afterAppRendered callback executed',
   });

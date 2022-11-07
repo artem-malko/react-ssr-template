@@ -10,6 +10,7 @@ import { Main } from 'application/ui/main';
 import { startServer } from 'framework/applications/server';
 import { createApplicationRouteHandler } from 'framework/applications/server/createApplicationRouteHandler';
 import { UAParser } from 'framework/applications/server/middlewares/uaParser';
+import { createAppLogger } from 'framework/applications/shared/logger';
 import {
   buildClientApplicationConfig,
   buildServerApplicationConfig,
@@ -34,15 +35,19 @@ const serverApplicationConfig = buildServerApplicationConfig(defaultServerApplic
 const clientApplicationConfig = buildClientApplicationConfig(defaultClientApplicationConfig);
 const serverConfig = buildServerConfig(defaultServerConfig);
 
-const requester = createRequest({
+const request = createRequest({
+  networkTimeout: serverApplicationConfig.networkTimeout,
+});
+const appLogger = createAppLogger({
   networkTimeout: serverApplicationConfig.networkTimeout,
 });
 const services = createServices({
-  requester,
+  request,
   config: {
     hackerNewsApiUrl: serverApplicationConfig.hackerNewsApiUrl,
     fakeCrudApi: serverApplicationConfig.fakeCrudApi,
   },
+  appLogger,
 });
 
 const renderApplicationRouteHandler = createApplicationRouteHandler({
@@ -61,6 +66,7 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
     },
     URLQueryParams: undefined,
   },
+  appLogger,
 });
 
 startServer({

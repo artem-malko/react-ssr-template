@@ -5,7 +5,6 @@ import { noopFunc } from 'lib/lodash';
 
 import { dynamicImportRetryCreator } from './retry';
 
-
 interface LazyComponentModule<Props> {
   ['default']: React.ComponentType<Props>;
 }

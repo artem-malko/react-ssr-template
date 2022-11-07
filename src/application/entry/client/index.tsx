@@ -8,6 +8,7 @@ import { ToastControllerContext } from 'application/ui/kit/toast/infrastructure/
 import { ToastController } from 'application/ui/kit/toast/infrastructure/controller';
 import { Main } from 'application/ui/main';
 import { startClientApplication } from 'framework/applications/client';
+import { createAppLogger } from 'framework/applications/shared/logger';
 import { getClientApplicationConfig } from 'framework/config/generator/client';
 import { createRequest } from 'framework/infrastructure/request';
 
@@ -15,15 +16,19 @@ const toastController = new ToastController();
 const popupController = new PopupController();
 const config = getClientApplicationConfig<ApplicationConfig>();
 
-const requester = createRequest({
+const request = createRequest({
+  networkTimeout: config.networkTimeout,
+});
+const appLogger = createAppLogger({
   networkTimeout: config.networkTimeout,
 });
 const services = createServices({
-  requester,
+  request,
   config: {
     hackerNewsApiUrl: config.hackerNewsApiUrl,
     fakeCrudApi: config.fakeCrudApi,
   },
+  appLogger,
 });
 
 startClientApplication({
@@ -37,4 +42,12 @@ startClientApplication({
     </ServiceContext.Provider>
   ),
   compileAppURL,
+  appLogger,
+  onRecoverableError(args) {
+    appLogger.sendErrorLog({
+      id: 'onRecoverableError',
+      message: (!!args && args.toString()) || 'onRecoverableError',
+      'error.type': 'unknown',
+    });
+  },
 });

@@ -43,11 +43,10 @@ export class CSSInJSPlugin {
       });
 
       compilation.hooks.additionalAssets.tapAsync(this.constructor.name, (callback) => {
-        // @TODO add clever store cleaning for webpack
         const styleDescriptors = storeInstance.getStyles();
         const styleDescriptorsWithSortedStyles = Object.keys(styleDescriptors)
           .sort()
-          .reduce<{ [key: string]: Style }>((mutableResult, styleDescriptorHash) => {
+          .reduce<Record<string, Style>>((mutableResult, styleDescriptorHash) => {
             const stylesDescriptor = styleDescriptors[styleDescriptorHash];
 
             if (!stylesDescriptor) {

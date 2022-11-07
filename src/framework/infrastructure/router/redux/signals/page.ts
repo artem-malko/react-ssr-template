@@ -1,4 +1,3 @@
-
 import { openAnyPageAction } from 'framework/infrastructure/router/redux/actions/appContext/openPageAction';
 import { historyPush, historyReplace } from 'framework/infrastructure/router/redux/actions/router';
 import { commonWithSelectors, createSignal, sequence } from 'framework/infrastructure/signal';

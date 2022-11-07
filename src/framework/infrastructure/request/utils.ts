@@ -5,7 +5,6 @@ import { isServer } from 'lib/browser';
 
 import { ParsedError, ErrorResponseCode } from './types';
 
-
 /**
  * Add http for server-side requests to protocol-less urls
  */
