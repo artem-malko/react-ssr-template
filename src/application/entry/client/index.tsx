@@ -47,7 +47,7 @@ startClientApplication({
     appLogger.sendErrorLog({
       id: 'onRecoverableError',
       message: (!!args && args.toString()) || 'onRecoverableError',
-      'error.type': 'unknown',
+      source: 'unknown',
     });
   },
 });

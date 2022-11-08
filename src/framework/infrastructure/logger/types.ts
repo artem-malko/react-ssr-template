@@ -19,46 +19,19 @@ export interface PerformanceLogParams {
   full: number;
 }
 
-// @TODO add warn logs
-
-export type ErrorLogParams =
-  | UnhandledErrorParams
-  | ApiErrorParams
-  | UnknownErrorParams
-  | ServerErrorParams
-  | ChunkLoadingError;
-
-type LogErrorBaseParams = {
+export type ErrorLogParams = {
   message?: string;
+  source: 'router' | 'windowerror' | 'unhandledrejection' | 'service' | 'unknown';
+  stack?: string;
+  lineNumber?: number;
+  columnNumber?: number;
+  data?: Record<string, unknown>;
 } & AnyLogParams;
 
-interface UnknownErrorParams extends LogErrorBaseParams {
-  'error.type': 'unknown';
-}
-
-interface ServerErrorParams extends LogErrorBaseParams {
-  'error.type': 'router';
-  'error.stack': string;
-}
-
-interface UnhandledErrorParams extends LogErrorBaseParams {
-  'error.type': 'windowerror' | 'unhandledrejection';
-  'error.url': string | undefined;
-  'error.lineNumber'?: number;
-  'error.columnNumber'?: number;
-  'error.stack': string;
-}
-
-interface ApiErrorParams extends LogErrorBaseParams {
-  'error.type': 'api';
-  'error.method': string;
-  'error.requestData': string;
-  'error.code': string;
-  'error.stack': string | undefined;
-  requestId?: string;
-}
-
-interface ChunkLoadingError extends LogErrorBaseParams {
-  'error.type': 'chunkLoadingFailed';
-  'error.chunkName': string;
-}
+export type FatalLogParams = {
+  message?: string;
+  stack?: string;
+  lineNumber?: number;
+  columnNumber?: number;
+  data?: Record<string, unknown>;
+} & AnyLogParams;

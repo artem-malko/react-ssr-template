@@ -39,6 +39,14 @@ export function handleLogFromClient(
   const { level, ...params } = req.body;
 
   switch (level) {
+    case 'fatal':
+      logger.fatal({
+        level: 'fatal',
+        message: 'logFromClient default fatal message',
+        ...commonLogData,
+        ...params,
+      });
+      break;
     case 'error':
       logger.error({
         level: 'error',

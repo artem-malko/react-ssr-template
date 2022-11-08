@@ -11,6 +11,8 @@ import { ZIndexLayout } from 'application/ui/kit/zIndex';
 import ErrorPage from 'application/ui/pages/error';
 import { styles as globalStyles } from 'application/ui/styles/global.css';
 import { useStyles } from 'framework/infrastructure/css/hook';
+import { useAppLogger } from 'framework/infrastructure/logger/react/hook';
+import { getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
 
 import { popoverContainerId } from '../kit/popover/shared';
 import { styles } from './index.css';
@@ -19,11 +21,22 @@ export const Main = memo(() => {
   useStyles(globalStyles)(':global');
   const css = useStyles(styles);
   const page = useActivePage();
+  const { sendFatalErrorLog } = useAppLogger();
 
   return (
-    //  @TODO fix hardcode of the error page's params
     <ErrorBoundary
-      // If we are here, it means, where is something happen with request for a chunck
+      onError={(error, info) => {
+        const { message, stack } = getMessageAndStackParamsFromError(error);
+
+        sendFatalErrorLog({
+          id: 'main-error-boundary',
+          message,
+          stack,
+          data: {
+            componentStack: info.componentStack,
+          },
+        });
+      }}
       fallback={
         <ErrorPage
           page={{
