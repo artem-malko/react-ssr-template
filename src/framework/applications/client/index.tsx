@@ -10,6 +10,7 @@ import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
 import { AppLogger } from 'framework/infrastructure/logger';
+import { createWindowErrorHandlers } from 'framework/infrastructure/logger/clientLog';
 import { AppLoggerContext } from 'framework/infrastructure/logger/react/context';
 import { createPlatformAPI } from 'framework/infrastructure/platform';
 import { createCookieAPI } from 'framework/infrastructure/platform/cookie/client';
@@ -56,6 +57,26 @@ export const startClientApplication = ({
   compileAppURL,
   appLogger,
 }: Params) => {
+  const { logClientUncaughtException, logClientUnhandledRejection } =
+    createWindowErrorHandlers(appLogger);
+
+  window.addEventListener('unhandledrejection', (event) => {
+    const reason = event.reason;
+
+    if (reason instanceof Error) {
+      logClientUnhandledRejection(reason);
+      return;
+    }
+
+    const stringifiedReason = typeof reason === 'object' ? JSON.stringify(reason) : reason;
+
+    logClientUnhandledRejection(new Error(stringifiedReason));
+  });
+
+  window.addEventListener('error', ({ error }) => {
+    logClientUncaughtException(error);
+  });
+
   return restoreStore({ compileAppURL }).then((store) => {
     hydrateRoot(
       container,
