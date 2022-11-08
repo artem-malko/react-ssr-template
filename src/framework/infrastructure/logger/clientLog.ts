@@ -12,7 +12,7 @@ export const createWindowErrorHandlers = (appLogger: AppLogger) => {
       const { message, stack } = getMessageAndStackParamsFromError(error);
 
       appLogger.sendErrorLog({
-        message: message || 'logServerUncaughtException default error message',
+        message: message || 'logClientUncaughtException default error message',
         id: 'ujbvfg',
         source: 'windowerror',
         stack,
@@ -22,7 +22,7 @@ export const createWindowErrorHandlers = (appLogger: AppLogger) => {
     logClientUnhandledRejection(error?: Error) {
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
-        console.log('logServerUnhandledRejection error: ', error);
+        console.log('logClientUnhandledRejection error: ', error);
       }
 
       if (!error) {
