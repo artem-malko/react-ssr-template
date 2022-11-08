@@ -21,6 +21,9 @@ export const afterAppRendered = ({ config, logger }: Params) => {
 
   logger.sendInfoLog({
     id: 'startup-log',
-    message: 'afterAppRendered callback executed',
+    message: `afterAppRendered callback executed`,
+    data: {
+      initialURL: window.location.href,
+    },
   });
 };

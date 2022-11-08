@@ -8,6 +8,7 @@ export type AnyLogParams = {
 
 export type InfoLogParams = {
   message: string;
+  data?: Record<string, unknown>;
 } & AnyLogParams;
 
 export interface PerformanceLogParams {
