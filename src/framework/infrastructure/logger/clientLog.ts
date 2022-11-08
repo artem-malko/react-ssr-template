@@ -1,7 +1,7 @@
 import { AppLogger } from '.';
 import { getMessageAndStackParamsFromError } from './utils';
 
-export const createWindowErrorHandlers = (appLogger: AppLogger) => {
+export const createClientGlobalErrorHandlers = (appLogger: AppLogger) => {
   return {
     logClientUncaughtException(error: Error) {
       if (process.env.NODE_ENV === 'development') {

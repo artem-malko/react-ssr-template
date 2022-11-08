@@ -10,7 +10,7 @@ import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
 import { AppLogger } from 'framework/infrastructure/logger';
-import { createWindowErrorHandlers } from 'framework/infrastructure/logger/clientLog';
+import { createClientGlobalErrorHandlers } from 'framework/infrastructure/logger/clientLog';
 import { AppLoggerContext } from 'framework/infrastructure/logger/react/context';
 import { createPlatformAPI } from 'framework/infrastructure/platform';
 import { createCookieAPI } from 'framework/infrastructure/platform/cookie/client';
@@ -58,7 +58,7 @@ export const startClientApplication = ({
   appLogger,
 }: Params) => {
   const { logClientUncaughtException, logClientUnhandledRejection } =
-    createWindowErrorHandlers(appLogger);
+    createClientGlobalErrorHandlers(appLogger);
 
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
