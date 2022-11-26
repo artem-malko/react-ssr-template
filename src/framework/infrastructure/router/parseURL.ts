@@ -89,6 +89,7 @@ function createURLPathParser<PageName extends string>(
 
     const mainSlugName = routeConfig.path === '/' ? rootPageIndexName : routeConfig.path.split('/')[1];
 
+    /* istanbul ignore next */
     if (!mainSlugName) {
       throw new Error(`Path is empty for slugConfig: ${JSON.stringify(routeConfig)}`);
     }
