@@ -23,7 +23,6 @@
         --inspect=127.0.0.1:6666
       */
       "port": 9229,
-      "protocol": "inspector",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -46,7 +45,7 @@
       "args": [
           "--require", "ts-node/register",
           "--require", "./tools/setupChaiDomAsserions.js",
-          "--require", "src/tests/framework/infrastructure/hooks/beforeAndAfterEach.ts",
+          "--require", "src/framework/infrastructure/tests/hooks/beforeAndAfterEach.ts",
           "--require", "source-map-support/register",
           "--bail",
           "--recursive",
@@ -61,13 +60,40 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "protocol": "inspector"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha current file with debug",
+      "env": {
+        "NODE_PATH": "./src",
+        "RTL_SKIP_AUTO_CLEANUP": "true",
+        "TS_NODE_TRANSPILE_ONLY": "true",
+        "NODE_ENV": "test",
+      },
+      "envFile": "${workspaceFolder}/.env_test",
+      "program": "${workspaceFolder}/node_modules/.bin/mocha",
+      "args": [
+          "--require", "ts-node/register",
+          "--require", "./tools/setupChaiDomAsserions.js",
+          "--require", "src/framework/infrastructure/tests/hooks/beforeAndAfterEach.ts",
+          "--require", "source-map-support/register",
+          "--bail",
+          "--recursive",
+          "${relativeFile}",
+          "--enable-source-maps",
+          "--reporter", "nyan",
+          "--timeout", "999999",
+          "--colors",
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ],
   "compounds": [
     {
       "name": "Attach Server + Client",
-      "configurations": ["Attach Server", "Client"]
+      "configurations": ["Attach Server", "Start browser for debugging client side from VSCode"]
     },
   ]
 }

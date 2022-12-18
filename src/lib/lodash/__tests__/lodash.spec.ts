@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { expect } from 'chai';
 import { SinonFakeTimers, useFakeTimers } from 'sinon';
 
 import { isObject, get, keysOf, debounce } from '..';
@@ -6,19 +6,19 @@ import { isObject, get, keysOf, debounce } from '..';
 describe('lodash', () => {
   describe('isObject', () => {
     it('return true for object', () => {
-      assert.isTrue(isObject({}));
+      expect(isObject({})).to.eq(true);
     });
 
     it('return false for array', () => {
-      assert.isFalse(isObject([1, 2]));
+      expect(isObject([1, 2])).to.eq(false);
     });
 
     it('return false for string', () => {
-      assert.isFalse(isObject('String'));
+      expect(isObject('String')).to.eq(false);
     });
 
     it('return false for null', () => {
-      assert.isFalse(isObject(null));
+      expect(isObject(null)).to.eq(false);
     });
   });
 
@@ -33,7 +33,7 @@ describe('lodash', () => {
           c: 'ac',
         },
       };
-      assert.equal(get(testData, 'a.b.c'), 'abc');
+      expect(get(testData, 'a.b.c')).to.eq('abc');
     });
 
     it('Return default value', () => {
@@ -46,7 +46,7 @@ describe('lodash', () => {
           c: 'ac',
         },
       };
-      assert.equal(get(testData, 'a.b.e.c', 'def'), 'def');
+      expect(get(testData, 'a.b.e.c', 'def')).to.eq('def');
     });
 
     it('Return default value if it is passed as undefined', () => {
@@ -59,7 +59,7 @@ describe('lodash', () => {
           c: 'ac',
         },
       };
-      assert.equal(get(testData, 'a.b.e.c', undefined), undefined);
+      expect(get(testData, 'a.b.e.c', undefined)).to.eq(undefined);
     });
 
     it('Works with nested arrays', () => {
@@ -68,7 +68,7 @@ describe('lodash', () => {
           b: ['ab0', 'ab1', 'ab2'],
         },
       };
-      assert.equal(get(testData, 'a.b.2'), 'ab2');
+      expect(get(testData, 'a.b.2')).to.eq('ab2');
     });
   });
 
@@ -76,16 +76,18 @@ describe('lodash', () => {
     const noop = () => {
       /** */
     };
-    it('Returns typed Array of keys of received object', () =>
+
+    it('Returns typed Array of keys of received object', () => {
       expect(
         keysOf({ u: undefined, n: 1, s: 'string', bool: true, null: null, f: noop, obj: { x: 'y' } }),
-      ).to.deep.eq(['u', 'n', 's', 'bool', 'null', 'f', 'obj']));
+      ).to.deep.eq(['u', 'n', 's', 'bool', 'null', 'f', 'obj']);
+    });
 
-    [1, noop, true, 'string', {}].forEach((x) =>
+    [1, noop, true, 'string', {}].forEach((x) => {
       it('Empty array for not object or empty object', () => {
         expect(keysOf(x)).to.deep.eq([]);
-      }),
-    );
+      });
+    });
   });
 
   describe('debounce', () => {
