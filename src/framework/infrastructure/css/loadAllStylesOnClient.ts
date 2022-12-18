@@ -18,7 +18,7 @@ export function loadAllStylesOnClient(params: { fileName: string }): void {
     ? window.requestIdleCallback(() => {
         document.body.appendChild(linkEl);
       })
-    : window.setTimeout(() => {
+    : setTimeout(() => {
         document.body.appendChild(linkEl);
       }, 0);
 }
