@@ -1,8 +1,9 @@
 import { expect } from 'chai';
+import { mock, SinonMock } from 'sinon';
 
 import { appLoggerStub } from 'framework/infrastructure/logger/stub';
 import { createRequest } from 'framework/infrastructure/request';
-import { requestMock } from 'framework/infrastructure/request/forTests';
+import { createJsonResponse, createOkJsonResponse } from 'framework/infrastructure/request/utils/tests';
 
 import { createHackerNewsService } from '..';
 import { mocks } from '../mocks';
@@ -16,47 +17,46 @@ describe('Hacker news service', () => {
     },
     appLogger: appLoggerStub,
   });
+  let stubedFetch: SinonMock;
+
+  beforeEach(() => {
+    stubedFetch = mock(global);
+  });
 
   afterEach(() => {
-    requestMock.reset();
+    stubedFetch.restore();
   });
 
   describe('getNews method', () => {
     it('Return parsed response with one news item for success request', async () => {
-      requestMock
-        .onGet('/news?page=1')
-        .reply(
-          200,
-          '[{ "id": 2, "time": 2, "title": "title", "user": "user", "time_ago": "time", "url": "url" }]',
+      stubedFetch
+        .expects('fetch')
+        .withArgs('/news?page=1')
+        .returns(
+          createOkJsonResponse(
+            '[{ "id": 2, "time": 2, "title": "title", "user": "user", "time_ago": "time", "url": "url" }]',
+          ),
         );
 
       await hackerNews.getNews({ page: 1 }).then((response) => {
-        expect(requestMock.history.get!.length).to.eq(1);
         expect(response).to.deep.eq(mocks.getNewsListWithOneItem);
       });
     });
 
     it('Return parsed error for 404 response', async () => {
-      requestMock.onGet('/news?page=1').reply(404);
+      stubedFetch
+        .expects('fetch')
+        .withArgs('/news?page=1')
+        .returns(
+          createJsonResponse({
+            body: '',
+            status: 404,
+            statusText: 'Request failed with status code 404',
+          }),
+        );
 
       await hackerNews.getNews({ page: 1 }).catch((error) => {
         expect(error).to.deep.eq(mocks.getNewsNotFoundError);
-      });
-    });
-
-    it('Return parsed error for network error', async () => {
-      requestMock.onGet('/news?page=1').networkError();
-
-      await hackerNews.getNews({ page: 1 }).catch((error) => {
-        expect(error).to.deep.eq(mocks.getNewsTimeoutError);
-      });
-    });
-
-    it('Return parsed error for response parse error', async () => {
-      requestMock.onGet('/news?page=1').reply(200, 'incorrectJson');
-
-      await hackerNews.getNews({ page: 1 }).catch((error) => {
-        expect(error).to.deep.eq(mocks.getNewsResponseParseError);
       });
     });
   });

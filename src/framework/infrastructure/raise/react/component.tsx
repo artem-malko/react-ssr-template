@@ -1,11 +1,9 @@
 import { memo } from 'react';
 
-import { HttpErrorCode } from 'framework/types/http';
-
 import { useRaiseError } from './context';
 
 type Props = {
-  code: HttpErrorCode;
+  code: number;
 };
 
 /**

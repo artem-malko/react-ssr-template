@@ -145,7 +145,6 @@ const clientConfig: webpack.Configuration = {
                 return 'react';
               case 'path-to-regexp':
               case 'uuid':
-              case 'axios':
                 return 'rarely';
               default:
                 return 'vendor';

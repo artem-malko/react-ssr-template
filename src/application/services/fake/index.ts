@@ -24,6 +24,9 @@ type CreateFakeAPIServiceParams = {
  */
 export const createFakeAPIService = ({ request, config }: CreateFakeAPIServiceParams) => {
   const baseURL = `${config.apiURL}/users`;
+  const baseRequestParams: Record<'credentials', RequestCredentials> = {
+    credentials: 'same-origin',
+  };
 
   return {
     getUsers: async (params: { page: number; status?: UserStatus[] }) => {
@@ -37,37 +40,43 @@ export const createFakeAPIService = ({ request, config }: CreateFakeAPIServicePa
           ? `${URLWithoutStatus}&${status.map((s) => `status=${s}`).join('&')}`
           : URLWithoutStatus,
         {
-          withCredentials: false,
+          method: 'get',
+          ...baseRequestParams,
         },
       ).then((res) => res.data);
     },
 
     getUserById: async (params: { id: string }) => {
       return request<FetchUserByIdResponse>(`${baseURL}/${params.id}`, {
-        withCredentials: false,
+        method: 'get',
+        ...baseRequestParams,
       }).then((res) => res.data);
     },
 
     addUser: async (params: { user: Omit<User, 'id'> }) => {
+      const data = new FormData();
+      data.append('name', params.user.name);
+      data.append('status', params.user.status);
+
       return request<ModifyUserResponse>(`${baseURL}`, {
-        method: 'POST',
-        data: params.user,
-        withCredentials: false,
+        method: 'post',
+        body: data,
+        ...baseRequestParams,
       });
     },
 
     updateUserInfo: async (params: { user: Partial<User> & { id: string } }) => {
       return request<ModifyUserResponse>(`${baseURL}/${params.user.id}`, {
-        method: 'PATCH',
-        data: params.user,
-        withCredentials: false,
+        method: 'patch',
+        body: params.user,
+        ...baseRequestParams,
       });
     },
 
     deleteUserById: async (params: { id: string }) => {
       return request<ModifyUserResponse>(`${baseURL}/${params.id}`, {
-        method: 'DELETE',
-        withCredentials: false,
+        method: 'delete',
+        ...baseRequestParams,
       });
     },
   };

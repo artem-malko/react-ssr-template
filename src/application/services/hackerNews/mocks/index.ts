@@ -7,15 +7,21 @@ const getNewsListWithOneItem: FetchNewsResponse = [
 ];
 const getNewsTimeoutError: ParsedError = {
   code: 503,
-  message: 'Service is not available',
+  data: {
+    message: 'Service is not available',
+  },
 };
 const getNewsResponseParseError: ParsedError = {
   code: 500,
-  message: 'Response parse error: Unexpected token i in JSON at position 0',
+  data: {
+    message: 'Response parse error: Unexpected token i in JSON at position 0',
+  },
 };
 const getNewsNotFoundError: ParsedError = {
   code: 404,
-  message: 'Request failed with status code 404',
+  data: {
+    message: 'Request failed with status code 404',
+  },
 };
 
 export const mocks = {

@@ -21,11 +21,11 @@ async function fakeAPIRandomLatencyAndErrorResponser(req: Request, res: Response
     await new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
-      }, Math.round(Math.random() * 2000));
+      }, Math.round(Math.random() * 3000));
     });
   }
 
-  if (useErrorsInFakeAPIFromCookie === '1' && Math.random() <= 0.2) {
+  if (useErrorsInFakeAPIFromCookie === '1' && Math.random() <= 0.25) {
     return res.status(500).json(renderError(500, 'Fake error'));
   }
 
@@ -60,6 +60,7 @@ fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users', (req, re
 });
 
 fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users/:id', (req, res) => {
+  throw new Error('qwe');
   const userIdToGet = req.params.id;
 
   const users = readUsers();

@@ -1,12 +1,10 @@
-import { HttpErrorCode } from 'framework/types/http';
-
 /**
  * Creates a store, which store an error code, which is raised during current render
  */
 export const createRaiseErrorStore = () => {
-  let raisedError: HttpErrorCode | undefined = undefined;
+  let raisedError: number | undefined = undefined;
 
-  const raiseError = (httpCode: HttpErrorCode) => {
+  const raiseError = (httpCode: number) => {
     raisedError = httpCode;
   };
 

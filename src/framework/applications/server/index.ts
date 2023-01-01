@@ -69,6 +69,12 @@ export const startServer = ({ enhanceServer, serverConfig, serverApplicationConf
 
   // It parses incoming requests with JSON payloads
   server.use(express.json());
+  // Parse URL-encoded bodies
+  server.use(
+    express.urlencoded({
+      extended: true,
+    }),
+  );
   // It parses incoming requests with Buffer payloads
   server.use(express.raw());
   // It parses incoming requests with text payloads

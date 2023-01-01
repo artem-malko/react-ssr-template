@@ -15,13 +15,13 @@ export const createHackerNewsService = ({ request, config }: CreateHackerNewsSer
   return {
     getNews(params: { page: number }) {
       return request<FetchNewsResponse>(`${config.apiURL}/news?page=${params.page}`, {
-        withCredentials: false,
+        method: 'get',
       });
     },
 
     getNewsItem(params: { id: number }) {
       return request<FetchNewsItemResponse>(`${config.apiURL}/item/${params.id}`, {
-        withCredentials: false,
+        method: 'get',
       });
     },
   };

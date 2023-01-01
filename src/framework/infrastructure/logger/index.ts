@@ -24,7 +24,7 @@ export const createUniversalAppLoggerCreator =
     const action = (logParams: QueueLogParams) => {
       return request(path, {
         method: 'post',
-        data: logParams,
+        body: logParams,
         headers: {
           'Content-Type': 'application/json',
         },

@@ -1,9 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import { HttpErrorCode } from 'framework/types/http';
-
 export const RaiseErrorContext = createContext({
-  raiseError: (_errorCode: HttpErrorCode) => {
+  raiseError: (_errorCode: number) => {
     /** */
   },
 });
