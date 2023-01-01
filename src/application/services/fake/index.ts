@@ -54,13 +54,9 @@ export const createFakeAPIService = ({ request, config }: CreateFakeAPIServicePa
     },
 
     addUser: async (params: { user: Omit<User, 'id'> }) => {
-      const data = new FormData();
-      data.append('name', params.user.name);
-      data.append('status', params.user.status);
-
       return request<ModifyUserResponse>(`${baseURL}`, {
         method: 'post',
-        body: data,
+        body: params.user,
         ...baseRequestParams,
       });
     },

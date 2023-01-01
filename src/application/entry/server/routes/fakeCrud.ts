@@ -60,7 +60,6 @@ fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users', (req, re
 });
 
 fakeCRUDRouter.use(fakeAPIRandomLatencyAndErrorResponser).get('/users/:id', (req, res) => {
-  throw new Error('qwe');
   const userIdToGet = req.params.id;
 
   const users = readUsers();
