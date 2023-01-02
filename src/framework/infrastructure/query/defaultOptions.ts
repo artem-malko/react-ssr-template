@@ -5,6 +5,7 @@ import { DefaultOptions } from '@tanstack/react-query';
  */
 export const defaultQueryOptions: DefaultOptions = {
   queries: {
+    networkMode: 'offlineFirst',
     refetchOnWindowFocus: false,
     refetchOnReconnect: true,
     /**

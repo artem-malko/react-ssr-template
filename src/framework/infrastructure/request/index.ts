@@ -38,9 +38,9 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
 
       // Process a response with an error
       if (!response.ok) {
-        const responseBodyString = await response.text();
+        const parsedBody = await response.text();
 
-        throw new RequestError(response, responseBodyString);
+        throw new RequestError({ response, parsedBody });
       }
 
       if (requestParams.parser) {
@@ -54,19 +54,43 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
 
       return parsedResponse;
     } catch (error: any) {
-      const preprocessedError = signal.aborted
-        ? new RequestError(
-            createResponse({
+      if (signal.aborted) {
+        return processAnyAPIError(
+          new RequestError({
+            response: createResponse({
               status: getStatusFromAbortReason(signal.reason, 599),
               statusText: getStatusTextFromAbortReason(signal.reason, 'Aborted request'),
               headers: {
-                'Content-type': 'text/html; charset=utf-8;',
+                'Content-Type': 'text/html; charset=utf-8;',
               },
             }),
-          )
-        : error;
+            originalError: error,
+          }),
+          requestParams?.errorProcessingMiddleware,
+        );
+      }
 
-      return processAnyAPIError(preprocessedError, requestParams?.errorProcessingMiddleware);
+      /**
+       * All reasons of TypeError in fetch
+       * https://developer.mozilla.org/en-US/docs/Web/API/fetch#typeerror
+       */
+      if (error instanceof TypeError) {
+        return processAnyAPIError(
+          new RequestError({
+            response: createResponse({
+              status: 500,
+              statusText: error.message,
+              headers: {
+                'Content-Type': 'text/html; charset=utf-8;',
+              },
+            }),
+            originalError: error,
+          }),
+          requestParams?.errorProcessingMiddleware,
+        );
+      }
+
+      return processAnyAPIError(error, requestParams?.errorProcessingMiddleware);
     } finally {
       /**
        * Yeah, we have that cancelation before

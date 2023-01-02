@@ -1,6 +1,10 @@
 import { Writable } from 'node:stream';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  DefaultOptions as DefaultReactQueryOptions,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import express from 'express';
 import { StrictMode } from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
@@ -50,6 +54,7 @@ type Params = {
   clientApplicationConfig: BaseApplicationConfig;
   initialAppContext: AnyAppContext;
   appLogger: AppLogger;
+  defaultReactQueryOptions?: DefaultReactQueryOptions;
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
   ({
@@ -60,6 +65,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     clientApplicationConfig,
     initialAppContext,
     appLogger,
+    defaultReactQueryOptions,
   }) =>
   (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
@@ -132,7 +138,16 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
           const rarelyPath = getFullPathForJSFile('rarely');
 
           const queryClient = new QueryClient({
-            defaultOptions: defaultQueryOptions,
+            defaultOptions: {
+              queries: {
+                ...defaultQueryOptions.queries,
+                ...defaultReactQueryOptions?.queries,
+              },
+              mutations: {
+                ...defaultQueryOptions.mutations,
+                ...defaultReactQueryOptions?.mutations,
+              },
+            },
           });
           const cssProviderStore = new CSSServerProviderStore();
           const session = createServerSessionObject(req);

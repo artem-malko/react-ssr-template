@@ -26,18 +26,9 @@ function parseAnyAPIError(error: RequestError | Error): ParsedError {
     };
   }
 
-  // Abortcontroller timeout error
-  if (error.response.status === 599) {
-    return {
-      code: 599,
-      data: {
-        message: error.response.statusText,
-      },
-    };
-  }
-
   // Just to handle a error, whithout responseBody
-  if (!error.parsedBody) {
+  // Or body was not decoded
+  if (!error.parsedBody || !error.response.bodyUsed) {
     return {
       code: error.response.status,
       data: {

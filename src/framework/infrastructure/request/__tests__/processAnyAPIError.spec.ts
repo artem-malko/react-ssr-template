@@ -53,12 +53,12 @@ describe('processAnyAPIError', () => {
     it('Returns a 599 error cause of timeout', () => {
       try {
         processAnyAPIError(
-          new RequestError(
-            createResponse({
+          new RequestError({
+            response: createResponse({
               status: 599,
               statusText: 'Network connect timeout error',
             }),
-          ),
+          }),
         );
       } catch (e) {
         expect(e).to.deep.eq({
@@ -73,12 +73,12 @@ describe('processAnyAPIError', () => {
     it('Returns a parsed error for a error without body', () => {
       try {
         processAnyAPIError(
-          new RequestError(
-            createResponse({
+          new RequestError({
+            response: createResponse({
               status: 500,
               statusText: 'Custom status',
             }),
-          ),
+          }),
         );
       } catch (e) {
         expect(e).to.deep.eq({
@@ -93,16 +93,16 @@ describe('processAnyAPIError', () => {
     it('Returns a parsed error for an error with Content-Type different from application/json', () => {
       try {
         processAnyAPIError(
-          new RequestError(
-            createResponse({
+          new RequestError({
+            response: createResponse({
               status: 500,
               statusText: 'Custom status',
               headers: {
                 'Content-Type': 'text/html',
               },
             }),
-            'Parsed body',
-          ),
+            parsedBody: 'Parsed body',
+          }),
         );
       } catch (e) {
         expect(e).to.deep.eq({
@@ -115,16 +115,16 @@ describe('processAnyAPIError', () => {
       }
     });
     it('Returns a JSON-response parse error, incorrect JSON in a response ', () => {
-      const requestError = new RequestError(
-        createResponse({
+      const requestError = new RequestError({
+        response: createResponse({
           status: 404,
           statusText: 'Custom status',
           headers: {
             'Content-Type': 'application/json',
           },
         }),
-        "{name:'Name'}",
-      );
+        parsedBody: "{name:'Name'}",
+      });
 
       try {
         processAnyAPIError(requestError);
@@ -139,16 +139,16 @@ describe('processAnyAPIError', () => {
       }
     });
     it('Returns parsed error in JSON body for correct JSON, but default status and statusText', () => {
-      const requestError = new RequestError(
-        createResponse({
+      const requestError = new RequestError({
+        response: createResponse({
           status: 404,
           statusText: 'Custom statusText',
           headers: {
             'Content-Type': 'application/json',
           },
         }),
-        '{"name":"Ann"}',
-      );
+        parsedBody: '{"name":"Ann"}',
+      });
 
       try {
         processAnyAPIError(requestError);
@@ -165,16 +165,16 @@ describe('processAnyAPIError', () => {
       }
     });
     it('Returns a parsed API error with the predefined format (has all properties)', () => {
-      const requestError = new RequestError(
-        createResponse({
+      const requestError = new RequestError({
+        response: createResponse({
           status: 404,
           statusText: 'Custom statusText',
           headers: {
             'Content-Type': 'application/json',
           },
         }),
-        '{"error":{"code":501,"message":"Message from body"}}',
-      );
+        parsedBody: '{"error":{"code":501,"message":"Message from body"}}',
+      });
 
       try {
         processAnyAPIError(requestError);

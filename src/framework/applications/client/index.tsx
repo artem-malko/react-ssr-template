@@ -1,4 +1,8 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  DefaultOptions as DefaultReactQueryOptions,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { Provider as ReduxStoreProvider } from 'react-redux';
@@ -25,10 +29,6 @@ import { restoreStore } from './store';
 import { afterAppRendered } from './utils/afterAppRendered';
 import { createClientSessionObject } from './utils/createClientSessionObject';
 
-const queryClient = new QueryClient({
-  defaultOptions: defaultQueryOptions,
-});
-
 const cssProviderStore = new CSSClientProviderStore();
 
 const container = document.getElementById(ApplicationContainerId) as Element;
@@ -49,6 +49,7 @@ type Params = {
   onRecoverableError?: (args: unknown) => void;
   appLogger: AppLogger;
   MainComp: React.ReactNode;
+  defaultReactQueryOptions?: DefaultReactQueryOptions;
 };
 export const startClientApplication = ({
   onAppRendered,
@@ -56,9 +57,23 @@ export const startClientApplication = ({
   MainComp,
   compileAppURL,
   appLogger,
+  defaultReactQueryOptions,
 }: Params) => {
   const { logClientUncaughtException, logClientUnhandledRejection } =
     createClientGlobalErrorHandlers(appLogger);
+
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        ...defaultQueryOptions.queries,
+        ...defaultReactQueryOptions?.queries,
+      },
+      mutations: {
+        ...defaultQueryOptions.mutations,
+        ...defaultReactQueryOptions?.mutations,
+      },
+    },
+  });
 
   window.addEventListener('unhandledrejection', (event) => {
     const reason = event.reason;
