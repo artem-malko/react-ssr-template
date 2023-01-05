@@ -81,7 +81,6 @@ export const Popup = memo(() => {
 
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        // @TODO we need to test it.
         e.stopPropagation();
         hideCurrentPopup();
       }

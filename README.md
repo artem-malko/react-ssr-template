@@ -7,7 +7,7 @@ A simple template for a website with SSR (with streams) and React 18 with a bran
 ```bash
 npm i && make dev
 ```
-If you want to see this project in action: http://158.101.223.0:5000/
+If you want to see this project in action: http://174.138.13.187:5000/
 
 🚧 🛠️ Work In Progress 🛠️ 🚧
 

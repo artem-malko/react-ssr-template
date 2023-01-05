@@ -47,7 +47,11 @@ export const useCommonAppQuery = <TResult, TError extends ParsedError>({
   });
 
   return {
-    queryResult: useQuery<TResult, TError>(key, queryFunction, queryOptions),
+    queryResult: useQuery<TResult, TError>({
+      ...queryOptions,
+      queryKey: key,
+      queryFn: queryFunction,
+    }),
     refetchQuery: (params?: {
       refetchQueryFilters?: RefetchQueryFilters<TResult>;
       refetchQueryOptions?: RefetchOptions;

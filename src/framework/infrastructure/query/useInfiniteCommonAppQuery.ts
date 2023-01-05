@@ -40,5 +40,9 @@ export const useInfiniteCommonAppQuery = <TResult, TError extends ParsedError>({
     isErrorCodeOkToResetCacheCheck: frameworkQueryOptions?.isErrorCodeOkToResetCache,
   });
 
-  return useInfiniteQuery<TResult, TError>(key, queryFunction, queryOptions);
+  return useInfiniteQuery<TResult, TError>({
+    ...queryOptions,
+    queryKey: key,
+    queryFn: queryFunction,
+  });
 };

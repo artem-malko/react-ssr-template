@@ -1,4 +1,7 @@
-// @TODO update name
+/**
+ * Creates combined abort controller,
+ * which includes timeout controller and a custom user controller
+ */
 export function createCombinedAbortController(networkTimeout: number, userSignal?: AbortSignal | null) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
