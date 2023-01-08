@@ -26,7 +26,7 @@ function parseAnyAPIError(error: RequestError | Error): ParsedError {
     };
   }
 
-  // Just to handle a error, whithout responseBody
+  // Just to handle a error, without responseBody
   // Or body was not decoded
   if (!error.parsedBody || !error.response.bodyUsed) {
     return {

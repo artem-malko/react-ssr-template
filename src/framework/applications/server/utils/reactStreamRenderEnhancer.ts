@@ -109,11 +109,14 @@ export class ReactStreamRenderEnhancer extends Writable {
            * So, hydration won't be broken.
            */
           this._writable.write(
-            wrapWithImmediateScript(`
+            wrapWithImmediateScript(
+              `
             var ${randomScriptElementVarName} = document.createElement('script');
             ${randomScriptElementVarName}.innerHTML = ${scriptContent};
             document.body.appendChild(${randomScriptElementVarName});
-          `),
+          `,
+              'application/json',
+            ),
           );
         }
       }
@@ -184,10 +187,17 @@ export class ReactStreamRenderEnhancer extends Writable {
  *
  * This script has to be removed after execution, cause of server and client rendering mismatch warn
  */
-function wrapWithImmediateScript(code: string) {
+function wrapWithImmediateScript(code: string, scriptType?: 'application/json') {
   const randomScriptId = generateRandomId();
+  let scriptTagStart = `<script id="${randomScriptId}"`;
 
-  return `<script id="${randomScriptId}">${code}document.getElementById("${randomScriptId}").remove();</script>`;
+  if (scriptType) {
+    scriptTagStart += ` type="${scriptType}"`;
+  }
+
+  scriptTagStart += '>';
+
+  return `${scriptTagStart}${code}document.getElementById("${randomScriptId}").remove();</script>`;
 }
 
 function generateRandomId(prefix?: string) {

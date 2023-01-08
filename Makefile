@@ -68,7 +68,7 @@ prepare-build-dir:
 # Start nodemon
 .PHONY: start-dev-server
 start-dev-server:
-	node_modules/.bin/nodemon --delay 0.1 --inspect -e js,json -w ./build/ ./build/server.js
+	node_modules/.bin/nodemon --delay 0.1 --inspect -e js,json --ignore ./build/public -w ./build/ ./build/server.js
 
 # Make dev build for client with changes watching
 .PHONY: build-dev-client

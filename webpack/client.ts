@@ -14,6 +14,7 @@ import type { TransformOptions as EsbuildOptions } from 'esbuild';
 
 const CompressionPlugin = require('compression-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const LiveReloadPlugin = require('webpack-livereload-plugin');
 const WebpackNpmDependenciesAnalyzer = require('webpack-npm-dependencies-analyzer');
 const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 
@@ -175,6 +176,15 @@ const clientConfig: webpack.Configuration = {
     new WebpackNpmDependenciesAnalyzer({
       filename: '../res.json',
       packageJsonPath: './package.json',
+    }),
+
+    // Enable the simplest livereload in a browser (without HMR)
+    new LiveReloadPlugin({
+      // We need such delay cause nodemon has its own delay
+      // and it needs some time to restart the server
+      delay: 450,
+      useSourceHash: true,
+      appendScriptTag: true,
     }),
   ],
 };
