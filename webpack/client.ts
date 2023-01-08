@@ -177,6 +177,14 @@ const clientConfig: webpack.Configuration = {
       filename: '../res.json',
       packageJsonPath: './package.json',
     }),
+  ],
+};
+
+const devConfig: webpack.Configuration = {
+  mode: 'development',
+
+  plugins: [
+    ...bundleStatsPlugins,
 
     // Enable the simplest livereload in a browser (without HMR)
     new LiveReloadPlugin({
@@ -187,12 +195,6 @@ const clientConfig: webpack.Configuration = {
       appendScriptTag: true,
     }),
   ],
-};
-
-const devConfig: webpack.Configuration = {
-  mode: 'development',
-
-  plugins: [...bundleStatsPlugins],
 
   devtool: 'inline-source-map',
 };
