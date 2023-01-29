@@ -3,7 +3,7 @@
 import { cleanup, configure } from '@testing-library/react';
 import { resetHistory } from 'sinon';
 
-import { colorize } from 'lib/console';
+import { colorize } from 'lib/console/colorize';
 
 import { DATA_T_ATTRIBUTE_NAME } from '../dom/dt';
 

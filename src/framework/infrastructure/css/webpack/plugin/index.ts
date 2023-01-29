@@ -1,9 +1,9 @@
 /* eslint-disable functional/immutable-data */
 
-import { getHashDigest } from 'loader-utils';
 import { Compiler, Compilation, sources, Chunk } from 'webpack';
 
 import { generateCss } from '../../generator';
+import { murmurhash2 } from '../../stringHash';
 import { Style, Styles } from '../../types';
 import { STYLE_DESCRIPTOR } from '../shared';
 import { storeInstance } from '../store';
@@ -83,8 +83,7 @@ export class CSSInJSPlugin {
     const { generatedCss, isRTL, compilation } = params;
     const chunkName = isRTL ? this.options.rtlChunkName : this.options.ltrChunkName;
     const chunk = new Chunk(chunkName);
-
-    const fileNameHashDigest = getHashDigest(Buffer.from(generatedCss, 'utf-8'), 'sha1', 'hex', 16);
+    const fileNameHashDigest = murmurhash2(generatedCss);
     const fileName = isRTL
       ? `styles.rtl.${fileNameHashDigest}.css`
       : `styles.ltr.${fileNameHashDigest}.css`;

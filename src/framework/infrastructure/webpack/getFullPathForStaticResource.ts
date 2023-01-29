@@ -1,3 +1,5 @@
+import { devConsoleError } from 'lib/console/devConsole';
+
 interface Params {
   staticResourcesPathMapping: { [chunkName: string]: string[] };
   chunkName: string;
@@ -40,10 +42,8 @@ function extractFileNameByResourceType(params: {
   const assetsList = staticResourcesPathMapping[chunkName];
 
   if (!assetsList) {
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error(`UNKNOWN_CHUNK_NAME_${chunkName}`);
-    }
+    devConsoleError(`UNKNOWN_CHUNK_NAME_${chunkName}`);
+
     return `UNKNOWN_CHUNK_NAME_${chunkName}`;
   }
 
@@ -56,10 +56,8 @@ function extractFileNameByResourceType(params: {
   if (!expectedFileName) {
     const error = `NO_COMPILED_FILENAME_FOR_${assetsList.toString()}`;
 
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    }
+    devConsoleError(error);
+
     return error;
   }
 

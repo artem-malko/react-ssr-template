@@ -5,6 +5,7 @@ import { UserStatus } from 'application/services/fake/types';
 import { AddUser } from 'application/ui/components/users/add';
 import { FakeAPIConfigurator } from 'application/ui/components/users/configurator';
 import { UserList } from 'application/ui/components/users/list';
+import { GlassBoundary } from 'application/ui/kit/glass/context';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';
@@ -73,18 +74,24 @@ export default memo<{ page: UsersPage }>(({ page }) => {
       </div>
       <br />
       <br />
-      <Suspense fallback={<Preloader purpose="UserList data loading" />}>
-        <UserList filterStatus={page.params.filterStatus} page={page.params.page} />
-      </Suspense>
-      <br />
-      <br />
-      {page.params.activeUserId && <UserEditorWrapper activeUserId={page.params.activeUserId} />}
-      <br />
-      <br />
-      <hr />
-      <AddUser />
-      <br />
-      <br />
+      <GlassBoundary name="fulllist">
+        <GlassBoundary name="list">
+          <Suspense fallback={<Preloader purpose="UserList data loading" />}>
+            <UserList filterStatus={page.params.filterStatus} page={page.params.page} />
+          </Suspense>
+        </GlassBoundary>
+        <br />
+        <br />
+
+        {page.params.activeUserId && <UserEditorWrapper activeUserId={page.params.activeUserId} />}
+
+        <br />
+        <br />
+        <hr />
+        <AddUser />
+        <br />
+        <br />
+      </GlassBoundary>
 
       <Spoiler>
         {(isExpanded, toggle) => (

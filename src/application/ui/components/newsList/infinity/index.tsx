@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { useInfinityNews } from 'application/queries/news/useInfinityNews';
+import { useInfinityNews } from 'application/queries/news/fetch/useInfinityNews';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';

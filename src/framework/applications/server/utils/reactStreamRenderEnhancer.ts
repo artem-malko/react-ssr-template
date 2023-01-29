@@ -115,7 +115,6 @@ export class ReactStreamRenderEnhancer extends Writable {
             ${randomScriptElementVarName}.innerHTML = ${scriptContent};
             document.body.appendChild(${randomScriptElementVarName});
           `,
-              'application/json',
             ),
           );
         }
@@ -187,17 +186,10 @@ export class ReactStreamRenderEnhancer extends Writable {
  *
  * This script has to be removed after execution, cause of server and client rendering mismatch warn
  */
-function wrapWithImmediateScript(code: string, scriptType?: 'application/json') {
+function wrapWithImmediateScript(code: string) {
   const randomScriptId = generateRandomId();
-  let scriptTagStart = `<script id="${randomScriptId}"`;
 
-  if (scriptType) {
-    scriptTagStart += ` type="${scriptType}"`;
-  }
-
-  scriptTagStart += '>';
-
-  return `${scriptTagStart}${code}document.getElementById("${randomScriptId}").remove();</script>`;
+  return `<script id="${randomScriptId}">${code}document.getElementById("${randomScriptId}").remove();</script>`;
 }
 
 function generateRandomId(prefix?: string) {

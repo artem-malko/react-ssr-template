@@ -1,6 +1,6 @@
 import { stub } from 'sinon';
 
-import { colorize } from 'lib/console';
+import { colorize } from 'lib/console/colorize';
 
 /**
  * Creates a sinon wrapper for any function inside any object

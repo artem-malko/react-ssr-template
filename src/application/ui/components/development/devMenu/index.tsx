@@ -1,17 +1,19 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { memo, useRef, useState } from 'react';
 
-import { useUserByIdFetcher } from 'application/queries/users/useUserById';
+import { newsQueryKeys } from 'application/queries/news/common';
+import { userQueryKeys } from 'application/queries/users/common';
+import { useUserByIdQueryFetcher } from 'application/queries/users/fetch/useUserById';
 import { Link } from 'application/ui/kit/link';
 import { Popover } from 'application/ui/kit/popover';
 import { BasePopup } from 'application/ui/kit/popup/basePopup';
 import { usePopup, usePopupActions } from 'application/ui/kit/popup/infrastructure/hook';
 import { useStyles } from 'framework/infrastructure/css/hook';
 
+import { styles } from './index.css';
 import { ProjectInfo } from '../projectInfo';
 import { InvalidateQueryButton } from '../queryButtons/invalidateQueryButton';
 import { RefetchQueryButton } from '../queryButtons/refetchQueryButton';
-import { styles } from './index.css';
 
 export const DevMenu = memo(() => {
   const css = useStyles(styles);
@@ -39,7 +41,7 @@ export const DevMenu = memo(() => {
 
   const [isQueryDevToolsUsed, setIsQueryDevToolsUsed] = useState(false);
 
-  const fetchUserById = useUserByIdFetcher();
+  const fetchUserById = useUserByIdQueryFetcher();
   const [userId, setUserId] = useState<string | undefined>();
 
   return (
@@ -103,13 +105,13 @@ export const DevMenu = memo(() => {
                   </div>
                 )}
                 <hr />
-                <InvalidateQueryButton queryKey="news" key="invalidate_news" />
+                <InvalidateQueryButton queryKey={newsQueryKeys.all()} key="invalidate_news" />
                 <hr />
-                <InvalidateQueryButton queryKey="users" key="invalidate_users" />
+                <InvalidateQueryButton queryKey={userQueryKeys.all()} key="invalidate_users" />
                 <hr />
-                <RefetchQueryButton queryKey="news" key="refetch_news" />
+                <RefetchQueryButton queryKey={newsQueryKeys.all()} key="refetch_news" />
                 <hr />
-                <RefetchQueryButton queryKey="users" key="refetch_users" />
+                <RefetchQueryButton queryKey={userQueryKeys.all()} key="refetch_users" />
                 <hr />
                 <div style={{ padding: 10 }}>
                   <form

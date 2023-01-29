@@ -93,7 +93,7 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
       return processAnyAPIError(error, requestParams?.errorProcessingMiddleware);
     } finally {
       /**
-       * Yeah, we have that cancelation before
+       * Yeah, we had that cancelation before
        * This cancelation is here just for sure
        */
       cancelTimeoutAbort();

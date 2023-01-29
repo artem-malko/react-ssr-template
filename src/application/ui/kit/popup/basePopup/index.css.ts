@@ -4,6 +4,7 @@ import { createStyles } from 'framework/infrastructure/css/hook';
 export const styles = createStyles({
   root: {
     position: 'relative',
+    isolation: 'isolate',
     background: colors.white.base(),
     borderRadius: 4,
     height: '100%',

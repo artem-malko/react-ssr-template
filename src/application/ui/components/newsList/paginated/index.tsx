@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { usePaginatedNews } from 'application/queries/news/usePaginatedNews';
+import { usePaginatedNews } from 'application/queries/news/fetch/usePaginatedNews';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';

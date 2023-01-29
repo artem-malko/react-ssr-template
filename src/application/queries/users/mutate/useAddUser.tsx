@@ -1,15 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { useInvalidateQuery } from 'application/queries/common';
 import { UserStatus } from 'application/services/fake/types';
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 
-import { useUserQueriesInvalidate } from './common';
+import { userQueryKeys } from '../common';
 
 export const useAddUser = () => {
   const { showToast } = useToast();
   const services = useServices();
-  const invalidateUsers = useUserQueriesInvalidate();
+  const invalidateQuery = useInvalidateQuery();
 
   return useMutation(
     (userToAdd: { name: string; status: UserStatus }) => {
@@ -22,7 +23,9 @@ export const useAddUser = () => {
         showToast({
           body: () => <>User with name {name} has been added</>,
         });
-        invalidateUsers().catch((error) => {
+        invalidateQuery({
+          queryKey: userQueryKeys.all(),
+        }).catch((error) => {
           showToast({
             body: () => (
               <>

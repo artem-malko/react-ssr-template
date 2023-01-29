@@ -6,7 +6,7 @@ export const mutableUsersData = {
     { name: 'Susan', status: 'active', id: '1e0dab3c-17b2-427e-bea7-5da997587c17' },
     { name: 'Ashley', status: 'inactive', id: '6eb4799f-c9c6-4902-8f1a-550af2a32d70' },
     { name: 'Matthew', status: 'active', id: '72886862-aa91-4c6b-8d4b-ff720e79434f' },
-    { name: 'Susan', status: 'banned', id: '9b40233e-4e35-4310-885b-662eb09c8c09' },
+    { name: 'Rachel', status: 'banned', id: '9b40233e-4e35-4310-885b-662eb09c8c09' },
     { name: 'Barbara', status: 'inactive', id: 'e5fa750c-d949-4656-805e-5276cdfdfef2' },
     { name: 'Elizabeth', status: 'banned', id: '04124c2e-15fd-488e-92b2-6a01be7194f0' },
     { name: 'David', status: 'banned', id: 'e2dd7c6b-187f-44ab-b5a5-c5dc1458a917' },

@@ -1,8 +1,9 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { useUserList } from 'application/queries/users/useUserList';
+import { useUserList } from 'application/queries/users/fetch/useUserList';
 import { UserStatus } from 'application/services/fake/types';
+import { useToggleGlass } from 'application/ui/kit/glass/hook';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
 import { RaiseError } from 'framework/infrastructure/raise/react/component';
 
@@ -13,6 +14,8 @@ type Props = {
   filterStatus?: UserStatus[];
 };
 export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
+  const toggleGlass = useToggleGlass();
+
   const [filterStatusState, setFilterStatusState] = useState<UserStatus[]>(filterStatus);
   const { queryResult, invalidateQuery } = useUserList({
     page,
@@ -44,6 +47,14 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
     }));
   }, [navigate, filterStatusState]);
 
+  /**
+   * isFetching won't be processed in Suspense, cause it is not a state of a query
+   * So, we have to process this status by ourselves
+   */
+  useEffect(() => {
+    toggleGlass(queryResult.isFetching, 'list');
+  }, [queryResult.isFetching, toggleGlass]);
+
   if (queryResult.error) {
     return (
       <>
@@ -71,22 +82,6 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
         filterStatus={filterStatusState}
         setFilterStatus={setFilterStatusState}
       />
-      {/*
-        isFetching won't be processed in Suspense, cause it is not a state of a query
-        So, we have to process this status by ourselves
-      */}
-      {queryResult.isFetching && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(255,255,255,.5)',
-          }}
-        ></div>
-      )}
       <table cellPadding={8} cellSpacing={4}>
         <tbody>
           <tr>

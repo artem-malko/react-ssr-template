@@ -1,4 +1,4 @@
-import { colorize } from 'lib/console';
+import { colorize } from 'lib/console/colorize';
 import { keysOf } from 'lib/lodash';
 
 import { AnyPage, Route, RouteParams, Routes } from './types';

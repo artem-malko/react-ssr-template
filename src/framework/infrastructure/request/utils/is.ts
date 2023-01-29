@@ -48,7 +48,7 @@ export const isBlob = (object: any): object is Blob => {
 };
 
 export const isPlainObject = (obj: any): obj is object => {
-  if (typeof obj !== 'object') {
+  if (typeof obj !== 'object' || obj === null) {
     return false;
   }
 

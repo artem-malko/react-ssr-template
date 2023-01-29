@@ -2,27 +2,27 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import { useAppQuery } from 'application/main/query';
-import { Services } from 'application/services';
 import { FetchUsersResponse, User, UserStatus } from 'application/services/fake/types';
+import { useServices } from 'application/services/shared/context';
 
-import { useUsersQueryMainKey } from './common';
+import { userQueryKeys } from '../common';
 
-type UseUserListParams = {
+export type UseUserListParams = {
   page: number;
   statusFilter?: UserStatus[];
 };
 
-const userListFetcher = (services: Services, params: UseUserListParams) => {
-  return services.fakeAPI.getUsers({ page: params.page, status: params.statusFilter });
-};
-const createUserListQueryKey = (params: UseUserListParams) => {
-  return [useUsersQueryMainKey, 'userList', params];
+const useUserListFetcher = () => {
+  const services = useServices();
+
+  return (params: UseUserListParams) =>
+    services.fakeAPI.getUsers({ page: params.page, status: params.statusFilter });
 };
 
 export const useUserList = (params: UseUserListParams) => {
-  return useAppQuery(createUserListQueryKey(params), async ({ services }) => {
-    return userListFetcher(services, params);
-  });
+  const userListFetcher = useUserListFetcher();
+
+  return useAppQuery(userQueryKeys.listByParams(params), () => userListFetcher(params));
 };
 
 export const useUserListOptimisticUpdater = () => {
@@ -31,7 +31,7 @@ export const useUserListOptimisticUpdater = () => {
   return useCallback(
     (userToUpdate: User) => {
       return queryClient.setQueriesData<FetchUsersResponse['data']>(
-        [useUsersQueryMainKey, 'userList'],
+        userQueryKeys.allLists(),
         (previous) => {
           if (typeof previous === 'undefined') {
             return { total: 0, users: [] };

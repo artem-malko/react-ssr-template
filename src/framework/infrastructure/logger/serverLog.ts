@@ -2,6 +2,7 @@ import { Request } from 'express';
 
 import { logger } from 'framework/infrastructure/logger/init';
 import { addAppVersion, getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
+import { devConsoleLog } from 'lib/console/devConsole';
 import { isObject } from 'lib/lodash';
 
 /**
@@ -84,10 +85,7 @@ export function handleLogFromClient(
 }
 
 export function logServerUncaughtException(error: Error) {
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.log('logServerUncaughtException error: ', error);
-  }
+  devConsoleLog('logServerUncaughtException error: ', error);
 
   const { message, stack } = getMessageAndStackParamsFromError(error);
 
@@ -104,10 +102,7 @@ export function logServerUncaughtException(error: Error) {
 }
 
 export function logServerUnhandledRejection(error?: Error) {
-  if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
-    console.log('logServerUnhandledRejection error: ', error);
-  }
+  devConsoleLog('logServerUnhandledRejection error: ', error);
 
   if (!error) {
     logger.error({

@@ -1,8 +1,9 @@
-import { memo, useCallback, useId, useState } from 'react';
+import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { useEditUser } from 'application/queries/users/useEditUser';
-import { useUserById } from 'application/queries/users/useUserById';
+import { useEditUser } from 'application/queries/users/mutate/useEditUser';
+import { useUserById } from 'application/queries/users/fetch/useUserById';
+import { useToggleGlass } from 'application/ui/kit/glass/hook';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
 
 import { UserForm } from '../form';
@@ -17,6 +18,7 @@ type Props = {
  * The second one — query-cache update (userListOptimisticUpdate)
  */
 export const UserEditor = memo<Props>(({ userId }) => {
+  const toggleGlass = useToggleGlass();
   const { navigate } = useNavigate();
   const optimisticUpdateCheckboxId = useId();
   const [useOptimisticUpdate, setUseOptimisticUpdate] = useState(false);
@@ -35,6 +37,10 @@ export const UserEditor = memo<Props>(({ userId }) => {
   );
   const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser({ useOptimisticUpdate });
 
+  useEffect(() => {
+    toggleGlass(isMutationInProgress);
+  }, [isMutationInProgress, toggleGlass]);
+
   if (userByIdResult.data) {
     return (
       <div
@@ -45,18 +51,6 @@ export const UserEditor = memo<Props>(({ userId }) => {
           backgroundColor: '#fefefe',
         }}
       >
-        {isMutationInProgress && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'rgba(255,255,255,.5)',
-            }}
-          ></div>
-        )}
         <h1>Edit user: {userByIdResult.data.user.name}</h1>
         <h3>Current use status: {userByIdResult.data.user.status}</h3>
         <h4>Current fetchStatus: {userByIdResult.fetchStatus}</h4>

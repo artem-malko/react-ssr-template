@@ -1,13 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 
-
+import { useInvalidateQuery } from 'application/queries/common';
 import { UserStatus } from 'application/services/fake/types';
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 
-import { useUserQueriesInvalidate } from './common';
-import { useUserListOptimisticUpdater } from './useUserList';
-
+import { userQueryKeys } from '../common';
+import { useUserListOptimisticUpdater } from '../fetch/useUserList';
 
 type Params = {
   useOptimisticUpdate: boolean;
@@ -16,7 +15,7 @@ export const useEditUser = (params: Params) => {
   const { useOptimisticUpdate } = params;
   const { showToast } = useToast();
   const services = useServices();
-  const invalidateUsers = useUserQueriesInvalidate();
+  const invalidateQuery = useInvalidateQuery();
   const userListOptimisticUpdate = useUserListOptimisticUpdater();
 
   return useMutation(
@@ -51,7 +50,9 @@ export const useEditUser = (params: Params) => {
            * — list
            * — user by id
            */
-          invalidateUsers();
+          invalidateQuery({
+            queryKey: userQueryKeys.all(),
+          });
         }
       },
       onError(error) {

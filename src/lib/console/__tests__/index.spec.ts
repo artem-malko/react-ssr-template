@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import { colorize } from '..';
+import { colorize } from '../colorize';
 
 describe('colorize lib', () => {
   it('Return blue text, if passed blue color', () => {

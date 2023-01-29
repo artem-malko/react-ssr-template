@@ -1,14 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { useInvalidateQuery } from 'application/queries/common';
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 
-import { useUserQueriesInvalidate } from './common';
+import { userQueryKeys } from '../common';
 
 export const useDeleteUser = () => {
   const { showToast } = useToast();
   const services = useServices();
-  const invalidateUsers = useUserQueriesInvalidate();
+  const invalidateQuery = useInvalidateQuery();
 
   return useMutation(
     (params: { userId: string; name: string }) => {
@@ -16,7 +17,9 @@ export const useDeleteUser = () => {
     },
     {
       onSuccess(_, params) {
-        invalidateUsers();
+        invalidateQuery({
+          queryKey: userQueryKeys.all(),
+        });
         showToast({
           body: () => <>User with name {params.name} has been deleted!</>,
         });

@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense } from 'react';
+import { ErrorInfo, lazy, memo, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { useActivePage } from 'application/main/hooks/useActivePage';
@@ -14,29 +14,35 @@ import { useStyles } from 'framework/infrastructure/css/hook';
 import { useAppLogger } from 'framework/infrastructure/logger/react/hook';
 import { getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
 
-import { popoverContainerId } from '../kit/popover/shared';
 import { styles } from './index.css';
+import { RootGlassBoundaryName } from '../kit/glass/constants';
+import { GlassBoundary } from '../kit/glass/context';
+import { PopoverContainer } from '../kit/popover/container';
 
 export const Main = memo(() => {
   useStyles(globalStyles)(':global');
   const css = useStyles(styles);
   const page = useActivePage();
   const { sendFatalErrorLog } = useAppLogger();
+  const onErrorHandler = useCallback(
+    (error: Error, errorInfo: ErrorInfo) => {
+      const { message, stack } = getMessageAndStackParamsFromError(error);
+
+      sendFatalErrorLog({
+        id: 'main-error-boundary',
+        message,
+        stack,
+        data: {
+          componentStack: errorInfo.componentStack,
+        },
+      });
+    },
+    [sendFatalErrorLog],
+  );
 
   return (
     <ErrorBoundary
-      onError={(error, info) => {
-        const { message, stack } = getMessageAndStackParamsFromError(error);
-
-        sendFatalErrorLog({
-          id: 'main-error-boundary',
-          message,
-          stack,
-          data: {
-            componentStack: info.componentStack,
-          },
-        });
-      }}
+      onError={onErrorHandler}
       fallback={
         <ErrorPage
           page={{
@@ -46,41 +52,33 @@ export const Main = memo(() => {
         />
       }
     >
-      <div>
-        <ZIndexLayout
-          top={
-            <>
-              <div className={css('toastContainer')}>
-                <Toasts />
+      <GlassBoundary name={RootGlassBoundaryName}>
+        <div>
+          <ZIndexLayout
+            top={
+              <>
+                <div className={css('toastContainer')}>
+                  <Toasts />
+                </div>
+                <div className={css('popupContainer')}>
+                  <Popup />
+                </div>
+              </>
+            }
+            base={
+              <div style={{ padding: 10 }}>
+                <div style={{ margin: '-10px -10px 0' }}>
+                  <DevMenu />
+                </div>
+                <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
+                  <Page page={page} />
+                </Suspense>
               </div>
-              <div className={css('popupContainer')}>
-                <Popup />
-              </div>
-            </>
-          }
-          base={
-            <div style={{ padding: 10 }}>
-              <div style={{ margin: '-10px -10px 0' }}>
-                <DevMenu />
-              </div>
-              <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
-                <Page page={page} />
-              </Suspense>
-            </div>
-          }
-        />
-      </div>
-      <div
-        id={popoverContainerId}
-        style={{
-          pointerEvents: 'none',
-          position: 'absolute',
-          minHeight: '100%',
-          top: 0,
-          left: 0,
-          right: 0,
-        }}
-      />
+            }
+          />
+        </div>
+        <PopoverContainer />
+      </GlassBoundary>
     </ErrorBoundary>
   );
 });

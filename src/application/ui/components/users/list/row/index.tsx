@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { useDeleteUser } from 'application/queries/users/useDeleteUser';
+import { useDeleteUser } from 'application/queries/users/mutate/useDeleteUser';
 import { User } from 'application/services/fake/types';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
 
