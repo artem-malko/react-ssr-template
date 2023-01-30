@@ -9,7 +9,7 @@ import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   const css = useStyles(styles);
-  const { queryResult: newsItem, invalidateQuery } = useNewsItem({ newsItemId });
+  const newsItem = useNewsItem({ newsItemId });
   const platformAPI = usePlatformAPI();
   const { sendInfoLog } = useAppLogger();
 
@@ -25,7 +25,7 @@ export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   return (
     <div className={css('root')}>
       <h2>NewsITEM Component</h2>
-      <div onClick={() => invalidateQuery()}>INVALIDATE</div>
+      <div onClick={() => newsItem.refetch()}>Refetch</div>
       {newsItem.isFetching && <div>Updating...</div>}
       {newsItem.isSuccess && (
         <>

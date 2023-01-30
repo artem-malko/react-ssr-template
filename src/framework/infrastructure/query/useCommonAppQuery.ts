@@ -1,15 +1,4 @@
-import {
-  hashQueryKey,
-  InvalidateOptions,
-  InvalidateQueryFilters,
-  QueryFunction,
-  QueryKey,
-  RefetchOptions,
-  RefetchQueryFilters,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from '@tanstack/react-query';
+import { hashQueryKey, QueryFunction, QueryKey, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { ParsedError } from 'framework/infrastructure/request/types';
 
@@ -36,7 +25,6 @@ export const useCommonAppQuery = <TResult, TError extends ParsedError>({
   queryOptions,
   frameworkQueryOptions,
 }: Params<TResult, TError>) => {
-  const queryClient = useQueryClient();
   const queryId = hashQueryKey(key);
 
   useHydrateQuery(queryId);
@@ -46,29 +34,9 @@ export const useCommonAppQuery = <TResult, TError extends ParsedError>({
     isErrorCodeOkToResetCacheCheck: frameworkQueryOptions?.isErrorCodeOkToResetCache,
   });
 
-  return {
-    queryResult: useQuery<TResult, TError>({
-      ...queryOptions,
-      queryKey: key,
-      queryFn: queryFunction,
-    }),
-    refetchQuery: (params?: {
-      refetchQueryFilters?: RefetchQueryFilters<TResult>;
-      refetchQueryOptions?: RefetchOptions;
-    }) =>
-      queryClient.refetchQueries(
-        key,
-        params?.refetchQueryFilters || { exact: true },
-        params?.refetchQueryOptions,
-      ),
-    invalidateQuery: (params?: {
-      invalidateQueryFilters?: InvalidateQueryFilters<TResult>;
-      invalidateOptions?: InvalidateOptions;
-    }) =>
-      queryClient.invalidateQueries(
-        key,
-        params?.invalidateQueryFilters || { exact: true },
-        params?.invalidateOptions,
-      ),
-  };
+  return useQuery<TResult, TError>({
+    ...queryOptions,
+    queryKey: key,
+    queryFn: queryFunction,
+  });
 };

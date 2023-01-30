@@ -13,4 +13,4 @@ export const newsQueryKeys = {
   ],
   allInfinityLists: () => [...newsQueryKeys.allLists(), 'infinity'],
   infinityListByParams: (params: UseInfinityNewsParams) => [...newsQueryKeys.allInfinityLists(), params],
-} as const;
+};

@@ -1,8 +1,8 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useNavigate } from 'application/main/hooks/useNavigate';
-import { useEditUser } from 'application/queries/users/mutate/useEditUser';
 import { useUserById } from 'application/queries/users/fetch/useUserById';
+import { useEditUser } from 'application/queries/users/mutate/useEditUser';
 import { useToggleGlass } from 'application/ui/kit/glass/hook';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
 
@@ -23,7 +23,7 @@ export const UserEditor = memo<Props>(({ userId }) => {
   const optimisticUpdateCheckboxId = useId();
   const [useOptimisticUpdate, setUseOptimisticUpdate] = useState(false);
 
-  const { queryResult: userByIdResult } = useUserById({ userId });
+  const userByIdResult = useUserById({ userId });
   const disableActiveUser = useCallback(
     () =>
       navigate((activePage) => ({

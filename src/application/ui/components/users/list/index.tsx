@@ -17,7 +17,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
   const toggleGlass = useToggleGlass();
 
   const [filterStatusState, setFilterStatusState] = useState<UserStatus[]>(filterStatus);
-  const { queryResult, invalidateQuery } = useUserList({
+  const userListResult = useUserList({
     page,
     statusFilter: filterStatusState,
   });
@@ -52,33 +52,33 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
    * So, we have to process this status by ourselves
    */
   useEffect(() => {
-    toggleGlass(queryResult.isFetching, 'list');
-  }, [queryResult.isFetching, toggleGlass]);
+    toggleGlass(userListResult.isFetching, 'list');
+  }, [userListResult.isFetching, toggleGlass]);
 
-  if (queryResult.error) {
+  if (userListResult.error) {
     return (
       <>
         <UserListFilters
-          disabled={queryResult.isFetching}
+          disabled={userListResult.isFetching}
           filterStatus={filterStatusState}
           setFilterStatus={setFilterStatusState}
         />
         <h1>ERROR!</h1>
-        <RaiseError code={queryResult.error.code} />
-        <strong>{JSON.stringify(queryResult.error)}</strong>
-        <button onClick={() => invalidateQuery()}>Retry</button>
+        <RaiseError code={userListResult.error.code} />
+        <strong>{JSON.stringify(userListResult.error)}</strong>
+        <button onClick={() => userListResult.refetch()}>Retry</button>
       </>
     );
   }
 
-  if (!queryResult.data) {
+  if (!userListResult.data) {
     return null;
   }
 
   return (
     <div>
       <UserListFilters
-        disabled={queryResult.isFetching}
+        disabled={userListResult.isFetching}
         filterStatus={filterStatusState}
         setFilterStatus={setFilterStatusState}
       />
@@ -91,7 +91,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
               </td>
             ))}
           </tr>
-          {queryResult.data.users.map((user, i) => (
+          {userListResult.data.users.map((user, i) => (
             <UserTableRow user={user} index={i} key={user.id} page={page} />
           ))}
         </tbody>
@@ -101,7 +101,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
         Prev page
       </button>
       <button
-        disabled={page === Math.ceil(queryResult.data.total / 10)}
+        disabled={page === Math.ceil(userListResult.data.total / 10)}
         onClick={() => onPageChange('inc')}
       >
         Next page
