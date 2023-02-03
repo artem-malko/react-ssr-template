@@ -17,16 +17,16 @@ export type AppQueryFunction<T = unknown, TQueryKey extends QueryKey = QueryKey>
   context: QueryFunctionContext<TQueryKey>;
 }) => ReturnType<QueryFunction<T, TQueryKey>>;
 
-export const useAppQuery = <TResult, TError extends ParsedError>(
-  key: QueryKey,
-  queryFunction: AppQueryFunction<TResult, QueryKey>,
-  options?: Omit<UseQueryOptions<TResult, TError>, 'queryKey' | 'queryFn'>,
+export const useAppQuery = <TResult, TError extends ParsedError, QKey extends QueryKey>(
+  key: QKey,
+  queryFunction: AppQueryFunction<TResult, QKey>,
+  options?: Omit<UseQueryOptions<TResult, TError, QKey>, 'queryKey' | 'queryFn'>,
 ) => {
   const services = useServices();
 
   return useCommonAppQuery({
     key,
-    queryFunction: (context: QueryFunctionContext<QueryKey>) =>
+    queryFunction: (context: QueryFunctionContext<QKey>) =>
       queryFunction({
         context,
         services,
@@ -35,16 +35,20 @@ export const useAppQuery = <TResult, TError extends ParsedError>(
   });
 };
 
-export const useInfiniteAppQuery = <TResult, TError extends ParsedError>(
-  key: QueryKey,
-  queryFunction: AppQueryFunction<TResult, QueryKey>,
-  options?: Omit<UseInfiniteQueryOptions<TResult, TError>, 'queryKey' | 'queryFn'>,
+export const useInfiniteAppQuery = <
+  TResult,
+  TError extends ParsedError,
+  QKey extends QueryKey = QueryKey,
+>(
+  key: QKey,
+  queryFunction: AppQueryFunction<TResult, QKey>,
+  options?: Omit<UseInfiniteQueryOptions<TResult, TError, QKey>, 'queryKey' | 'queryFn'>,
 ) => {
   const services = useServices();
 
   return useInfiniteCommonAppQuery({
     key,
-    queryFunction: (context: QueryFunctionContext<QueryKey>) =>
+    queryFunction: (context: QueryFunctionContext<QKey>) =>
       queryFunction({
         context,
         services,

@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useInvalidateQuery } from 'application/queries/common';
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
+import { useInvalidateQuery } from 'lib/hooks/useInvalidateQuery';
 
 import { userQueryKeys } from '../common';
 

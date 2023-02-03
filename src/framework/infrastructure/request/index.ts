@@ -13,7 +13,7 @@ import { createResponse } from './utils/response';
 /**
  * A little wrapper for native fetch
  */
-const createRequest = (params: { networkTimeout: number }): Requester => {
+export const createRequest = (params: { networkTimeout: number }): Requester => {
   const { networkTimeout } = params;
 
   return async <SuccessResponseBody>(
@@ -100,5 +100,3 @@ const createRequest = (params: { networkTimeout: number }): Requester => {
     }
   };
 };
-
-export { createRequest };

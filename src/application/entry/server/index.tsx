@@ -9,7 +9,6 @@ import { ServiceContext } from 'application/services/shared/context';
 import { Main } from 'application/ui/main';
 import { startServer } from 'framework/applications/server';
 import { createApplicationRouteHandler } from 'framework/applications/server/createApplicationRouteHandler';
-import { UAParser } from 'framework/applications/server/middlewares/uaParser';
 import { createAppLogger } from 'framework/applications/shared/logger';
 import {
   buildClientApplicationConfig,
@@ -19,6 +18,7 @@ import {
 import { createRequest } from 'framework/infrastructure/request';
 import { createURLParser } from 'framework/infrastructure/router/parseURL';
 
+import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
 
 const parseURL = createURLParser({

@@ -3,14 +3,13 @@ import { UseNewsItemParams } from './fetch/useNewsItem';
 import { UsePaginatedNewsParams } from './fetch/usePaginatedNews';
 
 export const newsQueryKeys = {
-  all: () => ['news'],
-  byId: (params: UseNewsItemParams) => [...newsQueryKeys.all(), 'byId', params],
-  allLists: () => [...newsQueryKeys.all(), 'list'],
-  allPaginatedLists: () => [...newsQueryKeys.allLists(), 'paginated'],
-  paginatedListByParams: (params: UsePaginatedNewsParams) => [
-    ...newsQueryKeys.allPaginatedLists(),
-    params,
-  ],
-  allInfinityLists: () => [...newsQueryKeys.allLists(), 'infinity'],
-  infinityListByParams: (params: UseInfinityNewsParams) => [...newsQueryKeys.allInfinityLists(), params],
+  all: () => ['news'] as const,
+  byId: (params: UseNewsItemParams) => [...newsQueryKeys.all(), 'byId', params] as const,
+  allLists: () => [...newsQueryKeys.all(), 'list'] as const,
+  allPaginatedLists: () => [...newsQueryKeys.allLists(), 'paginated'] as const,
+  paginatedListByParams: (params: UsePaginatedNewsParams) =>
+    [...newsQueryKeys.allPaginatedLists(), params] as const,
+  allInfinityLists: () => [...newsQueryKeys.allLists(), 'infinity'] as const,
+  infinityListByParams: (params: UseInfinityNewsParams) =>
+    [...newsQueryKeys.allInfinityLists(), params] as const,
 };

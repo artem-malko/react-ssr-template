@@ -6,10 +6,10 @@ import { AnyCommonFrameworkQueryOptions } from './types';
 import { useHydrateQuery } from './useHydrateQuery';
 import { useResetCacheOnUnmount } from './useResetCacheOnUnmount';
 
-type Params<TResult, TError> = {
-  key: QueryKey;
-  queryFunction: QueryFunction<TResult, QueryKey>;
-  queryOptions?: Omit<UseQueryOptions<TResult, TError>, 'queryKey' | 'queryFn'>;
+type Params<TResult, TError, QKey extends QueryKey> = {
+  key: QKey;
+  queryFunction: QueryFunction<TResult, QKey>;
+  queryOptions?: Omit<UseQueryOptions<TResult, TError, QKey>, 'queryKey' | 'queryFn'>;
   frameworkQueryOptions?: AnyCommonFrameworkQueryOptions;
 };
 /**
@@ -19,12 +19,12 @@ type Params<TResult, TError> = {
  */
 /** @TODO may be change type of the error?
  * What if an Error will be thrown during response parse? */
-export const useCommonAppQuery = <TResult, TError extends ParsedError>({
+export const useCommonAppQuery = <TResult, TError extends ParsedError, QKey extends QueryKey>({
   key,
   queryFunction,
   queryOptions,
   frameworkQueryOptions,
-}: Params<TResult, TError>) => {
+}: Params<TResult, TError, QKey>) => {
   const queryId = hashQueryKey(key);
 
   useHydrateQuery(queryId);
@@ -34,8 +34,8 @@ export const useCommonAppQuery = <TResult, TError extends ParsedError>({
     isErrorCodeOkToResetCacheCheck: frameworkQueryOptions?.isErrorCodeOkToResetCache,
   });
 
-  return useQuery<TResult, TError>({
-    ...queryOptions,
+  return useQuery<TResult, TError, TResult, QKey>({
+    ...(queryOptions as any),
     queryKey: key,
     queryFn: queryFunction,
   });

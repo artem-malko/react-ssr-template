@@ -57,6 +57,13 @@ module.exports = {
             from: './src/application',
             message: 'Imports to the framework directory from an application directory are not allowed!',
           },
+          {
+            target: './src/application',
+            from: './src/framework/**/*',
+            except: ['**/public/**/*'],
+            message:
+              "Imports from framework's internals are not allowed, use import from 'framework/public' enstead!",
+          },
         ],
       },
     ],

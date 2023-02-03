@@ -4,11 +4,11 @@ import esbuild from 'esbuild';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
-import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
 import { universalConfig } from './universal';
 import { merge } from './utils/merge';
+import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
+import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 

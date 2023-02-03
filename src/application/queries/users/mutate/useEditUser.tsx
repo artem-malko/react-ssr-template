@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useInvalidateQuery } from 'application/queries/common';
 import { UserStatus } from 'application/services/fake/types';
 import { useServices } from 'application/services/shared/context';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
+import { useInvalidateQuery } from 'lib/hooks/useInvalidateQuery';
 
 import { userQueryKeys } from '../common';
 import { useUserListOptimisticUpdater } from '../fetch/useUserList';

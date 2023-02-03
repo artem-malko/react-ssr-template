@@ -10,8 +10,8 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { useOutsideClick } from 'application/ui/hooks/useOutsideClick';
-import { useResizeObserver } from 'application/ui/hooks/useResizeObserver';
+import { useOutsideClick } from 'lib/hooks/useOutsideClick';
+import { useResizeObserver } from 'lib/hooks/useResizeObserver';
 
 import { popoverContainerId } from './shared';
 import { getPositionViewAttrs } from './utils';
