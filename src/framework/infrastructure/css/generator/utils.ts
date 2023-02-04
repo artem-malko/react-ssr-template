@@ -1,5 +1,5 @@
-import { Style } from '../types';
 import { prefix } from './prefixer';
+import { Style } from '../types';
 
 /* istanbul ignore next */
 const convert = require('bidi-css-js').default ? require('bidi-css-js').default : require('bidi-css-js');

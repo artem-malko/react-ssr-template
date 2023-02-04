@@ -1,4 +1,4 @@
-import { createStyles } from 'framework/infrastructure/css/hook';
+import { createStyles } from 'framework/public/styles';
 
 import { keyframeNames } from './shared';
 

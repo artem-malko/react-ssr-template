@@ -5,7 +5,7 @@ import { useUserList } from 'application/queries/users/fetch/useUserList';
 import { UserStatus } from 'application/services/fake/types';
 import { useToggleGlass } from 'application/ui/kit/glass/hook';
 import { usersPageDefaultParams } from 'application/ui/pages/users';
-import { RaiseError } from 'framework/infrastructure/raise/react/component';
+import { RaiseError } from 'framework/public/universal';
 
 import { UserTableRow } from './row';
 

@@ -8,9 +8,9 @@ import {
 
 import { Services } from 'application/services';
 import { useServices } from 'application/services/shared/context';
-import { useCommonAppQuery } from 'framework/infrastructure/query/useCommonAppQuery';
-import { useInfiniteCommonAppQuery } from 'framework/infrastructure/query/useInfiniteCommonAppQuery';
-import { ParsedError } from 'framework/infrastructure/request/types';
+import { useCommonAppQuery, useInfiniteCommonAppQuery } from 'framework/public/universal';
+
+import type { ParsedError } from 'framework/public/types';
 
 export type AppQueryFunction<T = unknown, TQueryKey extends QueryKey = QueryKey> = (params: {
   services: Services;

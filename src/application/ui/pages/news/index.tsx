@@ -6,7 +6,7 @@ import { StaticComponent } from 'application/ui/components/staticComponent';
 import { Lazy } from 'application/ui/kit/lazy';
 import { Link } from 'application/ui/kit/link';
 import { Preloader } from 'application/ui/kit/preloader';
-import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { useURLQuery } from 'framework/public/universal';
 
 export interface NewsPage extends CommonPage {
   name: 'news';

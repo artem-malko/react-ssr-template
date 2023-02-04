@@ -1,7 +1,7 @@
 import { isServer } from 'lib/browser';
 
-import { BaseApplicationConfig } from '../types';
 import { APPLICATION_CONFIG_VAR_NAME } from './shared';
+import { BaseApplicationConfig } from '../types';
 
 export const getClientApplicationConfig = <Config extends BaseApplicationConfig>(): Config => {
   if (isServer) {

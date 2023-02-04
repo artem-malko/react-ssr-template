@@ -1,7 +1,7 @@
 import { memo, version } from 'react';
 
 import { useActivePage } from 'application/main/hooks/useActivePage';
-import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { useURLQuery } from 'framework/public/universal';
 
 import { SourceSpoiler } from '../sourceSpoiler';
 

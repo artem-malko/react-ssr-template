@@ -1,18 +1,3 @@
-/* eslint-disable no-bitwise */
-export function djb2a(str: string) {
-  let hash = 4270;
-
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) + hash + str.charCodeAt(i);
-    hash >>>= 0;
-  }
-
-  /* JavaScript does bitwise operations (like XOR, above) on 32-bit signed
-   * integers. Since we want the results to be always positive, convert the
-   * signed int to an unsigned by doing an unsigned bitshift. */
-  return hash >>> 0;
-}
-
 export function murmurhash2(str: string) {
   let l = str.length;
   let h = l ^ l;

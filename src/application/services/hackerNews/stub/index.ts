@@ -1,4 +1,4 @@
-import { createMethodStubber } from 'framework/infrastructure/tests/stub';
+import { createMethodStubber } from 'framework/public/tests';
 
 import { HackerNewsService } from '..';
 import { mocks } from '../mocks';

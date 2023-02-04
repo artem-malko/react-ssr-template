@@ -1,8 +1,8 @@
 import { memo, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FadeIn } from 'application/ui/kit/fadeIn';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { useSession } from 'framework/infrastructure/session/hook';
+import { useStyles } from 'framework/public/styles';
+import { useSession } from 'framework/public/universal';
 import { useOutsideClick } from 'lib/hooks/useOutsideClick';
 import { noopFunc } from 'lib/lodash';
 

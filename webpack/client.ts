@@ -73,6 +73,7 @@ const clientConfig: webpack.Configuration = {
             ),
             options: {
               resolveModules: universalConfig.resolve!.modules,
+              aliases: universalConfig.resolve!.alias,
             },
           },
           {

@@ -7,16 +7,15 @@ import { compileAppURL, routes } from 'application/main/routing';
 import { createServices } from 'application/services';
 import { ServiceContext } from 'application/services/shared/context';
 import { Main } from 'application/ui/main';
-import { startServer } from 'framework/applications/server';
-import { createApplicationRouteHandler } from 'framework/applications/server/createApplicationRouteHandler';
-import { createAppLogger } from 'framework/applications/shared/logger';
+import { createApplicationRouteHandler } from 'framework/public/server';
+import { createURLParser } from 'framework/public/server';
 import {
   buildClientApplicationConfig,
   buildServerApplicationConfig,
   buildServerConfig,
-} from 'framework/config/generator/server';
-import { createRequest } from 'framework/infrastructure/request';
-import { createURLParser } from 'framework/infrastructure/router/parseURL';
+} from 'framework/public/server';
+import { startServer } from 'framework/public/server';
+import { createRequest, createAppLogger } from 'framework/public/universal';
 
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';

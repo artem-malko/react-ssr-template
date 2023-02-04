@@ -1,4 +1,4 @@
-import { createRouteCreator } from 'framework/infrastructure/router/createRouteCreator';
+import { createRouteCreator } from 'framework/public/universal';
 
 import { Page } from '../types';
 

@@ -1,10 +1,10 @@
-import { ErrorPage } from 'application/ui/pages/error';
-import { NewsPage } from 'application/ui/pages/news';
-import { NewsItemPage } from 'application/ui/pages/newsItem';
-import { RootPage } from 'application/ui/pages/root';
-import { UsersPage } from 'application/ui/pages/users';
-import { AnyPage } from 'framework/infrastructure/router/types';
-import { MapDiscriminatedUnion } from 'lib/types';
+import type { ErrorPage } from 'application/ui/pages/error';
+import type { NewsPage } from 'application/ui/pages/news';
+import type { NewsItemPage } from 'application/ui/pages/newsItem';
+import type { RootPage } from 'application/ui/pages/root';
+import type { UsersPage } from 'application/ui/pages/users';
+import type { AnyPage } from 'framework/public/types';
+import type { MapDiscriminatedUnion } from 'lib/types';
 
 export interface CommonPage extends AnyPage<string> {}
 

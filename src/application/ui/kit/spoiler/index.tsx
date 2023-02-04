@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from 'react';
 
-import { DATA_T_ATTRIBUTE_NAME } from 'framework/infrastructure/tests/dom/dt';
+import { DATA_T_ATTRIBUTE_NAME } from 'framework/public/universal';
 
 type Props = {
   initiallyExpanded?: boolean;

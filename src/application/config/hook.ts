@@ -1,4 +1,4 @@
-import { useAnyConfig } from 'framework/config/react';
+import { useAnyConfig } from 'framework/public/universal';
 
 import { ApplicationConfig } from './types';
 

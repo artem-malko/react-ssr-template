@@ -1,10 +1,10 @@
 import { memo, PropsWithChildren, useCallback } from 'react';
 
 import { ZIndexLayout } from 'application/ui/kit/zIndex';
-import { useStyles } from 'framework/infrastructure/css/hook';
+import { useStyles } from 'framework/public/styles';
 
-import { usePopupActions } from '../infrastructure/hook';
 import { styles } from './index.css';
+import { usePopupActions } from '../infrastructure/hook';
 
 type Props = {
   hideCloseButton?: boolean;

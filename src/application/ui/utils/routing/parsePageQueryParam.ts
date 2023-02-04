@@ -1,4 +1,4 @@
-import { URLQueryParams } from 'framework/infrastructure/router/types';
+import type { URLQueryParams } from 'framework/public/types';
 
 export function parsePageQueryParam(queryParams: URLQueryParams): number {
   const rawPageQueryParam = queryParams['p'];

@@ -1,9 +1,8 @@
 import { expect } from 'chai';
 import { mock, SinonMock } from 'sinon';
 
-import { appLoggerStub } from 'framework/infrastructure/logger/stub';
-import { createRequest } from 'framework/infrastructure/request';
-import { createJsonResponse, createOkJsonResponse } from 'framework/infrastructure/request/utils/tests';
+import { appLoggerStub, createJsonResponse, createOkJsonResponse } from 'framework/public/tests';
+import { createRequest } from 'framework/public/universal';
 
 import { createHackerNewsService } from '..';
 import { mocks } from '../mocks';

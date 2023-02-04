@@ -1,15 +1,12 @@
 import { CookieOptions } from 'express';
 import { CookieAttributes } from 'js-cookie';
 
-import { baseDomain } from './application';
-
 type FrameworkCookieName = 'user' | 'sid' | 'pushedResources';
 export const frameworkCookies: FrameworkCookies = {
   // Unic uuid for every user. This uuid will be the same through many sessions
   user: {
-    name: '_user',
+    name: '_application_user',
     options: {
-      domain: `.${baseDomain}`,
       path: '/',
       sameSite: 'strict',
       // 50 years
@@ -19,9 +16,8 @@ export const frameworkCookies: FrameworkCookies = {
 
   // Unic uuid for every new session
   sid: {
-    name: '_sid',
+    name: '_application_sid',
     options: {
-      domain: `.${baseDomain}`,
       path: '/',
       sameSite: 'strict',
     },

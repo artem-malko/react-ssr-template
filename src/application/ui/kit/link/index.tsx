@@ -3,9 +3,9 @@ import { useCallback, memo, HTMLAttributeAnchorTarget, PropsWithChildren } from 
 import { useNavigate } from 'application/main/hooks/useNavigate';
 import { compileAppURL } from 'application/main/routing';
 import { Page } from 'application/main/types';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { AllowedInlineStyle } from 'framework/infrastructure/css/types';
-import { DATA_T_ATTRIBUTE_NAME, dt } from 'framework/infrastructure/tests/dom/dt';
+import { useStyles } from 'framework/public/styles';
+import { AllowedInlineStyle } from 'framework/public/types';
+import { DATA_T_ATTRIBUTE_NAME, dt } from 'framework/public/universal';
 
 import { styles } from './index.css';
 

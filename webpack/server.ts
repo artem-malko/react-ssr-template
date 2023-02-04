@@ -34,7 +34,7 @@ const serverConfig: webpack.Configuration = {
             options: {
               implementation: esbuild,
               loader: 'tsx',
-              target: 'node14',
+              target: 'node19',
               jsx: 'automatic',
               tsconfigRaw: require('../tsconfig.json'),
             },

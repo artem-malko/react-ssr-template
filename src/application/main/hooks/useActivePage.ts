@@ -1,4 +1,4 @@
-import { useAnyPage } from 'framework/infrastructure/router/hooks/useAnyPage';
+import { useAnyPage } from 'framework/public/universal';
 
 import { Page } from '../types';
 

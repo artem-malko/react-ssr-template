@@ -1,8 +1,7 @@
-import { AppLogger } from 'framework/infrastructure/logger';
-import { Requester } from 'framework/infrastructure/request/types';
-
 import { createFakeAPIService } from './fake';
 import { createHackerNewsService } from './hackerNews';
+
+import type { AppLogger, Requester } from 'framework/public/types';
 
 type CreateServicesConfig = {
   hackerNewsApiUrl: string;

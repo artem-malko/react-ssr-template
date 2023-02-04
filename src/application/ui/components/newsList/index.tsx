@@ -5,8 +5,8 @@ import { Lazy } from 'application/ui/kit/lazy';
 import { Preloader } from 'application/ui/kit/preloader';
 import { useToast } from 'application/ui/kit/toast/infrastructure/hook';
 import { newsPageDefaultParams } from 'application/ui/pages/news';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+import { useStyles } from 'framework/public/styles';
+import { useURLQuery } from 'framework/public/universal';
 
 import { styles } from './index.css';
 

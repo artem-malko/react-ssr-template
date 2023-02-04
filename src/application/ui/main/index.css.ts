@@ -1,4 +1,4 @@
-import { createStyles } from 'framework/infrastructure/css/hook';
+import { createStyles } from 'framework/public/styles';
 
 const toastContainerMaxWith = 420;
 const toastContainerSideGap = 10;

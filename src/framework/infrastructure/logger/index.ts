@@ -1,10 +1,10 @@
 import { isTest } from 'lib/browser';
 import { Queue } from 'lib/queue';
 
-import { createRequest } from '../request';
 import { logger } from './init';
 import { ErrorLogParams, FatalLogParams, InfoLogParams, PerformanceLogParams } from './types';
 import { addAppVersion } from './utils';
+import { createRequest } from '../request';
 
 type QueueLogParams = { environment: 'client'; level: 'info' | 'error' | 'fatal' | 'performance' } & (
   | ErrorLogParams

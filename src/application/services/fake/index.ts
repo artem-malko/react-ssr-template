@@ -1,6 +1,3 @@
-import { AppLogger } from 'framework/infrastructure/logger';
-import { Requester } from 'framework/infrastructure/request/types';
-
 import {
   FetchUserByIdResponse,
   FetchUsersResponse,
@@ -8,6 +5,8 @@ import {
   User,
   UserStatus,
 } from './types';
+
+import type { AppLogger, Requester } from 'framework/public/types';
 
 type Config = {
   apiURL: string;

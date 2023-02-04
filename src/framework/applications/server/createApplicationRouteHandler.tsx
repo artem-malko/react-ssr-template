@@ -150,7 +150,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
             },
           });
           const cssProviderStore = new CSSServerProviderStore();
-          const session = createServerSessionObject(req);
+          const session = createServerSessionObject(req, res);
 
           /**
            * Each page has its own components, which can be loaded via dynamic import and React.lazy

@@ -1,9 +1,8 @@
 import { memo, useEffect } from 'react';
 
 import { useNewsItem } from 'application/queries/news/fetch/useNewsItem';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { useAppLogger } from 'framework/infrastructure/logger/react/hook';
-import { usePlatformAPI } from 'framework/infrastructure/platform/shared/context';
+import { useStyles } from 'framework/public/styles';
+import { useAppLogger, usePlatformAPI } from 'framework/public/universal';
 
 import { styles } from './index.css';
 

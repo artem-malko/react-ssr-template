@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type Styles<ClassNames extends string> = { [name in ClassNames]: Style };
 
 /**

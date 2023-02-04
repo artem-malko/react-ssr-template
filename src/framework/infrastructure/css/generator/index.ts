@@ -1,5 +1,5 @@
-import { Styles } from '../types';
 import { cssify } from './utils';
+import { Styles } from '../types';
 
 export function generateCss<ClassNames extends string>(
   prefixedStyles: Styles<ClassNames>,

@@ -8,7 +8,7 @@ import { Link } from 'application/ui/kit/link';
 import { Popover } from 'application/ui/kit/popover';
 import { BasePopup } from 'application/ui/kit/popup/basePopup';
 import { usePopup, usePopupActions } from 'application/ui/kit/popup/infrastructure/hook';
-import { useStyles } from 'framework/infrastructure/css/hook';
+import { useStyles } from 'framework/public/styles';
 
 import { styles } from './index.css';
 import { ProjectInfo } from '../projectInfo';

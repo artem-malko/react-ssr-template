@@ -1,14 +1,8 @@
-import { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
+import type { BaseApplicationConfig, BaseServerConfig } from 'framework/public/types';
 
 // Can be used on server side only to configure a server, which serve application
 export interface ServerConfig extends BaseServerConfig {
   port: number;
-
-  // Cookies
-  searchBotCookieName: string;
-  searchBotCookiePath: string;
-  searchBotCookieDomain: string;
-  searchBotCookieExpiresPeriod: number;
 }
 
 // Can be used on client and server side to configure application

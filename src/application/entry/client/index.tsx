@@ -7,10 +7,8 @@ import { PopupController } from 'application/ui/kit/popup/infrastructure/control
 import { ToastControllerContext } from 'application/ui/kit/toast/infrastructure/context';
 import { ToastController } from 'application/ui/kit/toast/infrastructure/controller';
 import { Main } from 'application/ui/main';
-import { startClientApplication } from 'framework/applications/client';
-import { createAppLogger } from 'framework/applications/shared/logger';
-import { getClientApplicationConfig } from 'framework/config/generator/client';
-import { createRequest } from 'framework/infrastructure/request';
+import { startClientApplication, getClientApplicationConfig } from 'framework/public/client';
+import { createRequest, createAppLogger } from 'framework/public/universal';
 
 const toastController = new ToastController();
 const popupController = new PopupController();

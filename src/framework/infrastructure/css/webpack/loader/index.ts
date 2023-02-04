@@ -1,6 +1,7 @@
 /* eslint-disable functional/immutable-data */
 
 import NativeModule from 'module';
+import { join as joinPaths } from 'path';
 
 import { LoaderContext } from 'webpack';
 
@@ -9,23 +10,69 @@ import { STYLE_DESCRIPTOR } from '../shared';
 import { storeInstance } from '../store';
 
 // NodeJS Module
+function isPathMatchesAlias(path: string, alias: string) {
+  // Matching /^alias(\/|$)/
+  if (path.indexOf(alias) === 0) {
+    if (path.length === alias.length) return true;
+    if (path[alias.length] === '/') return true;
+  }
+
+  return false;
+}
 
 // Replacement for loader.exec
 // https://github.com/webpack/webpack.js.org/issues/1268#issuecomment-313513988
-const exec = <T>(
+const execNodeJSModule = <T>(
   loaderContext: LoaderContext<T>,
   code: string,
   filename: string,
   // paths from resolve section in webpack config
-  additionalResolvePaths: string[],
+  resolvePaths: string[],
+  aliases: Record<string, string>,
 ) => {
+  const moduleAliasNames = Object.keys(aliases);
   const module = new (NativeModule as any)(filename, loaderContext);
-  module.paths = (NativeModule as any)
-    ._nodeModulePaths(loaderContext.context)
-    .concat(additionalResolvePaths);
+
+  // Add all possible resolve paths
+  module.paths = (NativeModule as any)._nodeModulePaths(loaderContext.context).concat(resolvePaths);
   module.filename = filename;
 
+  // Memo the native _resolveFilename function, to restore in later
+  const oldResolveFilename = (NativeModule as any)._resolveFilename;
+
+  /**
+   * Replace original _resolveFilename with our custom function
+   * to use aliases from webpack config
+   */
+  (NativeModule as any)._resolveFilename = function (
+    request: string,
+    parentModule: any,
+    isMain: boolean,
+    options: any,
+  ) {
+    for (let i = moduleAliasNames.length; i-- > 0; ) {
+      const alias = moduleAliasNames[i];
+
+      if (!!alias && isPathMatchesAlias(request, alias)) {
+        const aliasTarget = aliases[alias];
+
+        if (!aliasTarget) {
+          break;
+        }
+
+        request = joinPaths(aliasTarget, request.substr(alias.length));
+        // Only use the first match
+        break;
+      }
+    }
+
+    return oldResolveFilename.call(this, request, parentModule, isMain, options);
+  };
+
   module._compile(code, filename);
+
+  // Restore the original _resolveFilename function
+  (NativeModule as any)._resolveFilename = oldResolveFilename;
 
   const deps: string[] = [];
 
@@ -41,6 +88,10 @@ const exec = <T>(
     }
   });
 
+  if (require.cache[filename]) {
+    delete require.cache[filename];
+  }
+
   return {
     exports: module.exports,
     deps,
@@ -49,6 +100,7 @@ const exec = <T>(
 
 interface LoaderParams {
   resolveModules: string[];
+  aliases: Record<string, string>;
 }
 
 const optionsScheme = {
@@ -59,6 +111,9 @@ const optionsScheme = {
     resolveModules: {
       type: 'array' as const,
     },
+    aliases: {
+      type: 'object' as const,
+    },
   },
 };
 
@@ -67,6 +122,7 @@ const optionsScheme = {
  */
 const DEFAULT_QUERY_VALUES: LoaderParams = {
   resolveModules: [],
+  aliases: {},
 };
 
 const loader = function (this: LoaderContext<LoaderParams>, source: string) {
@@ -91,7 +147,13 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
 
   // Execute module with styles
   try {
-    const executedModuleResult = exec(this, source.toString(), resource, loaderParams.resolveModules);
+    const executedModuleResult = execNodeJSModule(
+      this,
+      source.toString(),
+      resource,
+      loaderParams.resolveModules,
+      loaderParams.aliases,
+    );
     executedModuleExports = executedModuleResult.exports;
 
     /**

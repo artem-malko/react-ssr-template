@@ -1,7 +1,8 @@
 import { memo } from 'react';
 
-import { CommonPage } from 'application/main/types';
-import { RaiseError } from 'framework/infrastructure/raise/react/component';
+import { RaiseError } from 'framework/public/universal';
+
+import type { CommonPage } from 'application/main/types';
 
 export interface ErrorPage extends CommonPage {
   name: 'error';

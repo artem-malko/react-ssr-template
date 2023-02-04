@@ -10,9 +10,8 @@ import { Toasts } from 'application/ui/kit/toast/toasts';
 import { ZIndexLayout } from 'application/ui/kit/zIndex';
 import ErrorPage from 'application/ui/pages/error';
 import { styles as globalStyles } from 'application/ui/styles/global.css';
-import { useStyles } from 'framework/infrastructure/css/hook';
-import { useAppLogger } from 'framework/infrastructure/logger/react/hook';
-import { getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
+import { useStyles } from 'framework/public/styles';
+import { useAppLogger } from 'framework/public/universal';
 
 import { styles } from './index.css';
 import { RootGlassBoundaryName } from '../kit/glass/constants';
@@ -26,12 +25,10 @@ export const Main = memo(() => {
   const { sendFatalErrorLog } = useAppLogger();
   const onErrorHandler = useCallback(
     (error: Error, errorInfo: ErrorInfo) => {
-      const { message, stack } = getMessageAndStackParamsFromError(error);
-
       sendFatalErrorLog({
         id: 'main-error-boundary',
-        message,
-        stack,
+        message: error.message,
+        stack: error.stack,
         data: {
           componentStack: errorInfo.componentStack,
         },

@@ -1,7 +1,7 @@
 import { createContext, Component, PropsWithChildren } from 'react';
 
-import { Styles } from '../types';
 import { CSSProviderStoreInterface } from './types';
+import { Styles } from '../types';
 
 /* istanbul ignore next */
 const cssStub =

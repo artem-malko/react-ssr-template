@@ -1,11 +1,11 @@
 import { memo, useRef, useState, useCallback, useEffect } from 'react';
 
-import { useStyles } from 'framework/infrastructure/css/hook';
+import { useStyles } from 'framework/public/styles';
 import { noopFunc } from 'lib/lodash';
 import { Timer } from 'lib/timer';
 
-import { Toast } from '../types';
 import { styles } from './index.css';
+import { Toast } from '../types';
 
 const baseToastOptions: Required<Toast['options']> = {
   hideOnClick: true,
