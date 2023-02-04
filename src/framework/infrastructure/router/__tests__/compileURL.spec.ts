@@ -1,7 +1,5 @@
 import { expect } from 'chai';
 
-import { createURLCompiler } from '../compileURL';
-import { Route, RouteWithParams } from '../types';
 import {
   pageWithNotRequiredParamsRoute,
   PageWithRequiredParams,
@@ -10,6 +8,8 @@ import {
   pageWithRequiredParamsWithQueryRoute,
   testsOnlyRootPageRoute,
 } from './mock.spec';
+import { createURLCompiler } from '../compileURL';
+import { Route, RouteWithParams } from '../types';
 
 describe('Routing compile URL', () => {
   it('returns / for the root page', () => {

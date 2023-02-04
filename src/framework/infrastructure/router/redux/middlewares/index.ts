@@ -1,8 +1,8 @@
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
 
+import { createNavigator } from './navigate';
 import { URLCompiler } from '../../compileURL';
 import { AnyAppState } from '../../types';
-import { createNavigator } from './navigate';
 
 export function createNavigationMiddleware(
   URLCompiler: URLCompiler,

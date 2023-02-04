@@ -1,9 +1,9 @@
 import { keysOf } from 'lib/lodash';
 
-import { RequestParams } from '../types';
 import { getRequestContentType } from './getRequestContentType';
 import { isPlainObject, isURLSearchParameters } from './is';
 import { patchUrlProtocol } from './patchUrlProtocol';
+import { RequestParams } from '../types';
 
 type Result = {
   url: string;

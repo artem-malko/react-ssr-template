@@ -1,8 +1,8 @@
 import { useCallback, useContext, useMemo } from 'react';
 import { v4 } from 'uuid';
 
-import { Popup } from '../types';
 import { PopupControllerContext } from './context';
+import { Popup } from '../types';
 
 /**
  * Used to show/hide one concrete popup

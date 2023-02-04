@@ -1,8 +1,5 @@
 import { expect } from 'chai';
 
-import { createURLParser } from '../parseURL';
-import { openAnyPageAction } from '../redux/actions/appContext/openPageAction';
-import { Route, RouteWithoutParams, RouteWithParams } from '../types';
 import {
   testsOnlyRootPageRoute,
   pageWithRequiredParamsRoute,
@@ -11,6 +8,9 @@ import {
   handle404Error,
   testsOnlyError404PageRoute,
 } from './mock.spec';
+import { createURLParser } from '../parseURL';
+import { openAnyPageAction } from '../redux/actions/appContext/openPageAction';
+import { Route, RouteWithoutParams, RouteWithParams } from '../types';
 
 describe('parse URL', () => {
   it('returns the root page opening signal the empty URL', () => {

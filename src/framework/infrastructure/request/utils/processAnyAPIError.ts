@@ -1,6 +1,6 @@
+import { isRequestError } from './is';
 import { RequestError } from '../error';
 import { ParsedError } from '../types';
-import { isRequestError } from './is';
 
 export function processAnyAPIError(
   error: RequestError | Error,
@@ -28,7 +28,7 @@ function parseAnyAPIError(error: RequestError | Error): ParsedError {
 
   // Just to handle a error, without responseBody
   // Or body was not decoded
-  if (!error.parsedBody || !error.response.bodyUsed) {
+  if (!error.parsedBody || (!error.response.bodyUsed && !error.parsedBody)) {
     return {
       code: error.response.status,
       data: {

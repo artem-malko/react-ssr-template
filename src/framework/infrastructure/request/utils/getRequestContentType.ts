@@ -1,5 +1,5 @@
-import { RequestParams } from '../types';
 import { isBlob, isPlainObject, isURLSearchParameters } from './is';
+import { RequestParams } from '../types';
 
 /**
  * Performs the operation "extract a `Content-Type` value from |object|" as

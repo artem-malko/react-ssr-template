@@ -1,8 +1,8 @@
 import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
 import { AnyAppContext } from 'framework/infrastructure/router/types';
 
-import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 import { startup } from './startup';
+import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 
 type Params = {
   compileAppURL: (appContext: AnyAppContext) => string;

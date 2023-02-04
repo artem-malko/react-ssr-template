@@ -4,8 +4,8 @@ import { AnyAction, Middleware } from 'redux';
 import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
 import { AnyAppContext } from 'framework/infrastructure/router/types';
 
-import { logger } from '../utils/reduxLogger';
 import { startup } from './startup';
+import { logger } from '../utils/reduxLogger';
 
 type Params = {
   req: Request;
