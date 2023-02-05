@@ -1,9 +1,13 @@
-import { ErrorInfo, lazy, memo, Suspense, useCallback } from 'react';
+import { ErrorInfo, memo, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { DevMenu } from 'application/features/development/devMenu';
 import ErrorPage from 'application/pages/error';
+import { NewsPage } from 'application/pages/news';
+import { NewsItemPage } from 'application/pages/newsItem';
+import { RootPage } from 'application/pages/root';
 import { Page } from 'application/pages/shared';
+import { UsersPage } from 'application/pages/users';
 import { useActivePage } from 'application/shared/hooks/useActivePage';
 import { RootGlassBoundaryName } from 'application/shared/kit/glass/constants';
 import { GlassBoundary } from 'application/shared/kit/glass/context';
@@ -80,13 +84,6 @@ export const Main = memo(() => {
   );
 });
 Main.displayName = 'Main';
-
-const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ 'application/pages/root'));
-const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ 'application/pages/news'));
-const NewsItemPage = lazy(
-  () => import(/* webpackChunkName: "newsItemPage" */ 'application/pages/newsItem'),
-);
-const UsersPage = lazy(() => import(/* webpackChunkName: "usersPage" */ 'application/pages/users'));
 
 const Page = memo<{ page: Page }>(({ page }) => {
   switch (page.name) {

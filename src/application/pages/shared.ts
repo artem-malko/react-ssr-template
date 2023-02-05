@@ -27,8 +27,7 @@ import type { NewsPage } from 'application/pages/news';
 import type { NewsItemPage } from 'application/pages/newsItem';
 import type { RootPage } from 'application/pages/root';
 import type { UsersPage } from 'application/pages/users';
-import type { Routes } from 'framework/public/types';
-import type { AnyPage } from 'framework/public/types';
+import type { Routes, AnyPage } from 'framework/public/types';
 
 export interface CommonPage extends AnyPage<string> {}
 
