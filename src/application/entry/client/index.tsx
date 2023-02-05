@@ -1,12 +1,12 @@
-import { ApplicationConfig } from 'application/config/types';
-import { compileAppURL } from 'application/main/routing';
-import { createServices } from 'application/services';
-import { ServiceContext } from 'application/services/shared/context';
-import { PopupControllerContext } from 'application/ui/kit/popup/infrastructure/context';
-import { PopupController } from 'application/ui/kit/popup/infrastructure/controller';
-import { ToastControllerContext } from 'application/ui/kit/toast/infrastructure/context';
-import { ToastController } from 'application/ui/kit/toast/infrastructure/controller';
-import { Main } from 'application/ui/main';
+import { Main } from 'application/entry/react';
+import { compileAppURL } from 'application/pages/shared';
+import { ApplicationConfig } from 'application/shared/config/types';
+import { PopupControllerContext } from 'application/shared/kit/popup/infrastructure/context';
+import { PopupController } from 'application/shared/kit/popup/infrastructure/controller';
+import { ToastControllerContext } from 'application/shared/kit/toast/infrastructure/context';
+import { ToastController } from 'application/shared/kit/toast/infrastructure/controller';
+import { createServices } from 'application/shared/services';
+import { ServiceContext } from 'application/shared/services/shared/context';
 import { startClientApplication, getClientApplicationConfig } from 'framework/public/client';
 import { createRequest, createAppLogger } from 'framework/public/universal';
 

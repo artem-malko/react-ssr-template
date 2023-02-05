@@ -1,12 +1,12 @@
+import { Main } from 'application/entry/react';
+import { compileAppURL, routes } from 'application/pages/shared';
 import {
   defaultClientApplicationConfig,
   defaultServerApplicationConfig,
-} from 'application/config/defaults/application';
-import { defaultServerConfig } from 'application/config/defaults/server';
-import { compileAppURL, routes } from 'application/main/routing';
-import { createServices } from 'application/services';
-import { ServiceContext } from 'application/services/shared/context';
-import { Main } from 'application/ui/main';
+} from 'application/shared/config/defaults/application';
+import { defaultServerConfig } from 'application/shared/config/defaults/server';
+import { createServices } from 'application/shared/services';
+import { ServiceContext } from 'application/shared/services/shared/context';
 import { createApplicationRouteHandler } from 'framework/public/server';
 import { createURLParser } from 'framework/public/server';
 import {

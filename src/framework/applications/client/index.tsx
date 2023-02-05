@@ -28,7 +28,6 @@ import { SessionContext } from 'framework/infrastructure/session/context';
 import { restoreStore } from './store';
 import { afterAppRendered } from './utils/afterAppRendered';
 import { createClientSessionObject } from './utils/createClientSessionObject';
-
 const cssProviderStore = new CSSClientProviderStore();
 
 const container = document.getElementById(ApplicationContainerId) as Element;
