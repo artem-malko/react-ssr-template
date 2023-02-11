@@ -39,6 +39,7 @@
       "dom"
     ]
   },
+  "include": ["src/**/*", "webpack/**/*", "project.d.ts"],
   "exclude": [
     "node_modules"
   ],

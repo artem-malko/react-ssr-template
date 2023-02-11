@@ -33,7 +33,6 @@ const serverConfig: webpack.Configuration = {
             loader: 'esbuild-loader',
             options: {
               implementation: esbuild,
-              loader: 'tsx',
               target: 'node19',
               jsx: 'automatic',
               tsconfigRaw: require('../tsconfig.json'),

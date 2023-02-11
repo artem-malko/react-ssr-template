@@ -53,7 +53,6 @@ const clientConfig: webpack.Configuration = {
             loader: 'esbuild-loader',
             options: {
               implementation: esbuild,
-              loader: 'tsx',
               target: 'es6',
               jsx: 'automatic',
               tsconfigRaw: require('../tsconfig.json'),

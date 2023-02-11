@@ -1,27 +1,13 @@
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
 
 import { useNewsItem } from 'application/entities/news/model/fetch/useNewsItem';
 import { useStyles } from 'framework/public/styles';
-import { useAppLogger, usePlatformAPI } from 'framework/public/universal';
 
 import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   const css = useStyles(styles);
   const newsItem = useNewsItem({ newsItemId });
-  const platformAPI = usePlatformAPI();
-  const { sendInfoLog } = useAppLogger();
-
-  useEffect(() => {
-    if (newsItem.isSuccess) {
-      sendInfoLog({
-        id: 'test_newsitem_render',
-        message: 'NEWSITEM RENDERED ON CLIENT',
-      });
-
-      platformAPI.cookies.set('lastOpenedNewsItemId', newsItem.data.id.toString());
-    }
-  }, [platformAPI.cookies, newsItem.isSuccess, newsItem.data?.id, sendInfoLog]);
 
   return (
     <div className={css('root')}>

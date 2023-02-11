@@ -12,7 +12,7 @@ export const useCommonNavigate = <
   const dispatch = useRouterReduxDispatch();
 
   /**
-   * Opens new pages and return a promise with new page from a state
+   * Opens new pages and return a promise with that new page from a state
    * Just a wrapper around redux part of the routing
    * This wrapper allows to replace redux with something else,
    * without an application deep refactoring
@@ -20,7 +20,7 @@ export const useCommonNavigate = <
   /**
    * Patches new page and return a promise with updated page from a state
    * Just a wrapper around redux part of the routing
-   * This wrapper allows to re place redux with something else,
+   * This wrapper allows to replace redux with something else,
    * without an application deep refactoring
    */
   const navigate = (

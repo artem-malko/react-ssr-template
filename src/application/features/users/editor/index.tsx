@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
-import { useUserById } from 'application/entities/user/queries/fetch/useUserById';
-import { useEditUser } from 'application/entities/user/queries/mutate/useEditUser';
+import { useUserById } from 'application/entities/user/model/fetch/useUserById';
+import { useEditUser } from 'application/entities/user/model/mutate/useEditUser';
 import { usersPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { useToggleGlass } from 'application/shared/kit/glass/hook';

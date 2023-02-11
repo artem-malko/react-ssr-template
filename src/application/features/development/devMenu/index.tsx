@@ -1,9 +1,9 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { memo, useRef, useState } from 'react';
 
-import { newsQueryKeys } from 'application/entities/news/queries/common';
-import { userQueryKeys } from 'application/entities/user/queries/common';
-import { useUserByIdQueryFetcher } from 'application/entities/user/queries/fetch/useUserById';
+import { newsQueryKeys } from 'application/entities/news/model/common';
+import { userQueryKeys } from 'application/entities/user/model/common';
+import { useUserByIdQueryFetcher } from 'application/entities/user/model/fetch/useUserById';
 import { Link } from 'application/shared/kit/link';
 import { Popover } from 'application/shared/kit/popover';
 import { BasePopup } from 'application/shared/kit/popup/basePopup';

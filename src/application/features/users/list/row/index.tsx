@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { useDeleteUser } from 'application/entities/user/queries/mutate/useDeleteUser';
+import { useDeleteUser } from 'application/entities/user/model/mutate/useDeleteUser';
 import { usersPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { User } from 'application/shared/services/fake/types';

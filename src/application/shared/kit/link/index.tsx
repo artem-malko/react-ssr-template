@@ -1,12 +1,12 @@
-import { useCallback, memo, HTMLAttributeAnchorTarget, PropsWithChildren } from 'react';
+import { useCallback, memo, HTMLAttributeAnchorTarget, PropsWithChildren, useContext } from 'react';
 
 import { Page } from 'application/pages/shared';
-import { compileAppURL } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { useStyles } from 'framework/public/styles';
 import { AllowedInlineStyle } from 'framework/public/types';
 import { DATA_T_ATTRIBUTE_NAME, dt } from 'framework/public/universal';
 
+import { CompileAppURLContext } from './context';
 import { styles } from './index.css';
 
 type GeneralProps = {
@@ -51,6 +51,7 @@ Link.displayName = 'Link';
 
 const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
   const { page, doNotPreventDefault, ...baseLinkProps } = props;
+  const compileAppURL = useContext(CompileAppURLContext);
   const href = compileAppURL({
     page: props.page,
     URLQueryParams: {},

@@ -6,7 +6,7 @@
 
 export type { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
 
-export type { AnyPage } from 'framework/infrastructure/router/types';
+export type { AnyAppContext, AnyPage } from 'framework/infrastructure/router/types';
 
 export type { ParsedError } from 'framework/infrastructure/request/types';
 

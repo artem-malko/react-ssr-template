@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { useAddUser } from 'application/entities/user/queries/mutate/useAddUser';
+import { useAddUser } from 'application/entities/user/model/mutate/useAddUser';
 import { useGlassEffect } from 'application/shared/kit/glass/hook';
 
 import { UserForm } from '../form';

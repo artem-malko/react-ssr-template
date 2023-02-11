@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { usePaginatedNews } from 'application/entities/news/queries/fetch/usePaginatedNews';
+import { usePaginatedNews } from 'application/entities/news/model/fetch/usePaginatedNews';
 import { newsPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { Lazy } from 'application/shared/kit/lazy';

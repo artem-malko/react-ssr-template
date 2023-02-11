@@ -48,6 +48,11 @@ module.exports = {
         capture: ['category', 'family'],
       },
       {
+        type: 'application/processes',
+        pattern: 'application/processes/**/*',
+        capture: ['category', 'family'],
+      },
+      {
         type: 'application/pages',
         pattern: 'application/pages/!(shared.ts)/**',
         capture: ['category', 'family'],
@@ -147,15 +152,25 @@ module.exports = {
           },
           // Locale zones for the application
           {
+            message: 'Imports from "${target.type}" are not allowed in "application/processes".',
+            from: ['application/processes'],
+            disallow: ['application/entry'],
+          },
+          {
             message: 'Imports from "${target.type}" are not allowed in "application/pages".',
             from: ['application/pages'],
-            disallow: ['application/entry'],
+            disallow: ['application/processes', 'application/entry'],
           },
           {
             message:
               'Imports from "${target.type}" are not allowed in "application/widgets". Use imports from underlying layers like "application/features", "application/entites" or "application/shared" only.',
             from: ['application/widgets'],
-            disallow: ['application/widgets', 'application/pages', 'application/entry'],
+            disallow: [
+              'application/widgets',
+              'application/pages',
+              'application/processes',
+              'application/entry',
+            ],
           },
           {
             message:
@@ -165,6 +180,7 @@ module.exports = {
               'application/features',
               'application/widgets',
               'application/pages',
+              'application/processes',
               'application/entry',
             ],
           },
@@ -177,6 +193,7 @@ module.exports = {
               'application/features',
               'application/widgets',
               'application/pages',
+              'application/processes',
               'application/entry',
             ],
           },
@@ -189,6 +206,7 @@ module.exports = {
               'application/features',
               'application/widgets',
               'application/pages',
+              'application/processes',
               'application/entry',
             ],
           },

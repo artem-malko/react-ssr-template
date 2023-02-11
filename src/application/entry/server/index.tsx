@@ -1,10 +1,11 @@
 import { Main } from 'application/entry/react';
-import { compileAppURL, routes } from 'application/pages/shared';
+import { routes } from 'application/pages/shared';
 import {
   defaultClientApplicationConfig,
   defaultServerApplicationConfig,
 } from 'application/shared/config/defaults/application';
 import { defaultServerConfig } from 'application/shared/config/defaults/server';
+import { CompileAppURLContext } from 'application/shared/kit/link/context';
 import { createServices } from 'application/shared/services';
 import { ServiceContext } from 'application/shared/services/shared/context';
 import { createApplicationRouteHandler } from 'framework/public/server';
@@ -15,7 +16,7 @@ import {
   buildServerConfig,
 } from 'framework/public/server';
 import { startServer } from 'framework/public/server';
-import { createRequest, createAppLogger } from 'framework/public/universal';
+import { createRequest, createAppLogger, createURLCompiler } from 'framework/public/universal';
 
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
@@ -48,14 +49,17 @@ const services = createServices({
   },
   appLogger,
 });
+const compileAppURL = createURLCompiler(routes);
 
 const renderApplicationRouteHandler = createApplicationRouteHandler({
   parseURL,
   compileAppURL,
   MainComp: (
-    <ServiceContext.Provider value={services}>
-      <Main />
-    </ServiceContext.Provider>
+    <CompileAppURLContext.Provider value={compileAppURL}>
+      <ServiceContext.Provider value={services}>
+        <Main />
+      </ServiceContext.Provider>
+    </CompileAppURLContext.Provider>
   ),
   clientApplicationConfig,
   serverApplicationConfig,
