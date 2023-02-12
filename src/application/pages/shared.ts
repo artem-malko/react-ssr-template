@@ -7,14 +7,11 @@
  *
  * So, you can export from shared.ts:
  *  * routes — a Routes<Page> map
- *  * compileAppURL function, cause it's effective to create that function just one time
  *  * default params for a page
- *  * A page types
+ *  * A page type
  *
  * Other exports are forbidden!
  */
-
-import { createURLCompiler } from 'framework/public/universal';
 
 import { errorPageRoute } from './error/routing';
 import { newsPageRoute } from './news/routing';
@@ -44,9 +41,3 @@ export const routes: Routes<Page> = {
 
 export { newsPageDefaultParams } from './news';
 export { usersPageDefaultParams } from './users';
-
-/**
- * createURLParser is used on the server side only
- * So, we do not need to create it here
- */
-export const compileAppURL = createURLCompiler(routes);

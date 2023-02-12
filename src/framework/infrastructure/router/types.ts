@@ -53,7 +53,7 @@ export type Route<
    *   }
    * }
    *
-   * const route Route<SpecificPage> = {
+   * const route: Route<SpecificPage> = {
    *   path: 'specific_page/:id/:name?',
    *   mapURLToPage: ({ id, name }) => { ... },
    *   mapPageToPathParams: (pageParams: Page['params']) => {
@@ -78,7 +78,7 @@ export type Route<
    * and to make the explicit connection between path args and page params
    * So, the previous example should be look like:
    *
-   * const route Route<RouteWithParams<{ id: string; name?: string }>, SpecificPage> = {
+   * const route Route<{ id: string; name?: string }, AppPage, SpecificPage> = {
    *   path: 'specific_page/:id/:name?',
    *   mapURLToPage: ({ id, name }) => { ... },
    *   mapPageToPathParams: (pageParams: Page['params']) => {
@@ -93,9 +93,11 @@ export type Route<
    * }
    */
   RoutePathParams extends RouteWithoutParams | RouteWithParams<{ [key: string]: string }>,
-  Page extends AnyPage<string>,
-  URLToPageResult extends AnyPage<string> = Page,
-  PageParams = keyof Page['params'] extends never ? never : Page['params'],
+  AppPage extends AnyPage<string>,
+  MatchedPage extends AppPage = AppPage,
+  ErrorPage extends AppPage = AppPage,
+  URLToPageResult extends AppPage = MatchedPage | ErrorPage,
+  PageParams = keyof MatchedPage['params'] extends never ? never : MatchedPage['params'],
 > = {
   path: string;
   mapURLParamsToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
@@ -121,5 +123,5 @@ export type Routes<
   PageName extends string = string,
   PMap extends MapDiscriminatedUnion<Page, 'name'> = MapDiscriminatedUnion<Page, 'name'>,
 > = {
-  [key in keyof PMap]: Route<RouteParams<any>, PMap[key], Page>;
+  [key in keyof PMap]: Route<RouteParams<any>, Page, PMap[key]>;
 };
