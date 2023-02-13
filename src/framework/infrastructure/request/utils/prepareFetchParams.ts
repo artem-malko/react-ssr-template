@@ -81,5 +81,13 @@ function extractContentTypeFromHeaders<T>(headers: RequestParams<T>['headers']) 
     return headers.get('Content-Type');
   }
 
-  return keysOf(headers).find((k) => k.toLowerCase() === contentTypeHeaderName);
+  const contentTypeFromHeadersObjectKey = keysOf(headers).find(
+    (k) => k.toLowerCase() === contentTypeHeaderName,
+  );
+
+  if (contentTypeFromHeadersObjectKey) {
+    return headers[contentTypeFromHeadersObjectKey];
+  }
+
+  return;
 }

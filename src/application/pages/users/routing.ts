@@ -1,4 +1,4 @@
-import { UserStatus } from 'application/shared/services/fake/types';
+import { UserStatus } from 'application/entities/user/types';
 import { parsePageQueryParam } from 'application/shared/lib/routing/parsePageQueryParam';
 
 import { UsersPage } from '.';
