@@ -1,10 +1,10 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useUserList } from 'application/entities/user/model/fetch/useUserList';
+import { UserStatus } from 'application/entities/user/types';
 import { usersPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { useToggleGlass } from 'application/shared/kit/glass/hook';
-import { UserStatus } from 'application/shared/services/fake/types';
 import { RaiseError } from 'framework/public/universal';
 
 import { UserTableRow } from './row';

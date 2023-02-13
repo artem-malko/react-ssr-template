@@ -1,6 +1,6 @@
 import snakeCase from 'lodash.snakecase';
 
-import { AnyConfig, AnyConfigValue } from '../types';
+import { AnyConfigValue } from '../types';
 
 /**
  * Takes ready config object, env params and returns all valid params from env.
@@ -22,7 +22,7 @@ import { AnyConfig, AnyConfigValue } from '../types';
  *
  * SOMETHING_ELSE was ignored, cause it is not in a referenceConfig object
  */
-export function parseEnvParams<T extends AnyConfig>(
+export function parseEnvParams<T extends object>(
   referenceConfig: T,
   envParams: NodeJS.ProcessEnv,
   prefix?: string,
@@ -34,7 +34,7 @@ export function parseEnvParams<T extends AnyConfig>(
     const unixKey = camel2unix(key, prefix);
     // eslint-disable-next-line no-prototype-builtins
     const envValue = envParams.hasOwnProperty(unixKey) ? envParams[unixKey] : undefined;
-    const referenceConfigValue = referenceConfig[key] as AnyConfigValue;
+    const referenceConfigValue = (referenceConfig as any)[key] as AnyConfigValue;
 
     if (typeof envValue !== 'undefined') {
       try {

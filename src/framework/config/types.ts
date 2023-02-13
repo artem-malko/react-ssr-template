@@ -1,10 +1,13 @@
 export type AnyConfigValue = string | boolean | number;
-export type AnyConfig = Record<string, AnyConfigValue>;
+// @TODO AnyConfig as a parent for BaseConfig?
+export interface AnyConfig {
+  [key: string]: AnyConfigValue;
+}
 
-export interface BaseServerConfig extends AnyConfig {
+export interface BaseServerConfig {
   port: number;
 }
 
-export interface BaseApplicationConfig extends AnyConfig {
+export interface BaseApplicationConfig {
   publicPath: string;
 }

@@ -68,7 +68,7 @@ const AppLink = memo<PropsWithChildren<AppLinkProps>>((props) => {
       props.onClick(e);
     }
 
-    navigate(page);
+    navigate(() => page);
   };
 
   return (

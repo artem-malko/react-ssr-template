@@ -2,9 +2,11 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
 import { useAppQuery } from 'application/shared/hooks/query';
-import { FetchUserByIdResponse, User } from 'application/shared/services/fake/types';
-import { useServices } from 'application/shared/services/shared/context';
+import { useApi } from 'application/shared/lib/api/useApi';
+import { UnwrapQueryData } from 'application/shared/lib/query/types';
 
+import { getUserByIdApi } from '../../api/getUserById';
+import { User } from '../../types';
 import { userQueryKeys } from '../common';
 
 export type UserByIdParams = {
@@ -12,9 +14,9 @@ export type UserByIdParams = {
 };
 
 const useUserByIdFetcher = () => {
-  const services = useServices();
+  const getUserById = useApi(getUserByIdApi);
 
-  return (params: UserByIdParams) => services.fakeAPI.getUserById({ id: params.userId });
+  return (params: UserByIdParams) => getUserById({ id: params.userId }).then((res) => res.data);
 };
 
 export const useUserById = (params: UserByIdParams) => {
@@ -40,7 +42,7 @@ export const useUserByIdOptimisticUpdater = () => {
 
   return useCallback(
     (userToUpdate: User) => {
-      return queryClient.setQueryData<FetchUserByIdResponse['data']>(
+      return queryClient.setQueryData<UnwrapQueryData<typeof useUserById>>(
         userQueryKeys.byId({ userId: userToUpdate.id }),
         () => {
           return { user: userToUpdate };

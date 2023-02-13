@@ -1,13 +1,13 @@
 import { memo } from 'react';
 
-import { useInfinityNews } from 'application/entities/news/model/fetch/useInfinityNews';
+import { useInfinityNewsList } from 'application/entities/news/model/fetch/useInfinityNewsList';
 import { Lazy } from 'application/shared/kit/lazy';
 import { Link } from 'application/shared/kit/link';
 import { Preloader } from 'application/shared/kit/preloader';
 
 const InfinityList = memo<{ initialPage: number; onItemHover: (title: string) => void }>(
   ({ initialPage, onItemHover }) => {
-    const infinityNews = useInfinityNews({ initialPage });
+    const infinityNews = useInfinityNewsList({ initialPage });
 
     return (
       <>

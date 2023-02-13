@@ -28,17 +28,17 @@ module.exports = {
     'boundaries/elements': [
       {
         type: 'framework',
-        pattern: 'framework/!(public)/**/*',
+        pattern: 'src/framework/!(public)/**/*',
         capture: ['category', 'family'],
       },
       {
         type: 'framework_with_public',
-        pattern: 'framework/**/*',
+        pattern: 'src/framework/**/*',
         capture: ['category', 'family'],
       },
       {
         type: 'lib',
-        pattern: 'lib/**/*',
+        pattern: 'src/lib/**/*',
         capture: ['category', 'elementName'],
       },
 

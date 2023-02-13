@@ -1,13 +1,13 @@
 import { memo } from 'react';
 
-import { useNewsItem } from 'application/entities/news/model/fetch/useNewsItem';
+import { useNewsItemById } from 'application/entities/news/model/fetch/useNewsItemById';
 import { useStyles } from 'framework/public/styles';
 
 import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   const css = useStyles(styles);
-  const newsItem = useNewsItem({ newsItemId });
+  const newsItem = useNewsItemById({ newsItemId });
 
   return (
     <div className={css('root')}>
@@ -26,4 +26,3 @@ export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
     </div>
   );
 });
-export default NewsItem;

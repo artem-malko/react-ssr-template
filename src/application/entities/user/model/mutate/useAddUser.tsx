@@ -1,13 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { UserStatus } from 'application/shared/services/fake/types';
-import { useServices } from 'application/shared/services/shared/context';
+import { useApi } from 'application/shared/lib/api/useApi';
+
+import { postUserApi } from '../../api/postUser';
+import { UserStatus } from '../../types';
 
 export const useAddUser = () => {
-  const services = useServices();
+  const postUser = useApi(postUserApi);
 
   return useMutation((userToAdd: { name: string; status: UserStatus }) => {
-    return services.fakeAPI.addUser({
+    return postUser({
       user: userToAdd,
     });
   });

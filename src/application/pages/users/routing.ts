@@ -1,5 +1,5 @@
 import { UserStatus } from 'application/shared/services/fake/types';
-import { parsePageQueryParam } from 'application/shared/utils/routing/parsePageQueryParam';
+import { parsePageQueryParam } from 'application/shared/lib/routing/parsePageQueryParam';
 
 import { UsersPage } from '.';
 import { createRoute } from '../_internals/createRoute';

@@ -1,71 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useToast } from 'application/shared/kit/toast/infrastructure/hook';
-import { UserStatus } from 'application/shared/services/fake/types';
-import { useServices } from 'application/shared/services/shared/context';
-import { useInvalidateQuery } from 'lib/hooks/useInvalidateQuery';
+import { useApi } from 'application/shared/lib/api/useApi';
 
-import { userQueryKeys } from '../common';
-import { useUserListOptimisticUpdater } from '../fetch/useUserList';
+import { patchUserApi } from '../../api/patchUser';
+import { UserStatus } from '../../types';
 
-type Params = {
-  useOptimisticUpdate: boolean;
-};
-export const useEditUser = (params: Params) => {
-  const { useOptimisticUpdate } = params;
-  const { showToast } = useToast();
-  const services = useServices();
-  const invalidateQuery = useInvalidateQuery();
-  const userListOptimisticUpdate = useUserListOptimisticUpdater();
+export const useEditUser = () => {
+  const patchUser = useApi(patchUserApi);
 
-  return useMutation(
-    (userToUpdate: { id: string; name: string; status: UserStatus }) => {
-      return services.fakeAPI.updateUserInfo({
-        user: userToUpdate,
-      });
-    },
-    {
-      onSuccess(_, userToUpdate) {
-        showToast({
-          body: () => (
-            <>
-              User with name {userToUpdate.name} has been updated.
-              <br />
-              The list has been updated via{' '}
-              <strong>{useOptimisticUpdate ? 'optimistic update' : 'data invaliation'}</strong>
-            </>
-          ),
-        });
-
-        if (useOptimisticUpdate) {
-          /**
-           * This query data optimistic updater updates data in a query cache only
-           * Uncomment it to see all problems with optimistic updates in action
-           */
-          userListOptimisticUpdate(userToUpdate);
-        } else {
-          /**
-           * This query invalidetion updates all active queries
-           * which are connected with users:
-           * — list
-           * — user by id
-           */
-          invalidateQuery({
-            queryKey: userQueryKeys.all(),
-          });
-        }
-      },
-      onError(error) {
-        showToast({
-          body: () => (
-            <>
-              Something happen while user updating
-              <br />
-              {JSON.stringify(error)}
-            </>
-          ),
-        });
-      },
-    },
-  );
+  return useMutation((userToUpdate: { id: string; name: string; status: UserStatus }) => {
+    return patchUser({
+      user: userToUpdate,
+    });
+  });
 };

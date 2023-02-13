@@ -2,13 +2,10 @@ import { commonWithSelectors, noop, sequence } from 'framework/infrastructure/si
 
 import { useRouterReduxDispatch } from '../redux/hooks';
 import { selectAnyPage } from '../redux/selectors';
-import { openPageSignal, patchPageSignal } from '../redux/signals/page';
+import { patchPageSignal } from '../redux/signals/page';
 import { AnyPage } from '../types';
 
-export const useCommonNavigate = <
-  AppPage extends AnyPage<string>,
-  DestinationPage extends AppPage,
->() => {
+export const useCommonNavigate = <AppPage extends AnyPage<string>>() => {
   const dispatch = useRouterReduxDispatch();
 
   /**
@@ -23,17 +20,14 @@ export const useCommonNavigate = <
    * This wrapper allows to replace redux with something else,
    * without an application deep refactoring
    */
-  const navigate = (
-    destination: DestinationPage | ((activePage: AppPage) => DestinationPage),
+  const navigate = <DestinationPage extends AppPage>(
+    destination: (activePage: AppPage) => DestinationPage,
     useReplace = false,
   ) =>
     new Promise<DestinationPage>((resolve) => {
       dispatch(
         sequence(
-          typeof destination === 'function'
-            ? // @TODO fix typings
-              patchPageSignal(destination as any, useReplace)
-            : openPageSignal(destination),
+          patchPageSignal(destination as any, useReplace),
           commonWithSelectors(
             {
               patchedPage: selectAnyPage,

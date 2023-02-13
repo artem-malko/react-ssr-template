@@ -6,8 +6,7 @@ import { PopupControllerContext } from 'application/shared/kit/popup/infrastruct
 import { PopupController } from 'application/shared/kit/popup/infrastructure/controller';
 import { ToastControllerContext } from 'application/shared/kit/toast/infrastructure/context';
 import { ToastController } from 'application/shared/kit/toast/infrastructure/controller';
-import { createServices } from 'application/shared/services';
-import { ServiceContext } from 'application/shared/services/shared/context';
+import { RequesterContext } from 'application/shared/lib/request';
 import { startClientApplication, getClientApplicationConfig } from 'framework/public/client';
 import { createRequest, createAppLogger, createURLCompiler } from 'framework/public/universal';
 
@@ -21,26 +20,19 @@ const request = createRequest({
 const appLogger = createAppLogger({
   networkTimeout: config.networkTimeout,
 });
-const services = createServices({
-  request,
-  config: {
-    hackerNewsApiUrl: config.hackerNewsApiUrl,
-    fakeCrudApi: config.fakeCrudApi,
-  },
-  appLogger,
-});
+
 const compileAppURL = createURLCompiler(routes);
 
 startClientApplication({
   MainComp: (
     <CompileAppURLContext.Provider value={compileAppURL}>
-      <ServiceContext.Provider value={services}>
+      <RequesterContext.Provider value={request}>
         <ToastControllerContext.Provider value={toastController}>
           <PopupControllerContext.Provider value={popupController}>
             <Main />
           </PopupControllerContext.Provider>
         </ToastControllerContext.Provider>
-      </ServiceContext.Provider>
+      </RequesterContext.Provider>
     </CompileAppURLContext.Provider>
   ),
   compileAppURL,

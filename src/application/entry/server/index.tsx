@@ -6,8 +6,7 @@ import {
 } from 'application/shared/config/defaults/application';
 import { defaultServerConfig } from 'application/shared/config/defaults/server';
 import { CompileAppURLContext } from 'application/shared/kit/link/context';
-import { createServices } from 'application/shared/services';
-import { ServiceContext } from 'application/shared/services/shared/context';
+import { RequesterContext } from 'application/shared/lib/request';
 import { createApplicationRouteHandler } from 'framework/public/server';
 import { createURLParser } from 'framework/public/server';
 import {
@@ -41,14 +40,6 @@ const request = createRequest({
 const appLogger = createAppLogger({
   networkTimeout: serverApplicationConfig.networkTimeout,
 });
-const services = createServices({
-  request,
-  config: {
-    hackerNewsApiUrl: serverApplicationConfig.hackerNewsApiUrl,
-    fakeCrudApi: serverApplicationConfig.fakeCrudApi,
-  },
-  appLogger,
-});
 const compileAppURL = createURLCompiler(routes);
 
 const renderApplicationRouteHandler = createApplicationRouteHandler({
@@ -56,9 +47,9 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   compileAppURL,
   MainComp: (
     <CompileAppURLContext.Provider value={compileAppURL}>
-      <ServiceContext.Provider value={services}>
+      <RequesterContext.Provider value={request}>
         <Main />
-      </ServiceContext.Provider>
+      </RequesterContext.Provider>
     </CompileAppURLContext.Provider>
   ),
   clientApplicationConfig,

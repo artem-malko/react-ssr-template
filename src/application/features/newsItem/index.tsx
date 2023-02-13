@@ -1,6 +1,6 @@
 import { memo, useEffect } from 'react';
 
-import { useNewsItem } from 'application/entities/news/model/fetch/useNewsItem';
+import { useNewsItemById } from 'application/entities/news/model/fetch/useNewsItemById';
 import { useStyles } from 'framework/public/styles';
 import { useAppLogger, usePlatformAPI } from 'framework/public/universal';
 
@@ -8,7 +8,7 @@ import { styles } from './index.css';
 
 export const NewsItem = memo<{ newsItemId: number }>(({ newsItemId }) => {
   const css = useStyles(styles);
-  const newsItem = useNewsItem({ newsItemId });
+  const newsItem = useNewsItemById({ newsItemId });
   const platformAPI = usePlatformAPI();
   const { sendInfoLog } = useAppLogger();
 

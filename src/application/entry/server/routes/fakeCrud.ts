@@ -7,7 +7,7 @@ import { createCookieAPI } from 'framework/public/server';
 import { mutableUsersData } from './data';
 
 /**
- * This service is made to demonstrate useMutation/invalidate queries with react-query
+ * This api is made to demonstrate useMutation/invalidate queries with react-query
  * You can delete it at any time
  */
 export const fakeCRUDRouter = Router();

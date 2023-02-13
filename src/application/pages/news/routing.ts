@@ -1,4 +1,4 @@
-import { parsePageQueryParam } from 'application/shared/utils/routing/parsePageQueryParam';
+import { parsePageQueryParam } from 'application/shared/lib/routing/parsePageQueryParam';
 
 import { NewsPage } from '.';
 import { createRoute } from '../_internals/createRoute';

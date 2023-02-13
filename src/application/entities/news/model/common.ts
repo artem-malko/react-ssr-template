@@ -1,6 +1,6 @@
-import { UseInfinityNewsParams } from './fetch/useInfinityNews';
-import { UseNewsItemParams } from './fetch/useNewsItem';
-import { UsePaginatedNewsParams } from './fetch/usePaginatedNews';
+import { UseInfinityNewsParams } from './fetch/useInfinityNewsList';
+import { UseNewsItemParams } from './fetch/useNewsItemById';
+import { UsePaginatedNewsParams } from './fetch/usePaginatedNewsList';
 
 export const newsQueryKeys = {
   all: () => ['news'] as const,

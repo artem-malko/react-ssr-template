@@ -1,10 +1,14 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useUserById } from 'application/entities/user/model/fetch/useUserById';
+import { useUserListOptimisticUpdater } from 'application/entities/user/model/fetch/useUserList';
+import { useInvalidateAllLists } from 'application/entities/user/model/invalidate/useInvalidateAllLists';
 import { useEditUser } from 'application/entities/user/model/mutate/useEditUser';
+import { UserStatus } from 'application/entities/user/types';
 import { usersPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { useToggleGlass } from 'application/shared/kit/glass/hook';
+import { useToast } from 'application/shared/kit/toast/infrastructure/hook';
 
 import { UserForm } from '../form';
 import { renderStatus } from '../utils';
@@ -22,8 +26,11 @@ export const UserEditor = memo<Props>(({ userId }) => {
   const { navigate } = useNavigate();
   const optimisticUpdateCheckboxId = useId();
   const [useOptimisticUpdate, setUseOptimisticUpdate] = useState(false);
+  const { showToast } = useToast();
 
   const userByIdResult = useUserById({ userId });
+  const invalidateAllLists = useInvalidateAllLists();
+  const userListOptimisticUpdate = useUserListOptimisticUpdater();
   const disableActiveUser = useCallback(
     () =>
       navigate((activePage) => ({
@@ -35,7 +42,50 @@ export const UserEditor = memo<Props>(({ userId }) => {
       })),
     [navigate],
   );
-  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser({ useOptimisticUpdate });
+  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser();
+  const onEditUserClick = useCallback(
+    (params: { name: string; status: UserStatus }) => {
+      editUser(
+        { name: params.name, status: params.status, id: userId },
+        {
+          onSuccess(_, userToUpdate) {
+            showToast({
+              body: () => (
+                <>
+                  User with name {userToUpdate.name} has been updated.
+                  <br />
+                  The list has been updated via{' '}
+                  <strong>{useOptimisticUpdate ? 'optimistic update' : 'data invaliation'}</strong>
+                </>
+              ),
+            });
+
+            if (useOptimisticUpdate) {
+              /**
+               * This query data optimistic updater updates data in a query cache only
+               * Uncomment it to see all problems with optimistic updates in action
+               */
+              userListOptimisticUpdate(userToUpdate);
+            } else {
+              invalidateAllLists();
+            }
+          },
+          onError(error) {
+            showToast({
+              body: () => (
+                <>
+                  Something happen while user updating
+                  <br />
+                  {JSON.stringify(error)}
+                </>
+              ),
+            });
+          },
+        },
+      );
+    },
+    [showToast, editUser, invalidateAllLists, useOptimisticUpdate, userId, userListOptimisticUpdate],
+  );
 
   useEffect(() => {
     toggleGlass(isMutationInProgress);
@@ -77,9 +127,12 @@ export const UserEditor = memo<Props>(({ userId }) => {
         <br />
         <br />
         <UserForm
-          onSubmit={(name, status) => {
-            editUser({ name, status, id: userId });
-          }}
+          onSubmit={(name, status) =>
+            onEditUserClick({
+              name,
+              status,
+            })
+          }
           initialName={userByIdResult.data.user.name}
           initialStatus={userByIdResult.data.user.status}
         />

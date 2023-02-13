@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 
-import { UserStatus } from 'application/shared/services/fake/types';
+import { UserStatus } from 'application/entities/user/types';
 
 type Props = {
   onSubmit: (name: string, userStatus: UserStatus) => void;

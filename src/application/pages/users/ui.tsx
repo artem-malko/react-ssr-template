@@ -29,7 +29,7 @@ export default memo<{ page: UsersPage }>(
           <p>
             There is a list of users. These users are loaded via a fake API (checkout{' '}
             <Link
-              href="https://github.com/artem-malko/react-ssr-template/blob/main/src/applications/server/services/fakeCrud/index.ts"
+              href="https://github.com/artem-malko/react-ssr-template/blob/main/src/application/entry/server/routes/fakeCrud.ts"
               target="_blank"
             >
               sources on github

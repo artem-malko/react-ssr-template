@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 
-import { usePaginatedNews } from 'application/entities/news/model/fetch/usePaginatedNews';
+import { usePaginatedNewsList } from 'application/entities/news/model/fetch/usePaginatedNewsList';
 import { newsPageDefaultParams } from 'application/pages/shared';
 import { useNavigate } from 'application/shared/hooks/useNavigate';
 import { Lazy } from 'application/shared/kit/lazy';
@@ -12,7 +12,7 @@ const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) =>
   ({ pageNumber, onItemHover }) => {
     const { showToast } = useToast();
     const { navigate } = useNavigate();
-    const news = usePaginatedNews({
+    const news = usePaginatedNewsList({
       page: pageNumber,
     });
 
