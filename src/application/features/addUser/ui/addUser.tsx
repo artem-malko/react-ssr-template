@@ -1,7 +1,7 @@
 import { memo } from 'react';
 
 import { useInvalidateAllUserQueries, useAddUser } from 'application/entities/domain/user';
-import { UserForm } from 'application/entities/ui/form';
+import { UserForm } from 'application/entities/ui/userForm';
 
 import { useGlassEffect } from 'application/shared/kit/glass';
 
