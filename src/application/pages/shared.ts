@@ -13,18 +13,19 @@
  * Other exports are forbidden!
  */
 
-import { errorPageRoute } from './error/routing';
-import { newsPageRoute } from './news/routing';
-import { newsItemPageRoute } from './newsItem/routing';
-import { rootPageRoute } from './root/routing';
-import { usersPageRoute } from './users/routing';
+import type { Routes, AnyPage } from 'framework/public/types';
 
 import type { ErrorPage } from 'application/pages/error';
 import type { NewsPage } from 'application/pages/news';
 import type { NewsItemPage } from 'application/pages/newsItem';
 import type { RootPage } from 'application/pages/root';
 import type { UsersPage } from 'application/pages/users';
-import type { Routes, AnyPage } from 'framework/public/types';
+
+import { errorPageRoute } from './error/routing';
+import { newsPageRoute } from './news/routing';
+import { newsItemPageRoute } from './newsItem/routing';
+import { rootPageRoute } from './root/routing';
+import { usersPageRoute } from './users/routing';
 
 export interface CommonPage extends AnyPage<string> {}
 

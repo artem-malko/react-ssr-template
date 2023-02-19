@@ -11,7 +11,7 @@ export { useAppLogger } from 'framework/infrastructure/logger/react/hook';
 
 export { useAnyConfig } from 'framework/config/react';
 
-export { useAnyPage } from 'framework/infrastructure/router/hooks/useAnyPage';
+export { useAnyActivePage } from 'framework/infrastructure/router/hooks/useAnyActivePage';
 
 export { useCommonNavigate } from 'framework/infrastructure/router/hooks/useCommonNavigate';
 

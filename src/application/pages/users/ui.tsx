@@ -1,11 +1,13 @@
 import { memo, Suspense } from 'react';
 
-import { AddUser } from 'application/features/users/add';
-import { FakeAPIConfigurator } from 'application/features/users/configurator';
-import { UserList } from 'application/features/users/list';
-import { GlassBoundary } from 'application/shared/kit/glass/context';
+import { AddUser } from 'application/features/addUser';
+import { FakeAPIConfigurator } from 'application/features/fakeAPIConfigurator';
+import { UserList } from 'application/features/userList';
+
+import { Link } from 'application/entities/ui/navigation';
+
+import { GlassBoundary } from 'application/shared/kit/glass';
 import { Lazy } from 'application/shared/kit/lazy';
-import { Link } from 'application/shared/kit/link';
 import { Preloader } from 'application/shared/kit/preloader';
 import { Spoiler } from 'application/shared/kit/spoiler';
 
@@ -22,6 +24,8 @@ export default memo<{ page: UsersPage }>(
       params: usersPageDefaultParams,
     },
   }) => {
+    const activeUserId = page.params.activeUserId;
+
     return (
       <>
         <h1>React Query mutations and error handling example</h1>
@@ -74,7 +78,25 @@ export default memo<{ page: UsersPage }>(
           <br />
           <br />
 
-          {page.params.activeUserId && <UserEditorWrapper activeUserId={page.params.activeUserId} />}
+          {activeUserId && (
+            <Suspense fallback={<Preloader purpose="UserEditor" />}>
+              <Lazy
+                loader={() =>
+                  import(/* webpackChunkName: "userListEditor" */ 'application/features/editUser').then(
+                    (module) => ({ default: module.UserEditor }),
+                  )
+                }
+                render={(UserEditor) => <UserEditor userId={activeUserId} />}
+                fallback={(status) =>
+                  status === 'loading' ? (
+                    <Preloader purpose="UserEditor LOADING" />
+                  ) : (
+                    <Preloader purpose="UserEditor ERROR" />
+                  )
+                }
+              />
+            </Suspense>
+          )}
 
           <br />
           <br />
@@ -101,23 +123,3 @@ export default memo<{ page: UsersPage }>(
     );
   },
 );
-
-const UserEditorWrapper = memo<{ activeUserId: string }>(({ activeUserId }) => {
-  return (
-    <Suspense fallback={<Preloader purpose="UserEditor" />}>
-      <Lazy
-        loader={() =>
-          import(/* webpackChunkName: "userListEditor" */ 'application/features/users/editor')
-        }
-        render={(UserEditor) => <UserEditor userId={activeUserId} />}
-        fallback={(status) =>
-          status === 'loading' ? (
-            <Preloader purpose="UserEditor LOADING" />
-          ) : (
-            <Preloader purpose="UserEditor ERROR" />
-          )
-        }
-      />
-    </Suspense>
-  );
-});

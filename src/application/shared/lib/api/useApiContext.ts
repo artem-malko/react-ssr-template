@@ -1,5 +1,6 @@
-import { useConfig } from 'application/shared/config/hook';
 import { useAppLogger } from 'framework/public/universal';
+
+import { useConfig } from 'application/shared/config/hook';
 
 import { useRequest } from '../request';
 

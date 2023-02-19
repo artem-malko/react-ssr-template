@@ -4,8 +4,7 @@ import { sequence } from 'framework/infrastructure/signal';
 
 import { setQueryStringParamsAction } from '../redux/actions/appContext/setQueryStringParams';
 import { historyReplace, historyPush } from '../redux/actions/router';
-import { useRouterReduxSelector } from '../redux/hooks';
-import { useRouterReduxDispatch } from '../redux/hooks';
+import { useRouterReduxSelector, useRouterReduxDispatch } from '../redux/hooks';
 import { AnyAppState, URLQueryParams } from '../types';
 
 const selectURLQueryParams = (state: AnyAppState) => state.appContext.URLQueryParams;

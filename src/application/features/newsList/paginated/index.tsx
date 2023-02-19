@@ -1,12 +1,13 @@
 import { memo, useCallback } from 'react';
 
-import { usePaginatedNewsList } from 'application/entities/news/model/fetch/usePaginatedNewsList';
 import { newsPageDefaultParams } from 'application/pages/shared';
-import { useNavigate } from 'application/shared/hooks/useNavigate';
+
+import { usePaginatedNewsList } from 'application/entities/domain/news';
+import { Link, useNavigate } from 'application/entities/ui/navigation';
+
 import { Lazy } from 'application/shared/kit/lazy';
-import { Link } from 'application/shared/kit/link';
 import { Preloader } from 'application/shared/kit/preloader';
-import { useToast } from 'application/shared/kit/toast/infrastructure/hook';
+import { useToast } from 'application/shared/kit/toast';
 
 const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) => void }>(
   ({ pageNumber, onItemHover }) => {

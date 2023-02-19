@@ -1,8 +1,9 @@
 import { memo, useEffect } from 'react';
 
-import { useNewsItemById } from 'application/entities/news/model/fetch/useNewsItemById';
 import { useStyles } from 'framework/public/styles';
 import { useAppLogger, usePlatformAPI } from 'framework/public/universal';
+
+import { useNewsItemById } from 'application/entities/domain/news';
 
 import { styles } from './index.css';
 

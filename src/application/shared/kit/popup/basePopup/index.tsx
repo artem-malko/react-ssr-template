@@ -1,7 +1,8 @@
 import { memo, PropsWithChildren, useCallback } from 'react';
 
-import { ZIndexLayout } from 'application/shared/kit/zIndex';
 import { useStyles } from 'framework/public/styles';
+
+import { ZIndexLayout } from 'application/shared/kit/zIndex';
 
 import { styles } from './index.css';
 import { usePopupActions } from '../infrastructure/hook';

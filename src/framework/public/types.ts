@@ -6,16 +6,15 @@
 
 export type { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
 
-export type { AnyAppContext, AnyPage } from 'framework/infrastructure/router/types';
+export type {
+  AnyAppContext,
+  AnyPage,
+  URLQueryParams,
+  Routes,
+} from 'framework/infrastructure/router/types';
 
-export type { ParsedError } from 'framework/infrastructure/request/types';
-
-export type { Requester } from 'framework/infrastructure/request/types';
+export type { ParsedError, Requester } from 'framework/infrastructure/request/types';
 
 export type { AppLogger } from 'framework/infrastructure/logger';
-
-export type { URLQueryParams } from 'framework/infrastructure/router/types';
-
-export type { Routes } from 'framework/infrastructure/router/types';
 
 export type { AllowedInlineStyle } from 'framework/infrastructure/css/types';

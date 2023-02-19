@@ -1,24 +1,27 @@
-import { Main } from 'application/entry/react';
-import { routes } from 'application/pages/shared';
 import {
-  defaultClientApplicationConfig,
-  defaultServerApplicationConfig,
-} from 'application/shared/config/defaults/application';
-import { defaultServerConfig } from 'application/shared/config/defaults/server';
-import { CompileAppURLContext } from 'application/shared/kit/link/context';
-import { RequesterContext } from 'application/shared/lib/request';
-import { createApplicationRouteHandler } from 'framework/public/server';
-import { createURLParser } from 'framework/public/server';
-import {
+  startServer,
+  createApplicationRouteHandler,
   buildClientApplicationConfig,
   buildServerApplicationConfig,
   buildServerConfig,
+  createURLParser,
 } from 'framework/public/server';
-import { startServer } from 'framework/public/server';
 import { createRequest, createAppLogger, createURLCompiler } from 'framework/public/universal';
+
+import { routes } from 'application/pages/shared';
+
+import { CompileAppURLContext } from 'application/entities/ui/navigation';
+
+import {
+  defaultClientApplicationConfig,
+  defaultServerApplicationConfig,
+  defaultServerConfig,
+} from 'application/shared/config';
+import { RequesterContext } from 'application/shared/lib/request';
 
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
+import { Main } from '../react';
 
 const parseURL = createURLParser({
   routes,

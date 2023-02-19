@@ -1,11 +1,14 @@
 import { memo, useCallback, useState } from 'react';
 
-import { Search } from 'application/features/search';
-import { StaticComponent } from 'application/features/staticComponent';
-import { Lazy } from 'application/shared/kit/lazy';
-import { Link } from 'application/shared/kit/link';
-import { Preloader } from 'application/shared/kit/preloader';
 import { useURLQuery } from 'framework/public/universal';
+
+import { Search } from 'application/features/search';
+import { StaticDataComponent } from 'application/features/staticComponent';
+
+import { Link } from 'application/entities/ui/navigation';
+
+import { Lazy } from 'application/shared/kit/lazy';
+import { Preloader } from 'application/shared/kit/preloader';
 
 import { NewsPage, newsPageDefaultParams } from '.';
 
@@ -52,7 +55,7 @@ export default memo<{ page: NewsPage }>(
         {n}
         <button onClick={() => s(n + 1)}>INCT</button>
         <div style={{ padding: '20px 0' }} />
-        <StaticComponent />
+        <StaticDataComponent />
         <div style={{ padding: '20px 0' }} />
         This text is rendered before hacker news API will return any response
         <br /> The component above is rendered before hacker news API will return any response.

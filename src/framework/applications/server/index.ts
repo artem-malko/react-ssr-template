@@ -10,6 +10,7 @@ import {
   logServerUncaughtException,
   logServerUnhandledRejection,
 } from 'framework/infrastructure/logger/serverLog';
+
 import { isServer } from 'lib/browser';
 
 import { clientIp } from './middlewares/clientIP';

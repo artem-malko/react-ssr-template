@@ -1,12 +1,15 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
-import { newsPageDefaultParams } from 'application/pages/shared';
-import { useNavigate } from 'application/shared/hooks/useNavigate';
-import { Lazy } from 'application/shared/kit/lazy';
-import { Preloader } from 'application/shared/kit/preloader';
-import { useToast } from 'application/shared/kit/toast/infrastructure/hook';
 import { useStyles } from 'framework/public/styles';
 import { useURLQuery } from 'framework/public/universal';
+
+import { newsPageDefaultParams } from 'application/pages/shared';
+
+import { useNavigate } from 'application/entities/ui/navigation';
+
+import { Lazy } from 'application/shared/kit/lazy';
+import { Preloader } from 'application/shared/kit/preloader';
+import { useToast } from 'application/shared/kit/toast';
 
 import { styles } from './index.css';
 

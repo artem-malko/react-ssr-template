@@ -1,24 +1,27 @@
 import { ErrorInfo, memo, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { DevMenu } from 'application/features/development/devMenu';
+import { useStyles } from 'framework/public/styles';
+import { useAppLogger } from 'framework/public/universal';
+
 import ErrorPage from 'application/pages/error';
 import { NewsPage } from 'application/pages/news';
 import { NewsItemPage } from 'application/pages/newsItem';
 import { RootPage } from 'application/pages/root';
 import { Page } from 'application/pages/shared';
 import { UsersPage } from 'application/pages/users';
-import { useActivePage } from 'application/shared/hooks/useActivePage';
-import { RootGlassBoundaryName } from 'application/shared/kit/glass/constants';
-import { GlassBoundary } from 'application/shared/kit/glass/context';
-import { PopoverContainer } from 'application/shared/kit/popover/container';
-import { Popup } from 'application/shared/kit/popup/popup';
+
+import { DevMenu } from 'application/features/development';
+
+import { useActivePage } from 'application/entities/ui/navigation';
+
+import { RootGlassBoundaryName, GlassBoundary } from 'application/shared/kit/glass';
+import { PopoverContainer } from 'application/shared/kit/popover';
+import { Popup } from 'application/shared/kit/popup';
 import { Preloader } from 'application/shared/kit/preloader';
-import { Toasts } from 'application/shared/kit/toast/toasts';
+import { Toasts } from 'application/shared/kit/toast';
 import { ZIndexLayout } from 'application/shared/kit/zIndex';
 import { styles as globalStyles } from 'application/shared/styles/global.css';
-import { useStyles } from 'framework/public/styles';
-import { useAppLogger } from 'framework/public/universal';
 
 import { styles } from './index.css';
 

@@ -1,10 +1,11 @@
-import { UserStatus } from 'application/entities/user/types';
-import { parsePageQueryParam } from 'application/shared/lib/routing/parsePageQueryParam';
+import type { URLQueryParams } from 'framework/public/types';
+
+import { UserStatus } from 'application/entities/domain/user';
+
+import { parsePageQueryParam } from 'application/shared/lib/routing';
 
 import { UsersPage } from '.';
 import { createRoute } from '../_internals/createRoute';
-
-import type { URLQueryParams } from 'framework/public/types';
 
 const filterQueryParamName = 'filter[status]';
 

@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 
-import { CommonPage } from '../shared';
+import { CommonPage } from 'application/pages/shared';
 
 export interface NewsPage extends CommonPage {
   name: 'news';

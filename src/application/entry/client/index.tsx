@@ -1,14 +1,16 @@
-import { Main } from 'application/entry/react';
-import { routes } from 'application/pages/shared';
-import { ApplicationConfig } from 'application/shared/config/types';
-import { CompileAppURLContext } from 'application/shared/kit/link/context';
-import { PopupControllerContext } from 'application/shared/kit/popup/infrastructure/context';
-import { PopupController } from 'application/shared/kit/popup/infrastructure/controller';
-import { ToastControllerContext } from 'application/shared/kit/toast/infrastructure/context';
-import { ToastController } from 'application/shared/kit/toast/infrastructure/controller';
-import { RequesterContext } from 'application/shared/lib/request';
 import { startClientApplication, getClientApplicationConfig } from 'framework/public/client';
 import { createRequest, createAppLogger, createURLCompiler } from 'framework/public/universal';
+
+import { routes } from 'application/pages/shared';
+
+import { CompileAppURLContext } from 'application/entities/ui/navigation';
+
+import { ApplicationConfig } from 'application/shared/config/types';
+import { PopupControllerContext, PopupController } from 'application/shared/kit/popup';
+import { ToastControllerContext, ToastController } from 'application/shared/kit/toast';
+import { RequesterContext } from 'application/shared/lib/request';
+
+import { Main } from '../react';
 
 const toastController = new ToastController();
 const popupController = new PopupController();

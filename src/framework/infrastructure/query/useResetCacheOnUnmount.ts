@@ -44,6 +44,6 @@ export const useResetCacheOnUnmount = <TResult, TError extends ParsedError>({
 /**
  * It's quite useless to retry a request with 404 response
  */
-export const defaultIsErrorCodeOkToResetCacheCheck = (errorCode: ParsedError['code']) => {
+const defaultIsErrorCodeOkToResetCacheCheck = (errorCode: ParsedError['code']) => {
   return errorCode !== 404;
 };

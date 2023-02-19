@@ -10,6 +10,7 @@ import { merge } from './utils/merge';
 import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
 import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 
+// eslint-disable-next-line no-duplicate-imports
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
 
 const CompressionPlugin = require('compression-webpack-plugin');

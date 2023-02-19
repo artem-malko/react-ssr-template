@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { v4 } from 'uuid';
 
-import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'application/shared/constants/cookies';
 import { createCookieAPI } from 'framework/public/server';
+
+import { useErrorsInFakeAPI, useRandomLatencyInFakeAPI } from 'application/shared/constants/cookies';
 
 import { mutableUsersData } from './data';
 

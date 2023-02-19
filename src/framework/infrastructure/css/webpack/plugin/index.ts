@@ -5,7 +5,7 @@ import { Compiler, Compilation, sources, Chunk } from 'webpack';
 import { generateCss } from '../../generator';
 import { murmurhash2 } from '../../stringHash';
 import { Style, Styles } from '../../types';
-import { STYLE_DESCRIPTOR } from '../shared';
+import { STYLE_DESCRIPTOR } from '../common';
 import { storeInstance } from '../store';
 
 const ConcatSource = sources.ConcatSource;

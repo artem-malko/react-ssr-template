@@ -1,7 +1,8 @@
 import { memo, PropsWithChildren, useState, useEffect, useMemo } from 'react';
 
-import { midTransitionDuration } from 'application/shared/styles/shared';
 import { useStyles } from 'framework/public/styles';
+
+import { midTransitionDuration } from 'application/shared/styles/shared';
 
 import { styles } from './index.css';
 

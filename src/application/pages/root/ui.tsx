@@ -1,9 +1,10 @@
 import { memo } from 'react';
 
-import { Link } from 'application/shared/kit/link';
+import { Page } from 'application/pages/shared';
+
+import { Link } from 'application/entities/ui/navigation';
 
 import { RootPage } from '.';
-import { Page } from '../shared';
 
 export default memo<{ page: RootPage }>(() => {
   const links: Array<{ page: Page; title: string }> = [

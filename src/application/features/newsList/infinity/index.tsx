@@ -1,8 +1,9 @@
 import { memo } from 'react';
 
-import { useInfinityNewsList } from 'application/entities/news/model/fetch/useInfinityNewsList';
+import { useInfinityNewsList } from 'application/entities/domain/news';
+import { Link } from 'application/entities/ui/navigation';
+
 import { Lazy } from 'application/shared/kit/lazy';
-import { Link } from 'application/shared/kit/link';
 import { Preloader } from 'application/shared/kit/preloader';
 
 const InfinityList = memo<{ initialPage: number; onItemHover: (title: string) => void }>(

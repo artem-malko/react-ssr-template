@@ -1,7 +1,8 @@
 import { lazy } from 'react';
 
-import { UserStatus } from 'application/entities/user/types';
 import { CommonPage } from 'application/pages/shared';
+
+import { UserStatus } from 'application/entities/domain/user';
 
 export interface UsersPage extends CommonPage {
   name: 'users';

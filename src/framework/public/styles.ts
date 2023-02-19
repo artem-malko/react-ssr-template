@@ -7,5 +7,4 @@
  * It would be better to compile as less code pisces as possible
  */
 
-export { useStyles } from 'framework/infrastructure/css/hook';
-export { createStyles } from 'framework/infrastructure/css/hook';
+export { useStyles, createStyles } from 'framework/infrastructure/css/hook';

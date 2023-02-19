@@ -6,7 +6,7 @@ import { join as joinPaths } from 'path';
 import { LoaderContext } from 'webpack';
 
 import { isValidStyleObject } from '../../generator/utils';
-import { STYLE_DESCRIPTOR } from '../shared';
+import { STYLE_DESCRIPTOR } from '../common';
 import { storeInstance } from '../store';
 
 // NodeJS Module

@@ -1,5 +1,6 @@
-import { colors, midTransitionDuration } from 'application/shared/styles/shared';
 import { createStyles } from 'framework/public/styles';
+
+import { colors, midTransitionDuration } from 'application/shared/styles/shared';
 
 export const styles = createStyles({
   root: {

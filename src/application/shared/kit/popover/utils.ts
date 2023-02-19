@@ -1,6 +1,6 @@
 import { isServer } from 'lib/browser';
 
-import { Alignment, Placement } from '.';
+import { Alignment, Placement } from './popover';
 
 // mn distance above and under a target element
 const minVerticalFreeSpace = 8;
