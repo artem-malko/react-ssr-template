@@ -94,7 +94,13 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     const reactSSRMethodName =
       forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
 
-    const storePromise = restoreStore({ req, res, compileAppURL, parseURL, initialAppContext });
+    const storePromise = restoreStore({
+      req,
+      res,
+      compileAppURL,
+      parseURL,
+      initialAppContext,
+    });
 
     Promise.all<
       [Promise<Store<AnyAppState>>, Promise<AssetsData>, Promise<{ [pageChunkName: string]: string[] }>]
@@ -309,10 +315,11 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                   clearTimeout(renderTimeoutId);
                 }
 
+                res.setHeader('content-type', 'text/html');
                 /**
                  * @TODO switch to client render
                  */
-                res.send(`<!doctype><p>onShellError<br/>${error}</p>`);
+                res.send(`<p>onShellError<br/>${error}</p>`);
               },
 
               // @TODO looks quite silly, need to refactor it
@@ -324,7 +331,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                   clearTimeout(renderTimeoutId);
                 }
 
-                res.send(`<!doctype><p>onError<br/>${error}</p>`);
+                // Need to log a error
               },
             },
           );

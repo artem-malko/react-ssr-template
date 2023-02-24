@@ -21,7 +21,7 @@ import { RequesterContext } from 'application/shared/lib/request';
 
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
-import { Main } from '../react';
+import { Main } from '../common/react';
 
 const parseURL = createURLParser({
   routes,
@@ -61,7 +61,7 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
     page: {
       name: 'root',
     },
-    URLQueryParams: undefined,
+    URLQueryParams: {},
   },
   appLogger,
 });

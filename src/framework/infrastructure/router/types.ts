@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { MapDiscriminatedUnion } from 'lib/types';
 
 type QueryParamValue = Array<string | undefined>;
@@ -27,7 +29,7 @@ export type URLQueryParams = Record<string, QueryParamValue>;
  */
 export interface AnyAppContext<Page extends AnyPage<string> = AnyPage<string>> {
   page: Page;
-  URLQueryParams: URLQueryParams | undefined;
+  URLQueryParams: URLQueryParams;
 }
 export interface AnyAppState<AppContext extends AnyAppContext = AnyAppContext> {
   appContext: AppContext;

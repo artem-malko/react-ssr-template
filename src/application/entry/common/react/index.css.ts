@@ -6,7 +6,7 @@ const toastContainerSideGap = 10;
 export const styles = createStyles({
   toastContainer: {
     position: 'fixed',
-    top: '10px',
+    top: 10,
     insetInlineEnd: toastContainerSideGap,
     width: '100%',
     maxWidth: toastContainerMaxWith,
@@ -31,12 +31,5 @@ export const styles = createStyles({
     '& > *': {
       pointerEvents: 'auto',
     },
-  },
-
-  projectInfo: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    width: '100%',
   },
 });

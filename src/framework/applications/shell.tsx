@@ -44,6 +44,7 @@ export const Shell = memo<{
     `;
     const cssPath = getFullPathForStaticResource({
       staticResourcesPathMapping: assets.pathMapping,
+      // @TODO handle RTL
       chunkName: 'stylesLtr',
       resourceType: 'css',
       publicPath,

@@ -20,6 +20,7 @@ export async function restoreStore({ parseURL, compileAppURL, req, initialAppCon
   const store = configureStore({
     initialState: {
       appContext: initialAppContext,
+      URLQueryParams: {},
     },
     middlewares,
     enhancers: [],

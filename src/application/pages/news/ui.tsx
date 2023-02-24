@@ -20,16 +20,17 @@ export default memo<{ page: NewsPage }>(
     },
   }) => {
     const [n, s] = useState(0);
-    const { URLQueryParams, updateURLQuery } = useURLQuery();
+    const { setURLQueryParams } = useURLQuery();
     const addURLQuery = useCallback(() => {
-      updateURLQuery({
-        queryParams: Object.keys(URLQueryParams || {}).length
-          ? {}
-          : {
-              test_mode_attr: ['2'],
-            },
+      setURLQueryParams({
+        queryParams: (currentQueryParams) => ({
+          ...currentQueryParams,
+          ...{
+            test_mode_attr: Object.keys(currentQueryParams || {}).length ? [] : ['2'],
+          },
+        }),
       });
-    }, [updateURLQuery, URLQueryParams]);
+    }, [setURLQueryParams]);
 
     return (
       <>

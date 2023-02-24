@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { sequence } from 'framework/infrastructure/signal';
+import { commonWithSelectors, sequence } from 'framework/infrastructure/signal';
 
 import { setQueryStringParamsAction } from '../redux/actions/appContext/setQueryStringParams';
 import { historyReplace, historyPush } from '../redux/actions/router';
@@ -13,12 +13,22 @@ export const useURLQuery = () => {
   const URLQueryParams = useRouterReduxSelector(selectURLQueryParams);
   const dispatch = useRouterReduxDispatch();
 
-  const updateURLQuery = useCallback(
-    (params: { queryParams: URLQueryParams; useReplace?: boolean }) => {
+  const setURLQueryParams = useCallback(
+    (params: {
+      queryParams: (currentURLQueryParams: URLQueryParams) => URLQueryParams;
+      useReplace?: boolean;
+    }) => {
       const { queryParams, useReplace = false } = params;
 
       dispatch(
-        sequence(setQueryStringParamsAction(queryParams), useReplace ? historyReplace() : historyPush()),
+        sequence(
+          commonWithSelectors(
+            { currentURLQueryParams: selectURLQueryParams },
+            ({ currentURLQueryParams }) =>
+              setQueryStringParamsAction(queryParams(currentURLQueryParams)),
+          ),
+          useReplace ? historyReplace() : historyPush(),
+        ),
       );
     },
     [dispatch],
@@ -26,6 +36,6 @@ export const useURLQuery = () => {
 
   return {
     URLQueryParams,
-    updateURLQuery,
+    setURLQueryParams,
   };
 };
