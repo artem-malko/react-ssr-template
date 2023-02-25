@@ -10,8 +10,8 @@ import {
   useInvalidateAllUserQueries,
   UserStatusComponent,
 } from 'application/entities/domain/user';
-import { UserForm } from 'application/entities/ui/userForm';
 import { useNavigate } from 'application/entities/ui/navigation';
+import { UserForm } from 'application/entities/ui/userForm';
 
 import { useSomethingWentWrongToast } from 'application/shared/hooks/useSomethingWentWrongToast';
 import { useToggleGlass } from 'application/shared/kit/glass';

@@ -38,7 +38,9 @@ export type RouteWithoutParams = RouteParams<Record<string, never>>;
 export type RouteWithParams<T = { [key: string]: string }> = RouteParams<T>;
 
 export type Route<
+  // Params from a path
   RoutePathParams extends RouteWithoutParams | RouteWithParams<{ [key: string]: string }>,
+  // Union type for all pages of an application
   AppPage extends AnyPage<string>,
   MatchedPage extends AppPage = AppPage,
   ErrorPage extends AppPage = AppPage,
@@ -57,6 +59,8 @@ export type RouteConfig<
   PageParams = keyof MatchedPage['params'] extends never ? never : MatchedPage['params'],
 > = {
   mapURLParamsToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
+  // We do not need "path" in that object, if there is no any RoutePathParams
+  // Or current page doesn't have any params
   mapPageToURLParams?: (pageParams: PageParams) => RoutePathParams extends RouteWithoutParams
     ? { query?: URLQueryParams }
     : RoutePathParams extends RouteWithParams

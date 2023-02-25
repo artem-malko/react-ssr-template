@@ -33,7 +33,9 @@ export interface CommonPage extends AnyPage<string> {}
 export type Page = RootPage | ErrorPage | NewsPage | NewsItemPage | UsersPage;
 export type PageName = Page['name'];
 
-// Ignore prettier to have a clear view to all of your routes
+/**
+ * Ignore prettier to have a clear view to all of your routes
+ */
 // prettier-ignore
 export const routes: Routes<Page> = {
   root:     bindRouteConfigToPath('/', rootPageRouteConfig),
