@@ -40,11 +40,6 @@ export function normalizePath(routePath: string): string {
   return (
     routePath
       .split('/')
-      // Every optional param is filtered out
-      // These params do not affect uniqueness
-      .filter((part) => {
-        return part[part.length - 1] !== '?';
-      })
       // /users/:id and /users/:name has to be marked as similar,
       // so, let's replace real names with a placeholder
       .map((part) => {

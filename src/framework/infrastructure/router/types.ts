@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { MapDiscriminatedUnion } from 'lib/types';
 
 type QueryParamValue = Array<string | undefined>;
@@ -40,60 +38,17 @@ export type RouteWithoutParams = RouteParams<Record<string, never>>;
 export type RouteWithParams<T = { [key: string]: string }> = RouteParams<T>;
 
 export type Route<
-  /**
-   * This type is used for an explicit connection between args in the route path
-   * and args for a page.
-   * So, Route type could be like this:
-   *
-   * @example
-   * // This type can be described somewhere far away from the route config
-   * type SpecificPage = {
-   *   name: 'SpecificPage',
-   *   params: {
-   *     id: string;
-   *     name?: string;
-   *   }
-   * }
-   *
-   * const route: Route<SpecificPage> = {
-   *   path: 'specific_page/:id/:name?',
-   *   mapURLToPage: ({ id, name }) => { ... },
-   *   mapPageToPathParams: (pageParams: Page['params']) => {
-   *     return {
-   *       name: 'SpecificPage',
-   *       params: {
-   *         // A potential error here,
-   *         // cause pageParams.name is not required in the path,
-   *         // but required in the page params
-   *         name: pageParams.name,
-   *         id: pageParams.id,
-   *       }
-   *     };
-   *   }
-   * }
-   *
-   * As you can see, there is no any explicit connection between SpecificPage and the path args.
-   * By the way, if the name param will be required in the page type, but not required in the path,
-   * where will be an incorect type in the signal args.
-   *
-   * RoutePathParams is here to prevent such potential errors
-   * and to make the explicit connection between path args and page params
-   * So, the previous example should be look like:
-   *
-   * const route Route<{ id: string; name?: string }, AppPage, SpecificPage> = {
-   *   path: 'specific_page/:id/:name?',
-   *   mapURLToPage: ({ id, name }) => { ... },
-   *   mapPageToPathParams: (pageParams: Page['params']) => {
-   *     return {
-   *       name: 'SpecificPage',
-   *       params: {
-   *         name: pageParams.name || 'fallback',
-   *         id: pageParams.id,
-   *       }
-   *     };
-   *   }
-   * }
-   */
+  RoutePathParams extends RouteWithoutParams | RouteWithParams<{ [key: string]: string }>,
+  AppPage extends AnyPage<string>,
+  MatchedPage extends AppPage = AppPage,
+  ErrorPage extends AppPage = AppPage,
+  URLToPageResult extends AppPage = MatchedPage | ErrorPage,
+  PageParams = keyof MatchedPage['params'] extends never ? never : MatchedPage['params'],
+> = RouteConfig<RoutePathParams, AppPage, MatchedPage, ErrorPage, URLToPageResult, PageParams> & {
+  path: string;
+};
+
+export type RouteConfig<
   RoutePathParams extends RouteWithoutParams | RouteWithParams<{ [key: string]: string }>,
   AppPage extends AnyPage<string>,
   MatchedPage extends AppPage = AppPage,
@@ -101,9 +56,7 @@ export type Route<
   URLToPageResult extends AppPage = MatchedPage | ErrorPage,
   PageParams = keyof MatchedPage['params'] extends never ? never : MatchedPage['params'],
 > = {
-  path: string;
   mapURLParamsToPage: (pathParams: RoutePathParams, queryParams: URLQueryParams) => URLToPageResult;
-  // @TODO Array<string | true> true — for empty value
   mapPageToURLParams?: (pageParams: PageParams) => RoutePathParams extends RouteWithoutParams
     ? { query?: URLQueryParams }
     : RoutePathParams extends RouteWithParams

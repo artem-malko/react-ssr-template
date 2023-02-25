@@ -21,23 +21,26 @@ import type { NewsItemPage } from 'application/pages/newsItem';
 import type { RootPage } from 'application/pages/root';
 import type { UsersPage } from 'application/pages/users';
 
-import { errorPageRoute } from './error/routing';
-import { newsPageRoute } from './news/routing';
-import { newsItemPageRoute } from './newsItem/routing';
-import { rootPageRoute } from './root/routing';
-import { usersPageRoute } from './users/routing';
+import { bindRouteConfigToPath } from './_internals';
+import { errorPageRouteConfig } from './error/routing';
+import { newsPageRouteConfig } from './news/routing';
+import { newsItemPageRouteConfig } from './newsItem/routing';
+import { rootPageRouteConfig } from './root/routing';
+import { usersPageRouteConfig } from './users/routing';
 
 export interface CommonPage extends AnyPage<string> {}
 
 export type Page = RootPage | ErrorPage | NewsPage | NewsItemPage | UsersPage;
 export type PageName = Page['name'];
 
+// Ignore prettier to have a clear view to all of your routes
+// prettier-ignore
 export const routes: Routes<Page> = {
-  root: rootPageRoute,
-  error: errorPageRoute,
-  news: newsPageRoute,
-  newsItem: newsItemPageRoute,
-  users: usersPageRoute,
+  root:     bindRouteConfigToPath('/', rootPageRouteConfig),
+  error:    bindRouteConfigToPath('/error/:code', errorPageRouteConfig),
+  news:     bindRouteConfigToPath('/news', newsPageRouteConfig),
+  newsItem: bindRouteConfigToPath('/news/:id', newsItemPageRouteConfig),
+  users:    bindRouteConfigToPath('/users', usersPageRouteConfig),
 };
 
 export { newsPageDefaultParams } from './news';

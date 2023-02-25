@@ -1,8 +1,7 @@
 import { ErrorPage } from '.';
-import { createRoute } from '../_internals/createRoute';
+import { createRouteConfig } from '../_internals';
 
-export const errorPageRoute = createRoute<ErrorPage, { code: string }>({
-  path: '/error/:code',
+export const errorPageRouteConfig = createRouteConfig<ErrorPage, { code: string }>({
   mapURLParamsToPage: ({ code }) => ({
     name: 'error',
     params: {

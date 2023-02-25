@@ -5,12 +5,11 @@ import { UserStatus } from 'application/entities/domain/user';
 import { parsePageQueryParam } from 'application/shared/lib/routing';
 
 import { UsersPage } from '.';
-import { createRoute } from '../_internals/createRoute';
+import { createRouteConfig } from '../_internals';
 
 const filterQueryParamName = 'filter[status]';
 
-export const usersPageRoute = createRoute<UsersPage>({
-  path: '/users',
+export const usersPageRouteConfig = createRouteConfig<UsersPage>({
   mapURLParamsToPage: (_, queryParams) => ({
     name: 'users',
     params: {

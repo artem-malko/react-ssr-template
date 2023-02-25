@@ -7,7 +7,7 @@ type Props = {
 };
 
 /**
- * This componten allows to raise an error code to the res.status
+ * This component allows to raise an error code to the res.status
  * from render of any component.
  * An example, you're trying to render a component, where react-query is used.
  * Let's imagine, that your query returns a error as a result.

@@ -1,8 +1,7 @@
 import { NewsItemPage } from '.';
-import { createRoute } from '../_internals/createRoute';
+import { createRouteConfig } from '../_internals';
 
-export const newsItemPageRoute = createRoute<NewsItemPage, { id: string }>({
-  path: '/news/:id',
+export const newsItemPageRouteConfig = createRouteConfig<NewsItemPage, { id: string }>({
   mapURLParamsToPage: ({ id: rawId }) => {
     const id = parseInt(rawId, 10);
 

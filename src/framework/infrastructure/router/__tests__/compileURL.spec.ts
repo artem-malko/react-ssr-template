@@ -21,7 +21,7 @@ describe('Routing compile URL', () => {
       page: {
         name: 'root',
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/';
 
@@ -37,7 +37,7 @@ describe('Routing compile URL', () => {
       page: {
         name: 'root2' as 'root',
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/';
 
@@ -57,7 +57,7 @@ describe('Routing compile URL', () => {
           id: '100',
         },
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/page_with_required_params/100';
 
@@ -91,7 +91,7 @@ describe('Routing compile URL', () => {
           id: '100',
         },
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/page_with_required_params/100_100';
 
@@ -111,7 +111,7 @@ describe('Routing compile URL', () => {
           id: '100',
         },
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/page_with_not_required_params/100';
 
@@ -145,7 +145,7 @@ describe('Routing compile URL', () => {
           id: '100',
         },
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/page_with_required_params_with_query/100?query_param=100_100';
 
@@ -180,7 +180,7 @@ describe('Routing compile URL', () => {
           id: '100',
         },
       },
-      URLQueryParams: undefined,
+      URLQueryParams: {},
     };
     const result = '/page_with_required_params_with_query/100?query_param';
 

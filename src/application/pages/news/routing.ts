@@ -1,10 +1,9 @@
 import { parsePageQueryParam } from 'application/shared/lib/routing';
 
 import { NewsPage } from '.';
-import { createRoute } from '../_internals/createRoute';
+import { createRouteConfig } from '../_internals';
 
-export const newsPageRoute = createRoute<NewsPage>({
-  path: '/news',
+export const newsPageRouteConfig = createRouteConfig<NewsPage>({
   mapURLParamsToPage: (_, queryParams) => ({
     name: 'news',
     params: {

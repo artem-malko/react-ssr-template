@@ -82,7 +82,7 @@ function createURLPathParser<PageName extends string>(
       >
     >
   >((mutableRes, pageName) => {
-    // Every path needs to have leading slash for the correct processing
+    // Every path needs to have a leading slash for the correct processing
     const routeConfig = patchLeadingSlashInPath<PageName, Route<RouteParams<any>, AnyPage<PageName>>>(
       routes[pageName],
     );
@@ -100,13 +100,10 @@ function createURLPathParser<PageName extends string>(
      *
      * Similar paths:
      * /users/:id
-     * /users/:id?/:name
-     * /users/:id/:name?
      * /users/:name
-     * /users/:anyOtherParamName
      *
      * These paths are similar cause URL-path /users/123 will match to all of them
-     * Paths /users/:name, /users/:id, /users/:id/:name? will be normalized to /users/:p
+     * Paths /users/:name and /users/:id will be normalized to /users/:p
      */
     const normalizedPath = normalizePath(routeConfig.path);
 

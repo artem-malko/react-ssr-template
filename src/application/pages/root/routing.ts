@@ -1,7 +1,6 @@
 import { RootPage } from '.';
-import { createRoute } from '../_internals/createRoute';
+import { createRouteConfig } from '../_internals';
 
-export const rootPageRoute = createRoute<RootPage>({
-  path: '/',
+export const rootPageRouteConfig = createRouteConfig<RootPage>({
   mapURLParamsToPage: () => ({ name: 'root' }),
 });

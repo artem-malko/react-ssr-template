@@ -17,7 +17,8 @@ export { useCommonNavigate } from 'framework/infrastructure/router/hooks/useComm
 
 export { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
 
-export { createRouteCreator } from 'framework/infrastructure/router/createRouteCreator';
+export { createRouteConfigCreator } from 'framework/infrastructure/router/createRouteConfigCreator';
+export { bindRouteConfigToPathCreator } from 'framework/infrastructure/router/bindRouteConfigToPathCreator';
 export { createURLCompiler } from 'framework/infrastructure/router/compileURL';
 
 export { useCommonAppQuery } from 'framework/infrastructure/query/useCommonAppQuery';
