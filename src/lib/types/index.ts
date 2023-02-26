@@ -7,9 +7,8 @@
  */
 export type UnwrapPromise<T> = T extends Promise<infer Result> ? Result : never;
 
-export type UnwrapReadonlyArrayElement<ArrType> = ArrType extends readonly (infer ElementType)[]
-  ? ElementType
-  : never;
+export type UnwrapReadonlyArrayElement<ArrType extends readonly unknown[]> =
+  ArrType extends readonly (infer ElementType)[] ? ElementType : never;
 
 /**
  * General union discriminator
