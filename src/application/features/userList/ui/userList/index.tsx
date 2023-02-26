@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useId, useState } from 'react';
+import { memo, useCallback, useEffect, useId } from 'react';
 
 import { RaiseError } from 'framework/public/universal';
 
@@ -20,11 +20,9 @@ type Props = {
  */
 export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
   const toggleGlass = useToggleGlass();
-
-  const [filterStatusState, setFilterStatusState] = useState<UserStatus[]>(filterStatus);
   const userListResult = useUserList({
     page,
-    statusFilter: filterStatusState,
+    statusFilter: filterStatus,
   });
   const { navigate } = useNavigate();
   const onPageChange = useCallback(
@@ -42,16 +40,6 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
     [page, navigate],
   );
 
-  useEffect(() => {
-    navigate((activePage) => ({
-      name: 'users',
-      params: {
-        ...(activePage.name === 'users' ? activePage.params : usersPageDefaultParams),
-        filterStatus: filterStatusState,
-      },
-    }));
-  }, [navigate, filterStatusState]);
-
   /**
    * isFetching won't be processed in Suspense, cause it is not a state of a query
    * So, we have to process this status by ourselves
@@ -63,11 +51,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
   if (userListResult.error) {
     return (
       <>
-        <UserListFilters
-          disabled={userListResult.isFetching}
-          filterStatus={filterStatusState}
-          setFilterStatus={setFilterStatusState}
-        />
+        <UserListFilters disabled={userListResult.isFetching} filterStatus={filterStatus} />
         <h1>ERROR!</h1>
         <RaiseError code={userListResult.error.code} />
         <strong>{JSON.stringify(userListResult.error)}</strong>
@@ -82,11 +66,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
 
   return (
     <div>
-      <UserListFilters
-        disabled={userListResult.isFetching}
-        filterStatus={filterStatusState}
-        setFilterStatus={setFilterStatusState}
-      />
+      <UserListFilters disabled={userListResult.isFetching} filterStatus={filterStatus} />
       <table cellPadding={8} cellSpacing={4}>
         <tbody>
           <tr>
@@ -127,10 +107,24 @@ function setFilter(filter: UserStatus, curState: UserStatus[]) {
 const UserListFilters = memo<{
   disabled: boolean;
   filterStatus: UserStatus[];
-  setFilterStatus: (p: (s: UserStatus[]) => UserStatus[]) => void;
-}>(({ filterStatus, setFilterStatus, disabled }) => {
+}>(({ filterStatus, disabled }) => {
   const stableUniqId = useId();
   const inputs: Array<UserStatus> = ['active', 'inactive', 'banned'];
+  const { navigate } = useNavigate();
+  const onFilterChange = useCallback(
+    (status: UserStatus) => {
+      const newFilters = setFilter(status, filterStatus);
+      navigate((activePage) => ({
+        name: 'users',
+        params: {
+          ...(activePage.name === 'users' ? activePage.params : usersPageDefaultParams),
+          filterStatus: newFilters,
+        },
+      }));
+    },
+    [navigate, filterStatus],
+  );
+
   return (
     <div style={{ display: 'flex', padding: '20px' }}>
       {inputs.map((label) => {
@@ -143,7 +137,7 @@ const UserListFilters = memo<{
               type="checkbox"
               disabled={disabled}
               onChange={() => {
-                setFilterStatus((s) => setFilter(label, s));
+                onFilterChange(label);
               }}
               id={id}
             />

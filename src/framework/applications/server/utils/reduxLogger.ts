@@ -16,8 +16,9 @@ export const logger = createLogger({
           break;
         case '%c action':
           console.log('------------------');
-          console.log('ACTION:  ', content.type);
           console.log(`DATE:     [${new Date().toISOString()}] `);
+          console.log('ACTION:  ', content.type);
+          console.log('PAYLOAD: ', content.payload);
           break;
         case '%c next state':
           if (process.env.REDUX_LOG === 'full') {
