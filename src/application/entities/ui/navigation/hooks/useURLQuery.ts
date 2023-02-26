@@ -7,6 +7,7 @@ export const allowedURLQueryKeys = [
   'utm_source',
   'utm_campaign',
   'test_mode_attr',
+  'render',
 ] as const;
 export type AllowedURLQueryKeys = UnwrapReadonlyArrayElement<typeof allowedURLQueryKeys>;
 
