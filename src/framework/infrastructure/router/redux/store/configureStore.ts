@@ -4,15 +4,16 @@ import { createNavigationMiddleware } from 'framework/infrastructure/router/redu
 import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
 import { createSignalMiddleware } from 'framework/infrastructure/signal/middleware';
 
-import { createReducer } from './reducer';
+import { createReducer, CreateReducerOptions } from './reducer';
 
 export function configureStore(params: {
   initialState: AnyAppState;
   middlewares: Middleware[];
   enhancers: StoreEnhancer[];
   compileAppURL: (appContext: AnyAppContext) => string;
+  createReducerOptions: CreateReducerOptions;
 }): Store<AnyAppState> {
-  const { initialState, middlewares, enhancers, compileAppURL } = params;
+  const { initialState, middlewares, enhancers, compileAppURL, createReducerOptions } = params;
   const appliedMiddlewares = applyMiddleware(
     createSignalMiddleware(),
     createNavigationMiddleware(compileAppURL),
@@ -21,5 +22,9 @@ export function configureStore(params: {
 
   const finalEnhancer = compose(appliedMiddlewares, ...enhancers) as StoreEnhancer;
 
-  return legacy_createStore(createReducer(initialState), initialState, finalEnhancer);
+  return legacy_createStore(
+    createReducer(initialState, createReducerOptions),
+    initialState,
+    finalEnhancer,
+  );
 }

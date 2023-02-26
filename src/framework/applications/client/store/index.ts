@@ -1,4 +1,5 @@
 import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
+import { CreateReducerOptions } from 'framework/infrastructure/router/redux/store/reducer';
 import { AnyAppContext } from 'framework/infrastructure/router/types';
 
 import { startup } from './startup';
@@ -6,8 +7,9 @@ import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 
 type Params = {
   compileAppURL: (appContext: AnyAppContext) => string;
+  createReducerOptions: CreateReducerOptions;
 };
-export function restoreStore({ compileAppURL }: Params) {
+export function restoreStore({ compileAppURL, createReducerOptions }: Params) {
   const initialState = window.__initialRouterState;
   const mutableEnhancers = [];
 
@@ -22,6 +24,7 @@ export function restoreStore({ compileAppURL }: Params) {
     middlewares: [],
     enhancers: mutableEnhancers,
     compileAppURL,
+    createReducerOptions,
   });
 
   addStoreSubscribers(store);

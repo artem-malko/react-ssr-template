@@ -49,6 +49,7 @@ type Params = {
   appLogger: AppLogger;
   MainComp: React.ReactNode;
   defaultReactQueryOptions?: DefaultReactQueryOptions;
+  allowedURLQueryKeys?: readonly string[];
 };
 export const startClientApplication = ({
   onAppRendered,
@@ -57,6 +58,7 @@ export const startClientApplication = ({
   compileAppURL,
   appLogger,
   defaultReactQueryOptions,
+  allowedURLQueryKeys,
 }: Params) => {
   const { logClientUncaughtException, logClientUnhandledRejection } =
     createClientGlobalErrorHandlers(appLogger);
@@ -91,7 +93,12 @@ export const startClientApplication = ({
     logClientUncaughtException(error);
   });
 
-  return restoreStore({ compileAppURL }).then((store) => {
+  return restoreStore({
+    compileAppURL,
+    createReducerOptions: {
+      allowedURLQueryKeys,
+    },
+  }).then((store) => {
     hydrateRoot(
       container,
       <StrictMode>

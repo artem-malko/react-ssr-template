@@ -55,6 +55,7 @@ type Params = {
   initialAppContext: AnyAppContext;
   appLogger: AppLogger;
   defaultReactQueryOptions?: DefaultReactQueryOptions;
+  allowedURLQueryKeys?: readonly string[];
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
   ({
@@ -66,6 +67,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     initialAppContext,
     appLogger,
     defaultReactQueryOptions,
+    allowedURLQueryKeys,
   }) =>
   (req, res) => {
     res.set('X-Content-Type-Options', 'nosniff');
@@ -100,6 +102,9 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
       compileAppURL,
       parseURL,
       initialAppContext,
+      createReducerOptions: {
+        allowedURLQueryKeys,
+      },
     });
 
     Promise.all<

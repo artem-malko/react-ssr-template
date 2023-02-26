@@ -1,11 +1,9 @@
 import { memo, useCallback, useState } from 'react';
 
-import { useURLQuery } from 'framework/public/universal';
-
 import { Search } from 'application/features/search';
 import { StaticDataComponent } from 'application/features/staticComponent';
 
-import { Link } from 'application/entities/ui/navigation';
+import { Link, useURLQuery } from 'application/entities/ui/navigation';
 
 import { Lazy } from 'application/shared/kit/lazy';
 import { Preloader } from 'application/shared/kit/preloader';

@@ -20,7 +20,7 @@ export interface AnyPage<
  * - ?q=value transforms to { q: ['value'] }
  * - ?q=value_1&q=value_2 transforms to { q: ['value1', 'value2'] }
  */
-export type URLQueryParams = Record<string, QueryParamValue>;
+export type URLQueryParams<QueryKeys extends string = string> = Record<QueryKeys, QueryParamValue>;
 
 /**
  * Every App, which uses this router has to extend this type in its own AppContext

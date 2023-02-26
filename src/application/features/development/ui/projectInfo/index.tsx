@@ -1,8 +1,6 @@
 import { memo, version } from 'react';
 
-import { useURLQuery } from 'framework/public/universal';
-
-import { useActivePage } from 'application/entities/ui/navigation';
+import { useActivePage, useURLQuery } from 'application/entities/ui/navigation';
 
 import { SourceSpoiler } from '../sourceSpoiler';
 

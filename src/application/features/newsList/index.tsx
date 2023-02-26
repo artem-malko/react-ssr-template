@@ -1,11 +1,10 @@
 import { memo, useCallback, useEffect, useId, useState } from 'react';
 
 import { useStyles } from 'framework/public/styles';
-import { useURLQuery } from 'framework/public/universal';
 
 import { newsPageDefaultParams } from 'application/pages/shared';
 
-import { useNavigate } from 'application/entities/ui/navigation';
+import { useNavigate, useURLQuery } from 'application/entities/ui/navigation';
 
 import { Lazy } from 'application/shared/kit/lazy';
 import { Preloader } from 'application/shared/kit/preloader';

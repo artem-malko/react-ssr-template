@@ -10,7 +10,7 @@ import { createRequest, createAppLogger, createURLCompiler } from 'framework/pub
 
 import { routes } from 'application/pages/shared';
 
-import { CompileAppURLContext } from 'application/entities/ui/navigation';
+import { CompileAppURLContext, allowedURLQueryKeys } from 'application/entities/ui/navigation';
 
 import {
   defaultClientApplicationConfig,
@@ -64,6 +64,7 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
     URLQueryParams: {},
   },
   appLogger,
+  allowedURLQueryKeys,
 });
 
 startServer({

@@ -15,7 +15,7 @@ export { useAnyActivePage } from 'framework/infrastructure/router/hooks/useAnyAc
 
 export { useCommonNavigate } from 'framework/infrastructure/router/hooks/useCommonNavigate';
 
-export { useURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
+export { useCommonURLQuery } from 'framework/infrastructure/router/hooks/useURLQueryParams';
 
 export { createRouteConfigCreator } from 'framework/infrastructure/router/createRouteConfigCreator';
 export { bindRouteConfigToPathCreator } from 'framework/infrastructure/router/bindRouteConfigToPathCreator';
