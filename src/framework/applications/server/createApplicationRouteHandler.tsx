@@ -9,7 +9,7 @@ import express from 'express';
 import { StrictMode } from 'react';
 import { renderToPipeableStream } from 'react-dom/server';
 import { Provider as ReduxStoreProvider } from 'react-redux';
-import { AnyAction, Store } from 'redux';
+import { Store } from 'redux';
 
 import { Shell } from 'framework/applications/shell';
 import { ConfigContext } from 'framework/config/react';
@@ -27,7 +27,7 @@ import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptio
 import { RaiseErrorContext } from 'framework/infrastructure/raise/react/context';
 import { createRaiseErrorStore } from 'framework/infrastructure/raise/store';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
-import { AnyAppContext, AnyAppState } from 'framework/infrastructure/router/types';
+import { AnyAppState, ServerRouter } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 
@@ -47,29 +47,24 @@ const SERVER_RENDER_ABORT_TIMEOUT = 10000;
  * And https://github.com/reactwg/react-18/discussions/37
  */
 type Params = {
-  parseURL: (URL: string) => AnyAction[];
-  compileAppURL: (appContext: AnyAppContext) => string;
+  serverRouter: ServerRouter;
   MainComp: React.ReactNode;
   serverApplicationConfig: BaseApplicationConfig;
   clientApplicationConfig: BaseApplicationConfig;
-  initialAppContext: AnyAppContext;
   appLogger: AppLogger;
   defaultReactQueryOptions?: DefaultReactQueryOptions;
-  allowedURLQueryKeys?: readonly string[];
 };
 export const createApplicationRouteHandler: (params: Params) => express.Handler =
   ({
-    parseURL,
-    compileAppURL,
+    serverRouter,
     MainComp,
     serverApplicationConfig,
     clientApplicationConfig,
-    initialAppContext,
     appLogger,
     defaultReactQueryOptions,
-    allowedURLQueryKeys,
   }) =>
   (req, res) => {
+    const { parseURL, compileURL, allowedURLQueryKeys, initialAppContext } = serverRouter;
     res.set('X-Content-Type-Options', 'nosniff');
     res.set('X-XSS-Protection', '1');
     res.set('X-Frame-Options', 'deny');
@@ -99,7 +94,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     const storePromise = restoreStore({
       req,
       res,
-      compileAppURL,
+      compileAppURL: compileURL,
       parseURL,
       initialAppContext,
       createReducerOptions: {
@@ -112,7 +107,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
     >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise]).then(
       ([store, assetsInfo, dependencyStats]) => {
         const state = store.getState();
-        const compiledUrl = compileAppURL(state.appContext);
+        const compiledUrl = compileURL(state.appContext);
 
         if (req.url !== '/' && compiledUrl !== req.url.replace(/\/$/, '')) {
           if (process.env.NODE_ENV === 'development') {

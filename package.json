@@ -40,7 +40,7 @@
     "uuid": "9.0.0"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "4.24.10",
+    "@tanstack/react-query-devtools": "4.24.12",
     "@testing-library/react": "14.0.0",
     "@types/chai": "4.3.4",
     "@types/chai-dom": "1.11.0",
@@ -51,7 +51,7 @@
     "@types/js-cookie": "3.0.3",
     "@types/lodash.snakecase": "4.1.7",
     "@types/mocha": "10.0.1",
-    "@types/node": "18.14.1",
+    "@types/node": "18.14.2",
     "@types/pino": "7.0.5",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",

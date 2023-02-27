@@ -46,8 +46,17 @@ const appLogger = createAppLogger({
 const compileAppURL = createURLCompiler(routes);
 
 const renderApplicationRouteHandler = createApplicationRouteHandler({
-  parseURL,
-  compileAppURL,
+  serverRouter: {
+    parseURL,
+    compileURL: compileAppURL,
+    initialAppContext: {
+      page: {
+        name: 'root',
+      },
+      URLQueryParams: {},
+    },
+    allowedURLQueryKeys,
+  },
   MainComp: (
     <CompileAppURLContext.Provider value={compileAppURL}>
       <RequesterContext.Provider value={request}>
@@ -57,16 +66,8 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   ),
   clientApplicationConfig,
   serverApplicationConfig,
-  initialAppContext: {
-    page: {
-      name: 'root',
-    },
-    URLQueryParams: {},
-  },
   appLogger,
-  allowedURLQueryKeys,
 });
-
 startServer({
   serverApplicationConfig,
   serverConfig,

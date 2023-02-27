@@ -1,3 +1,5 @@
+import { AnyAction } from 'redux';
+
 import { MapDiscriminatedUnion } from 'lib/types';
 
 type QueryParamValue = Array<string | undefined>;
@@ -83,4 +85,29 @@ export type Routes<
   PMap extends MapDiscriminatedUnion<Page, 'name'> = MapDiscriminatedUnion<Page, 'name'>,
 > = {
   [key in keyof PMap]: Route<RouteParams<any>, Page, PMap[key]>;
+};
+
+export type UniversalRouter = {
+  /**
+   * A function, which compiles an URL from an appContext
+   */
+  compileURL: (appContext: AnyAppContext) => string;
+  /**
+   * Allowed global URL Query keys, which are not associated with any page
+   */
+  allowedURLQueryKeys?: readonly string[];
+};
+
+export type ClientRouter = UniversalRouter;
+
+export type ServerRouter = UniversalRouter & {
+  /**
+   * A function, which parses an URL to an array of actions for the router
+   */
+  parseURL: (URL: string) => AnyAction[];
+  /**
+   * An initial app context, which is a default for an application
+   * You can treat it like a context for a root page
+   */
+  initialAppContext: AnyAppContext;
 };

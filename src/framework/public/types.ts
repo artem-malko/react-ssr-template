@@ -11,6 +11,8 @@ export type {
   AnyPage,
   URLQueryParams,
   Routes,
+  ClientRouter,
+  ServerRouter,
 } from 'framework/infrastructure/router/types';
 
 export type { ParsedError, Requester } from 'framework/infrastructure/request/types';

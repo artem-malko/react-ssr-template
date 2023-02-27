@@ -37,14 +37,17 @@ startClientApplication({
       </RequesterContext.Provider>
     </CompileAppURLContext.Provider>
   ),
-  compileAppURL,
+
   appLogger,
-  onRecoverableError(args) {
+  onRecoverableErrorHandler(args) {
     appLogger.sendErrorLog({
       id: 'onRecoverableError',
       message: (!!args && args.toString()) || 'onRecoverableError',
       source: 'unknown',
     });
   },
-  allowedURLQueryKeys,
+  clientRouter: {
+    compileURL: compileAppURL,
+    allowedURLQueryKeys,
+  },
 });

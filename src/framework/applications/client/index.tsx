@@ -22,7 +22,7 @@ import { PlatformAPIContext } from 'framework/infrastructure/platform/shared/con
 import { createWindowApi } from 'framework/infrastructure/platform/window/client';
 import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
-import { AnyAppContext } from 'framework/infrastructure/router/types';
+import { ClientRouter } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 
 import { restoreStore } from './store';
@@ -43,22 +43,24 @@ const platformAPI = createPlatformAPI({
 const session = createClientSessionObject();
 
 type Params = {
-  compileAppURL: (appContext: AnyAppContext) => string;
-  onAppRendered?: () => void;
-  onRecoverableError?: (args: unknown) => void;
+  clientRouter: ClientRouter;
+  onAppRenderedHandler?: () => void;
+  onRecoverableErrorHandler?: (args: unknown) => void;
   appLogger: AppLogger;
   MainComp: React.ReactNode;
   defaultReactQueryOptions?: DefaultReactQueryOptions;
   allowedURLQueryKeys?: readonly string[];
 };
+/**
+ * An entry point for a client application
+ */
 export const startClientApplication = ({
-  onAppRendered,
-  onRecoverableError,
   MainComp,
-  compileAppURL,
+  clientRouter,
   appLogger,
+  onAppRenderedHandler,
+  onRecoverableErrorHandler,
   defaultReactQueryOptions,
-  allowedURLQueryKeys,
 }: Params) => {
   const { logClientUncaughtException, logClientUnhandledRejection } =
     createClientGlobalErrorHandlers(appLogger);
@@ -94,9 +96,9 @@ export const startClientApplication = ({
   });
 
   return restoreStore({
-    compileAppURL,
+    compileAppURL: clientRouter.compileURL,
     createReducerOptions: {
-      allowedURLQueryKeys,
+      allowedURLQueryKeys: clientRouter.allowedURLQueryKeys,
     },
   }).then((store) => {
     hydrateRoot(
@@ -121,7 +123,7 @@ export const startClientApplication = ({
                         clientApplicationConfig={config}
                         onRender={() => {
                           afterAppRendered({ config, logger: appLogger });
-                          onAppRendered?.();
+                          onAppRenderedHandler?.();
                         }}
                         mainComp={MainComp}
                       />
@@ -135,7 +137,7 @@ export const startClientApplication = ({
       </StrictMode>,
       {
         onRecoverableError: (...args) => {
-          onRecoverableError?.(...args);
+          onRecoverableErrorHandler?.(...args);
           console.log('args: ', args);
         },
       },

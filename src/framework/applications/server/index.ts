@@ -49,6 +49,9 @@ type Params = {
   serverConfig: BaseServerConfig;
   serverApplicationConfig: BaseApplicationConfig;
 };
+/**
+ * An entry point for a server application
+ */
 export const startServer = ({ enhanceServer, serverConfig, serverApplicationConfig }: Params) => {
   const publicPath = serverApplicationConfig.publicPath;
   const ONE_MONTH = 2592000000;
