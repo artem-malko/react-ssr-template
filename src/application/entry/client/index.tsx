@@ -10,6 +10,7 @@ import { PopupControllerContext, PopupController } from 'application/shared/kit/
 import { ToastControllerContext, ToastController } from 'application/shared/kit/toast';
 import { RequesterContext } from 'application/shared/lib/request';
 
+import { getTitle } from '../common/metadata/getTitle';
 import { Main } from '../common/react';
 
 const toastController = new ToastController();
@@ -46,8 +47,9 @@ startClientApplication({
       source: 'unknown',
     });
   },
-  clientRouter: {
+  router: {
     compileURL: compileAppURL,
     allowedURLQueryKeys,
   },
+  getTitle,
 });

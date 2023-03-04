@@ -34,5 +34,9 @@ export const createWindowApi = (window: Window): WindowAPI => {
     historyBack() {
       client.history.back();
     },
+
+    setTitle(title) {
+      client.document.title = title;
+    },
   };
 };

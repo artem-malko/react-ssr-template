@@ -32,3 +32,5 @@ export { createLazyComponentLoader } from 'framework/infrastructure/lazy';
 export { RaiseError } from 'framework/infrastructure/raise/react/component';
 
 export { DATA_T_ATTRIBUTE_NAME, dt } from 'framework/infrastructure/tests/dom/dt';
+
+export { type GetTitle } from '../applications/client/types';

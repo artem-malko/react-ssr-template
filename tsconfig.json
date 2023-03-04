@@ -2,9 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "tslib": [
-        "./node_modules/tslib/tslib.d.ts"
-      ],
       "*": [
         "src/*"
       ]

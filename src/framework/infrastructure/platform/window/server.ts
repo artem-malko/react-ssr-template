@@ -30,4 +30,7 @@ export const createWindowApi = (): WindowAPI => ({
   historyReplace() {
     // do nothing
   },
+  setTitle() {
+    // do nothing
+  },
 });

@@ -8,4 +8,6 @@ export interface WindowAPI {
   historyBack(): void;
   historyPush(state: any, url: string): void;
   historyReplace(state: any, url: string): void;
+
+  setTitle(title: string): void;
 }

@@ -15,4 +15,8 @@ export {
 
 export { createURLParser } from '../infrastructure/router/parseURL';
 
-export { createCookieAPI } from 'framework/infrastructure/platform/cookie/server';
+export { createCookieAPI } from '../infrastructure/platform/cookie/server';
+
+export { type Metadata } from '../types/metadata';
+
+export { type GetMetadata } from '../applications/server/types';

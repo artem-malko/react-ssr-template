@@ -10,7 +10,7 @@ import { Provider as ReduxStoreProvider } from 'react-redux';
 import { Shell } from 'framework/applications/shell';
 import { getClientApplicationConfig } from 'framework/config/generator/client';
 import { ConfigContext } from 'framework/config/react';
-import { ApplicationContainerId } from 'framework/constants/application';
+import { applicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSClientProviderStore } from 'framework/infrastructure/css/provider/clientStore';
 import { AppLogger } from 'framework/infrastructure/logger';
@@ -22,15 +22,16 @@ import { PlatformAPIContext } from 'framework/infrastructure/platform/shared/con
 import { createWindowApi } from 'framework/infrastructure/platform/window/client';
 import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptions';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
-import { ClientRouter } from 'framework/infrastructure/router/types';
+import { AnyPage, ClientRouter } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 
 import { restoreStore } from './store';
+import { GetTitle } from './types';
 import { afterAppRendered } from './utils/afterAppRendered';
 import { createClientSessionObject } from './utils/createClientSessionObject';
 const cssProviderStore = new CSSClientProviderStore();
 
-const container = document.getElementById(ApplicationContainerId) as Element;
+const container = document.getElementById(applicationContainerId) as Element;
 
 const config = getClientApplicationConfig();
 
@@ -42,26 +43,50 @@ const platformAPI = createPlatformAPI({
 });
 const session = createClientSessionObject();
 
-type Params = {
-  clientRouter: ClientRouter;
-  onAppRenderedHandler?: () => void;
-  onRecoverableErrorHandler?: (args: unknown) => void;
-  appLogger: AppLogger;
+type Params<Page extends AnyPage<string>> = {
+  /**
+   * All methods and configs for a router on a client side
+   */
+  router: ClientRouter;
+  /**
+   * React entry point
+   */
   MainComp: React.ReactNode;
+  /**
+   * Just a logger, which follows AppLogger interface
+   */
+  appLogger: AppLogger;
+  /**
+   * On a client side we need to update only a title of a page
+   */
+  getTitle: GetTitle<Page>;
+  /**
+   * A callback which is executed on the first render of an application
+   * Caution, the first render doesn't mean, that this render was finished
+   * This callback can be executed during this process, but only once.
+   */
+  onAppRenderedHandler?: () => void;
+  /**
+   * A callback, which is executed on a error "content mismatch"
+   */
+  onRecoverableErrorHandler?: (args: unknown) => void;
+  /**
+   * Default options for react-query
+   */
   defaultReactQueryOptions?: DefaultReactQueryOptions;
-  allowedURLQueryKeys?: readonly string[];
 };
 /**
  * An entry point for a client application
  */
-export const startClientApplication = ({
+export const startClientApplication = <Page extends AnyPage<string>>({
   MainComp,
-  clientRouter,
+  router,
   appLogger,
   onAppRenderedHandler,
   onRecoverableErrorHandler,
   defaultReactQueryOptions,
-}: Params) => {
+  getTitle,
+}: Params<Page>) => {
   const { logClientUncaughtException, logClientUnhandledRejection } =
     createClientGlobalErrorHandlers(appLogger);
 
@@ -86,7 +111,7 @@ export const startClientApplication = ({
       return;
     }
 
-    const stringifiedReason = typeof reason === 'object' ? JSON.stringify(reason) : reason;
+    const stringifiedReason = typeof reason === 'object' ? JSON.stringify(reason) : reason.toString();
 
     logClientUnhandledRejection(new Error(stringifiedReason));
   });
@@ -96,10 +121,13 @@ export const startClientApplication = ({
   });
 
   return restoreStore({
-    compileAppURL: clientRouter.compileURL,
+    compileAppURL: router.compileURL,
     createReducerOptions: {
-      allowedURLQueryKeys: clientRouter.allowedURLQueryKeys,
+      allowedURLQueryKeys: router.allowedURLQueryKeys,
     },
+    queryClient,
+    windowApi: platformAPI.window,
+    getTitle,
   }).then((store) => {
     hydrateRoot(
       container,
@@ -124,6 +152,16 @@ export const startClientApplication = ({
                         onRender={() => {
                           afterAppRendered({ config, logger: appLogger });
                           onAppRenderedHandler?.();
+
+                          const appContext = store.getState().appContext;
+
+                          platformAPI.window.setTitle(
+                            getTitle({
+                              queryClient,
+                              page: appContext.page as any,
+                              URLQueryParams: appContext.URLQueryParams,
+                            }),
+                          );
                         }}
                         mainComp={MainComp}
                       />

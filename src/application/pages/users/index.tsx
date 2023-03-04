@@ -19,4 +19,6 @@ export const usersPageDefaultParams: UsersPage['params'] = {
   activeUserId: undefined,
 };
 
+export { getTitle, getMetaData } from './metadata';
+
 export const UsersPage = lazy(() => import(/* webpackChunkName: "usersPage" */ './ui'));

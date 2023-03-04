@@ -4,7 +4,7 @@ import path from 'node:path';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 
-import { BaseApplicationConfig, BaseServerConfig } from 'framework/config/types';
+import { BaseServerConfig } from 'framework/config/types';
 import { utilityRouterPath } from 'framework/constants/application';
 import {
   logServerUncaughtException,
@@ -19,7 +19,7 @@ import { isSearchBot } from './middlewares/searchBots';
 import { utilityRouter } from './routes/utility';
 
 /**
- * Remove logs from about useLayoutEffect usage on a server side
+ * Removes logs from sdtout about useLayoutEffect usage on a server side
  * It's just a useless warning in our case
  */
 if (isServer && process.env.NODE_ENV !== 'production') {
@@ -45,15 +45,21 @@ process.on('unhandledRejection', (reason: any) => {
 const server = express();
 
 type Params = {
+  /**
+   * Express has a rich eco-system, which includes a lot of usefull middlewares and so on.
+   * So, this function allows any developer to apply that middlewares/plugins to the server
+   */
   enhanceServer: (server: express.Express) => express.Express;
+  /**
+   * A config for a server
+   */
   serverConfig: BaseServerConfig;
-  serverApplicationConfig: BaseApplicationConfig;
 };
 /**
- * An entry point for a server application
+ * An entry point for a server, which serves an application
  */
-export const startServer = ({ enhanceServer, serverConfig, serverApplicationConfig }: Params) => {
-  const publicPath = serverApplicationConfig.publicPath;
+export const startServer = ({ enhanceServer, serverConfig }: Params) => {
+  const publicPath = serverConfig.publicPath;
   const ONE_MONTH = 2592000000;
 
   if (process.env.NODE_ENV !== 'production') {

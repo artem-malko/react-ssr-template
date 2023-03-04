@@ -1,1 +1,4 @@
-export { ApplicationContainerId, utilityRouterPath } from 'framework/constants/application';
+export {
+  applicationContainerId as ApplicationContainerId,
+  utilityRouterPath,
+} from 'framework/constants/application';

@@ -1,15 +1,29 @@
+import { QueryClient } from '@tanstack/react-query';
+
+import { PlatformAPI } from 'framework/infrastructure/platform';
 import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
 import { CreateReducerOptions } from 'framework/infrastructure/router/redux/store/reducer';
-import { AnyAppContext } from 'framework/infrastructure/router/types';
+import { AnyAppContext, AnyPage } from 'framework/infrastructure/router/types';
 
+import { createTitleMiddleware } from './middleware/title';
 import { startup } from './startup';
+import { GetTitle } from '../types';
 import { addStoreSubscribers } from '../utils/addStoreSubscribers';
 
-type Params = {
+type Params<Page extends AnyPage<string>> = {
   compileAppURL: (appContext: AnyAppContext) => string;
   createReducerOptions: CreateReducerOptions;
+  queryClient: QueryClient;
+  windowApi: PlatformAPI['window'];
+  getTitle: GetTitle<Page>;
 };
-export function restoreStore({ compileAppURL, createReducerOptions }: Params) {
+export function restoreStore<Page extends AnyPage<string>>({
+  compileAppURL,
+  createReducerOptions,
+  queryClient,
+  windowApi,
+  getTitle,
+}: Params<Page>) {
   const initialState = window.__initialRouterState;
   const mutableEnhancers = [];
 
@@ -21,7 +35,13 @@ export function restoreStore({ compileAppURL, createReducerOptions }: Params) {
 
   const store = configureStore({
     initialState,
-    middlewares: [],
+    middlewares: [
+      createTitleMiddleware({
+        queryClient,
+        windowApi,
+        getTitle,
+      }),
+    ],
     enhancers: mutableEnhancers,
     compileAppURL,
     createReducerOptions,

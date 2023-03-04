@@ -5,7 +5,11 @@ export interface AnyConfig {
 }
 
 export interface BaseServerConfig {
+  /**
+   *
+   */
   port: number;
+  publicPath: string;
 }
 
 export interface BaseApplicationConfig {

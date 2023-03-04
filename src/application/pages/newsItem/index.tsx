@@ -9,4 +9,6 @@ export interface NewsItemPage extends CommonPage {
   };
 }
 
+export { getTitle, getMetaData } from './metadata';
+
 export const NewsItemPage = lazy(() => import(/* webpackChunkName: "newsItemPage" */ './ui'));

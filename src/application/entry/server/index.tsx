@@ -19,6 +19,7 @@ import {
 } from 'application/shared/config';
 import { RequesterContext } from 'application/shared/lib/request';
 
+import { getMetadata } from './metadata/getMetadata';
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
 import { Main } from '../common/react';
@@ -46,7 +47,7 @@ const appLogger = createAppLogger({
 const compileAppURL = createURLCompiler(routes);
 
 const renderApplicationRouteHandler = createApplicationRouteHandler({
-  serverRouter: {
+  router: {
     parseURL,
     compileURL: compileAppURL,
     initialAppContext: {
@@ -67,9 +68,10 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   clientApplicationConfig,
   serverApplicationConfig,
   appLogger,
+  getMetadata,
 });
+
 startServer({
-  serverApplicationConfig,
   serverConfig,
   enhanceServer: (server) => {
     // @JUST_FOR_TEST JUST FOR TEST

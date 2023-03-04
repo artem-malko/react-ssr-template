@@ -14,7 +14,6 @@ import { Store } from 'redux';
 import { Shell } from 'framework/applications/shell';
 import { ConfigContext } from 'framework/config/react';
 import { BaseApplicationConfig } from 'framework/config/types';
-import { ApplicationContainerId } from 'framework/constants/application';
 import { CSSProvider } from 'framework/infrastructure/css/provider';
 import { CSSServerProviderStore } from 'framework/infrastructure/css/provider/serverStore';
 import { AppLogger } from 'framework/infrastructure/logger';
@@ -27,14 +26,15 @@ import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptio
 import { RaiseErrorContext } from 'framework/infrastructure/raise/react/context';
 import { createRaiseErrorStore } from 'framework/infrastructure/raise/store';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
-import { AnyAppState, ServerRouter } from 'framework/infrastructure/router/types';
+import { AnyAppState, AnyPage, ServerRouter } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 
 import { restoreStore } from './store';
+import { GetMetadata } from './types';
 import { AssetsData, readAssetsInfo, readPageDependenciesStats } from './utils/assets';
 import { createServerSessionObject } from './utils/createServerSessionObject';
-import { generateHead } from './utils/generateHead';
+import { generateShell } from './utils/generateShell';
 import { ReactStreamRenderEnhancer } from './utils/reactStreamRenderEnhancer';
 
 const assetsInfoPromise = readAssetsInfo();
@@ -46,25 +46,54 @@ const SERVER_RENDER_ABORT_TIMEOUT = 10000;
  * All code is based on https://github.com/facebook/react/blob/master/packages/react-dom/src/server/ReactDOMFizzServerNode.js
  * And https://github.com/reactwg/react-18/discussions/37
  */
-type Params = {
-  serverRouter: ServerRouter;
+type Params<Page extends AnyPage<string>> = {
+  /**
+   * All methods and configs for a router on a server side
+   */
+  router: ServerRouter;
+  /**
+   * React entry point
+   */
   MainComp: React.ReactNode;
+  /**
+   * This config is used during server side lifecycle of the application
+   */
   serverApplicationConfig: BaseApplicationConfig;
+  /**
+   * This config is stored in output HTML
+   */
   clientApplicationConfig: BaseApplicationConfig;
+  /**
+   * Just a logger, which follows AppLogger interface
+   */
   appLogger: AppLogger;
+  /**
+   * An async function, which generates needed metadata
+   */
+  getMetadata: GetMetadata<Page>;
+  /**
+   * Default options for react-query
+   */
   defaultReactQueryOptions?: DefaultReactQueryOptions;
 };
-export const createApplicationRouteHandler: (params: Params) => express.Handler =
+
+/**
+ * Creates an express handler, which serves an application
+ */
+export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
+  params: Params<Page>,
+) => express.Handler =
   ({
-    serverRouter,
     MainComp,
+    router,
     serverApplicationConfig,
     clientApplicationConfig,
     appLogger,
     defaultReactQueryOptions,
+    getMetadata,
   }) =>
   (req, res) => {
-    const { parseURL, compileURL, allowedURLQueryKeys, initialAppContext } = serverRouter;
+    const { parseURL, compileURL, allowedURLQueryKeys, initialAppContext } = router;
     res.set('X-Content-Type-Options', 'nosniff');
     res.set('X-XSS-Protection', '1');
     res.set('X-Frame-Options', 'deny');
@@ -227,7 +256,7 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
             </StrictMode>,
             {
               bootstrapScripts: [reactPath, appPath, vendorPath, frameworkPath, libPath, rarelyPath],
-              [reactSSRMethodName]() {
+              async [reactSSRMethodName]() {
                 /**
                  * raisedError can be set in `onAllReady` mode only
                  * In `onShellReady` raisedError is undefined,
@@ -250,25 +279,50 @@ export const createApplicationRouteHandler: (params: Params) => express.Handler 
                 }
 
                 res.setHeader('Content-type', 'text/html');
-                /**
-                 * We will send main shell like html>head+body before react starts to stream
-                 * to allow adding styles and scripts to the existed dom
-                 */
-                res.write(
-                  `<!DOCTYPE html><html lang="en" dir="ltr" style="height:100%">${generateHead()}<body style="position:relative">${pageDependenciesScriptTags}<div id="${ApplicationContainerId}">`,
-                );
 
-                /**
-                 * onCompleteAll will be used for search bots only in the future
-                 * They can not execute any JS, so, there is no any reason to send
-                 * dehydrated data and critical css (which is in a JS wrapper)
+                let stream: Writable;
+
+                /*
+                 * onShellReady do not need correct title and description
+                 * Cause they will be replaced on a client side
+                 * And the main aim here is to start streamming as soon as possible
                  */
-                const stream: Writable =
-                  reactSSRMethodName === 'onAllReady'
-                    ? pipeableStream.pipe(res)
-                    : pipeableStream.pipe(
-                        new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
-                      );
+                if (reactSSRMethodName === 'onShellReady') {
+                  res.write(
+                    generateShell({
+                      metadata: {
+                        title: 'Title',
+                        description: 'Description',
+                      },
+                      dependencyScript: pageDependenciesScriptTags,
+                    }),
+                  );
+
+                  stream = pipeableStream.pipe(
+                    new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
+                  );
+                } else {
+                  const appContext = store.getState().appContext;
+                  /**
+                   * onCompleteAll will be used for search bots only in the future
+                   * They can not execute any JS, so, there is no any reason to send
+                   * dehydrated data and critical css (which is in a JS wrapper)
+                   */
+                  const metadata = await getMetadata({
+                    queryClient,
+                    page: appContext.page as any,
+                    URLQueryParams: appContext.URLQueryParams,
+                  });
+
+                  res.write(
+                    generateShell({
+                      metadata,
+                      dependencyScript: pageDependenciesScriptTags,
+                    }),
+                  );
+
+                  stream = pipeableStream.pipe(res);
+                }
 
                 stream.once('finish', () => {
                   if (renderTimeoutId) {

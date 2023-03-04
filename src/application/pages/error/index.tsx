@@ -11,6 +11,8 @@ export interface ErrorPage extends CommonPage {
   };
 }
 
+export { getTitle, getMetaData } from './metadata';
+
 export default memo<{ page: ErrorPage }>(
   ({
     page = {

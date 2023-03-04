@@ -6,4 +6,6 @@ export interface RootPage extends CommonPage {
   name: 'root';
 }
 
+export { getTitle, getMetaData } from './metadata';
+
 export const RootPage = lazy(() => import(/* webpackChunkName: "rootPage" */ './ui'));

@@ -9,3 +9,5 @@ export { usePaginatedNewsList } from './model/fetch/usePaginatedNewsList';
 export { useInvalidateAllNewsQueries } from './model/invalidate/useInvalidateAllNewsQueries';
 
 export { useRefetchAllNewsQueries } from './model/refetch/useRefetchAllNewsQueries';
+
+export { getNewsItemDataFromCache } from './model/cache/getNewsItemDataFromCache';

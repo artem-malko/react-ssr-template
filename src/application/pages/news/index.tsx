@@ -15,4 +15,6 @@ export const newsPageDefaultParams: NewsPage['params'] = {
   useInfinity: false,
 };
 
+export { getTitle, getMetaData } from './metadata';
+
 export const NewsPage = lazy(() => import(/* webpackChunkName: "newsPage" */ './ui'));
