@@ -6,10 +6,9 @@ export interface AnyConfig {
 
 export interface BaseServerConfig {
   /**
-   *
+   * A port for an express server
    */
   port: number;
-  publicPath: string;
 }
 
 export interface BaseApplicationConfig {

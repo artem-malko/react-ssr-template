@@ -120,7 +120,7 @@ export const startClientApplication = <Page extends AnyPage<string>>({
     logClientUncaughtException(error);
   });
 
-  return restoreStore({
+  return restoreStore<Page>({
     compileAppURL: router.compileURL,
     createReducerOptions: {
       allowedURLQueryKeys: router.allowedURLQueryKeys,
@@ -158,7 +158,7 @@ export const startClientApplication = <Page extends AnyPage<string>>({
                           platformAPI.window.setTitle(
                             getTitle({
                               queryClient,
-                              page: appContext.page as any,
+                              page: appContext.page,
                               URLQueryParams: appContext.URLQueryParams,
                             }),
                           );

@@ -73,6 +73,7 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
 
 startServer({
   serverConfig,
+  publicPath: serverApplicationConfig.publicPath,
   enhanceServer: (server) => {
     // @JUST_FOR_TEST JUST FOR TEST
     server.use((req, _res, next) => {

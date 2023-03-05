@@ -33,7 +33,7 @@ export function restoreStore<Page extends AnyPage<string>>({
     }
   }
 
-  const store = configureStore({
+  const store = configureStore<Page>({
     initialState,
     middlewares: [
       createTitleMiddleware({

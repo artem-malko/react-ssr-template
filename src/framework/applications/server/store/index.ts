@@ -3,7 +3,7 @@ import { AnyAction, Middleware } from 'redux';
 
 import { configureStore } from 'framework/infrastructure/router/redux/store/configureStore';
 import { CreateReducerOptions } from 'framework/infrastructure/router/redux/store/reducer';
-import { AnyAppContext } from 'framework/infrastructure/router/types';
+import { AnyAppContext, AnyPage } from 'framework/infrastructure/router/types';
 
 import { startup } from './startup';
 import { logger } from '../utils/reduxLogger';
@@ -16,7 +16,7 @@ type Params = {
   initialAppContext: AnyAppContext;
   createReducerOptions: CreateReducerOptions;
 };
-export async function restoreStore({
+export async function restoreStore<Page extends AnyPage<string>>({
   parseURL,
   compileAppURL,
   req,
@@ -25,7 +25,7 @@ export async function restoreStore({
 }: Params) {
   const middlewares: Middleware[] = process.env.NODE_ENV !== 'production' ? [logger] : [];
   const routerActions = parseURL(req.url);
-  const store = configureStore({
+  const store = configureStore<Page>({
     initialState: {
       appContext: initialAppContext,
     },

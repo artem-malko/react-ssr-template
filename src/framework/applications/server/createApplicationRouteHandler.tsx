@@ -26,7 +26,12 @@ import { defaultQueryOptions } from 'framework/infrastructure/query/defaultOptio
 import { RaiseErrorContext } from 'framework/infrastructure/raise/react/context';
 import { createRaiseErrorStore } from 'framework/infrastructure/raise/store';
 import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/context';
-import { AnyAppState, AnyPage, ServerRouter } from 'framework/infrastructure/router/types';
+import {
+  AnyAppContext,
+  AnyAppState,
+  AnyPage,
+  ServerRouter,
+} from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
 
@@ -80,10 +85,8 @@ type Params<Page extends AnyPage<string>> = {
 /**
  * Creates an express handler, which serves an application
  */
-export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
-  params: Params<Page>,
-) => express.Handler =
-  ({
+export const createApplicationRouteHandler =
+  <Page extends AnyPage<string>>({
     MainComp,
     router,
     serverApplicationConfig,
@@ -91,7 +94,7 @@ export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
     appLogger,
     defaultReactQueryOptions,
     getMetadata,
-  }) =>
+  }: Params<Page>): express.Handler =>
   (req, res) => {
     const { parseURL, compileURL, allowedURLQueryKeys, initialAppContext } = router;
     res.set('X-Content-Type-Options', 'nosniff');
@@ -120,7 +123,7 @@ export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
     const reactSSRMethodName =
       forcedToOnAllReadyRender || useOnAllReadyRender ? 'onAllReady' : 'onShellReady';
 
-    const storePromise = restoreStore({
+    const storePromise = restoreStore<Page>({
       req,
       res,
       compileAppURL: compileURL,
@@ -132,7 +135,11 @@ export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
     });
 
     Promise.all<
-      [Promise<Store<AnyAppState>>, Promise<AssetsData>, Promise<{ [pageChunkName: string]: string[] }>]
+      [
+        Promise<Store<AnyAppState<AnyAppContext<Page>>>>,
+        Promise<AssetsData>,
+        Promise<{ [pageChunkName: string]: string[] }>,
+      ]
     >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise]).then(
       ([store, assetsInfo, dependencyStats]) => {
         const state = store.getState();
@@ -310,7 +317,7 @@ export const createApplicationRouteHandler: <Page extends AnyPage<string>>(
                    */
                   const metadata = await getMetadata({
                     queryClient,
-                    page: appContext.page as any,
+                    page: appContext.page,
                     URLQueryParams: appContext.URLQueryParams,
                   });
 

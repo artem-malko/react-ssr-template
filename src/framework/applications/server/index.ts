@@ -54,12 +54,15 @@ type Params = {
    * A config for a server
    */
   serverConfig: BaseServerConfig;
+  /**
+   * A public path for any static file
+   */
+  publicPath: string;
 };
 /**
  * An entry point for a server, which serves an application
  */
-export const startServer = ({ enhanceServer, serverConfig }: Params) => {
-  const publicPath = serverConfig.publicPath;
+export const startServer = ({ enhanceServer, serverConfig, publicPath }: Params) => {
   const ONE_MONTH = 2592000000;
 
   if (process.env.NODE_ENV !== 'production') {
