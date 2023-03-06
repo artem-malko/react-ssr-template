@@ -131,9 +131,9 @@ export const startServer = ({
     res.sendFile(path.resolve(process.cwd(), 'build', 'public') + '/favicon.ico');
   });
 
-  server.use(createRouterErrorHandlerMiddleware({ onErrorFallbackHTML }));
-
   enhanceServer(server);
+
+  server.use(createRouterErrorHandlerMiddleware({ onErrorFallbackHTML }));
 
   server.listen(serverConfig.port, '0.0.0.0', () => {
     console.log(`Server started at ${serverConfig.port} port!`);
