@@ -3,7 +3,12 @@ import express from 'express';
 import { logger } from 'framework/infrastructure/logger/init';
 import { addAppVersion, getMessageAndStackParamsFromError } from 'framework/infrastructure/logger/utils';
 
-export function createRouterErrorHandlerMiddleware(): express.ErrorRequestHandler {
+type Params = {
+  onErrorFallbackHTML: (error?: Error) => string;
+};
+export function createRouterErrorHandlerMiddleware({
+  onErrorFallbackHTML,
+}: Params): express.ErrorRequestHandler {
   return (error, _req, res, _next) => {
     const { message, stack } = getMessageAndStackParamsFromError(error, {
       defaultMessage: 'Express router error',
@@ -20,7 +25,6 @@ export function createRouterErrorHandlerMiddleware(): express.ErrorRequestHandle
       ...addAppVersion(),
     });
 
-    // @TODO add 500 page render
-    res.status(500).send('500 error');
+    res.status(500).send(onErrorFallbackHTML(error));
   };
 }

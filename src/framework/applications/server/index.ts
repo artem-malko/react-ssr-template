@@ -58,11 +58,21 @@ type Params = {
    * A public path for any static file
    */
   publicPath: string;
+  /**
+   * A sync function, which returns a static HTML for a error page for the case
+   * when the problem occured outside of a React scope
+   */
+  onErrorFallbackHTML: (error?: Error) => string;
 };
 /**
  * An entry point for a server, which serves an application
  */
-export const startServer = ({ enhanceServer, serverConfig, publicPath }: Params) => {
+export const startServer = ({
+  enhanceServer,
+  serverConfig,
+  publicPath,
+  onErrorFallbackHTML,
+}: Params) => {
   const ONE_MONTH = 2592000000;
 
   if (process.env.NODE_ENV !== 'production') {
@@ -121,7 +131,7 @@ export const startServer = ({ enhanceServer, serverConfig, publicPath }: Params)
     res.sendFile(path.resolve(process.cwd(), 'build', 'public') + '/favicon.ico');
   });
 
-  server.use(createRouterErrorHandlerMiddleware());
+  server.use(createRouterErrorHandlerMiddleware({ onErrorFallbackHTML }));
 
   enhanceServer(server);
 

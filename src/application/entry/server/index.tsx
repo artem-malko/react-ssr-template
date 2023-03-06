@@ -22,6 +22,7 @@ import { RequesterContext } from 'application/shared/lib/request';
 import { getMetadata } from './metadata/getMetadata';
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
+import { onErrorFallbackHTML } from './utils/onErrorFallbackHTML';
 import { Main } from '../common/react';
 
 const parseURL = createURLParser({
@@ -69,11 +70,13 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   serverApplicationConfig,
   appLogger,
   getMetadata,
+  onErrorFallbackHTML,
 });
 
 startServer({
   serverConfig,
   publicPath: serverApplicationConfig.publicPath,
+  onErrorFallbackHTML,
   enhanceServer: (server) => {
     // @JUST_FOR_TEST JUST FOR TEST
     server.use((req, _res, next) => {

@@ -1,5 +1,3 @@
-import { Writable } from 'node:stream';
-
 import {
   DefaultOptions as DefaultReactQueryOptions,
   QueryClient,
@@ -38,6 +36,7 @@ import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/get
 import { restoreStore } from './store';
 import { GetMetadata } from './types';
 import { AssetsData, readAssetsInfo, readPageDependenciesStats } from './utils/assets';
+import { createOnFinishHadler } from './utils/createOnFinishHadler';
 import { createServerSessionObject } from './utils/createServerSessionObject';
 import { generateShell } from './utils/generateShell';
 import { ReactStreamRenderEnhancer } from './utils/reactStreamRenderEnhancer';
@@ -77,6 +76,11 @@ type Params<Page extends AnyPage<string>> = {
    */
   getMetadata: GetMetadata<Page>;
   /**
+   * A sync function, which returns a static HTML for a error page for the case
+   * when the problem occured outside of a React scope, or it is a shellError
+   */
+  onErrorFallbackHTML: (error?: Error) => string;
+  /**
    * Default options for react-query
    */
   defaultReactQueryOptions?: DefaultReactQueryOptions;
@@ -94,18 +98,13 @@ export const createApplicationRouteHandler =
     appLogger,
     defaultReactQueryOptions,
     getMetadata,
+    onErrorFallbackHTML,
   }: Params<Page>): express.Handler =>
   (req, res) => {
     const { parseURL, compileURL, allowedURLQueryKeys, initialAppContext } = router;
     res.set('X-Content-Type-Options', 'nosniff');
     res.set('X-XSS-Protection', '1');
     res.set('X-Frame-Options', 'deny');
-
-    // @TODO
-    res.socket?.on('error', (error) => {
-      // Log fatal errors
-      console.error('Fatal', error);
-    });
 
     let didError = false;
 
@@ -140,8 +139,8 @@ export const createApplicationRouteHandler =
         Promise<AssetsData>,
         Promise<{ [pageChunkName: string]: string[] }>,
       ]
-    >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise]).then(
-      ([store, assetsInfo, dependencyStats]) => {
+    >([storePromise, assetsInfoPromise, pageDependenciesStatsPromise])
+      .then(([store, assetsInfo, dependencyStats]) => {
         const state = store.getState();
         const compiledUrl = compileURL(state.appContext);
 
@@ -263,7 +262,7 @@ export const createApplicationRouteHandler =
             </StrictMode>,
             {
               bootstrapScripts: [reactPath, appPath, vendorPath, frameworkPath, libPath, rarelyPath],
-              async [reactSSRMethodName]() {
+              [reactSSRMethodName]() {
                 /**
                  * raisedError can be set in `onAllReady` mode only
                  * In `onShellReady` raisedError is undefined,
@@ -287,7 +286,11 @@ export const createApplicationRouteHandler =
 
                 res.setHeader('Content-type', 'text/html');
 
-                let stream: Writable;
+                const onFinishHandler = createOnFinishHadler({
+                  res,
+                  queryClient,
+                  renderTimeoutId,
+                });
 
                 /*
                  * onShellReady do not need correct title and description
@@ -305,70 +308,57 @@ export const createApplicationRouteHandler =
                     }),
                   );
 
-                  stream = pipeableStream.pipe(
-                    new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore),
-                  );
-                } else {
-                  const appContext = store.getState().appContext;
-                  /**
-                   * onCompleteAll will be used for search bots only in the future
-                   * They can not execute any JS, so, there is no any reason to send
-                   * dehydrated data and critical css (which is in a JS wrapper)
-                   */
-                  const metadata = await getMetadata({
-                    queryClient,
-                    page: appContext.page,
-                    URLQueryParams: appContext.URLQueryParams,
-                  });
-
-                  res.write(
-                    generateShell({
-                      metadata,
-                      dependencyScript: pageDependenciesScriptTags,
-                    }),
-                  );
-
-                  stream = pipeableStream.pipe(res);
+                  pipeableStream
+                    .pipe(new ReactStreamRenderEnhancer(res, queryClient, cssProviderStore))
+                    .once('finish', onFinishHandler);
+                  return;
                 }
 
-                stream.once('finish', () => {
-                  if (renderTimeoutId) {
-                    clearTimeout(renderTimeoutId);
-                  }
+                const appContext = store.getState().appContext;
 
-                  /**
-                   * Actually, it is not necessary to call res.end manually,
-                   * cause React does this by itself
-                   *
-                   * But, if we have any wrapper on res, we can not be sure,
-                   * that wrapper implements all needed methods (especially _final)
-                   * So, the `end` method will be called manually, if writable has not been ended yet.
-                   */
-                  if (!res.writableEnded) {
-                    res.end();
-                  }
+                /**
+                 * onCompleteAll will be used for search bots only in the future
+                 * They can not execute any JS, so, there is no any reason to send
+                 * dehydrated data and critical css (which is in a JS wrapper)
+                 */
+                getMetadata({
+                  queryClient,
+                  page: appContext.page,
+                  URLQueryParams: appContext.URLQueryParams,
+                })
+                  .then((metadata) => {
+                    res.write(
+                      generateShell({
+                        metadata,
+                        dependencyScript: pageDependenciesScriptTags,
+                      }),
+                    );
 
-                  /**
-                   * In case you are creating the QueryClient for every request,
-                   * React Query creates the isolated cache for this client,
-                   * which is preserved in memory for the cacheTime period.
-                   * That may lead to high memory consumption on server
-                   * in case of high number of requests during that period.
-                   *
-                   * On the server, cacheTime defaults to Infinity
-                   *  which disables manual garbage collection and will automatically clear
-                   * memory once a request has finished.
-                   * If you are explicitly setting a non-Infinity cacheTime
-                   * then you will be responsible for clearing the cache early.
-                   * https://tanstack.com/query/v4/docs/guides/ssr#high-memory-consumption-on-server
-                   */
-                  queryClient.clear();
-                });
+                    pipeableStream.pipe(res).once('finish', onFinishHandler);
+                  })
+                  .catch((error) => {
+                    // @TODO log that error too
+                    console.log('CATCH getMetadata');
+
+                    res.send(onErrorFallbackHTML(error));
+                  });
               },
 
-              // @TODO looks quite silly, need to refactor it
+              /**
+               * If there is an error while generating the shell,
+               * both onError and onShellError will fire.
+               * onShellError is used to send the fallback HTML document
+               *
+               * Shell contains all compontens from the root to the closest <Suspense />
+               * Everything inside that <Suspense /> is not a part of the shell.
+               *
+               * More info https://beta.reactjs.org/reference/react-dom/server/renderToPipeableStream#recovering-from-errors-outside-the-shell
+               */
               onShellError(error) {
-                // Something errored before we could complete the shell so we emit an alternative shell.
+                /**
+                 * Something errored before we could complete the shell,
+                 * so we emit an alternative shell.
+                 */
                 res.status(500);
                 console.error('onErrorShell: ', error);
 
@@ -377,13 +367,14 @@ export const createApplicationRouteHandler =
                 }
 
                 res.setHeader('content-type', 'text/html');
-                /**
-                 * @TODO switch to client render
-                 */
-                res.send(`<p>onShellError<br/>${error}</p>`);
+                res.send(onErrorFallbackHTML(error as Error));
               },
 
-              // @TODO looks quite silly, need to refactor it
+              /**
+               * If there is an error while generating the shell,
+               * both onError and onShellError will fire.
+               * onError is used for error reporting only
+               */
               onError(error) {
                 didError = true;
                 console.error('onError: ', error);
@@ -405,6 +396,12 @@ export const createApplicationRouteHandler =
             pipeableStream.abort();
           }, SERVER_RENDER_ABORT_TIMEOUT);
         }
-      },
-    );
+      })
+      .catch((error) => {
+        res.status(500);
+        res.setHeader('content-type', 'text/html');
+
+        // Need to log a error
+        res.send(onErrorFallbackHTML(error));
+      });
   };

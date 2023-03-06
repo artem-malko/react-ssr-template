@@ -56,6 +56,8 @@ export const Shell = memo<{
         <div ref={onRender}></div>
         {mainComp}
 
+        {/* All needed script-files like React, vendors and so on
+            will be added to a page via React (bootstrapScripts) */}
         <script dangerouslySetInnerHTML={{ __html: inlineScript }} />
         {/* Insert a link to all stylesheets for searchbots and other users without JS */}
         <noscript>
