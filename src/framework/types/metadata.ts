@@ -4,7 +4,7 @@ export type Metadata = {
   OG?: OG;
   alternates?: Alternates;
   themeColor?: ThemeColor[];
-  viewport?: Viewport;
+  viewport: Viewport;
   referrer?: Referrer;
 
   other?: Record<'meta' | 'link', Record<string, string>>;

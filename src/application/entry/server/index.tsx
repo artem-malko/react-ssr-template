@@ -19,7 +19,7 @@ import {
 } from 'application/shared/config';
 import { RequesterContext } from 'application/shared/lib/request';
 
-import { getMetadata } from './metadata/getMetadata';
+import { getMetadata, defaultBaseMetadata } from './metadata/getMetadata';
 import { UAParser } from './middlewares/UAParser';
 import { fakeCRUDRouter } from './routes/fakeCrud';
 import { onErrorFallbackHTML } from './utils/onErrorFallbackHTML';
@@ -69,7 +69,10 @@ const renderApplicationRouteHandler = createApplicationRouteHandler({
   clientApplicationConfig,
   serverApplicationConfig,
   appLogger,
-  getMetadata,
+  metadata: {
+    get: getMetadata,
+    defaultBaseMetadata,
+  },
   onErrorFallbackHTML,
 });
 

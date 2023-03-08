@@ -32,7 +32,9 @@ import {
 } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 import { createJSResourcePathGetter } from 'framework/infrastructure/webpack/getFullPathForStaticResource';
+import { Metadata } from 'framework/types/metadata';
 
+import { logApplicationBootstrapError } from './logs/logApplicationBootstrapError';
 import { restoreStore } from './store';
 import { GetMetadata } from './types';
 import { AssetsData, readAssetsInfo, readPageDependenciesStats } from './utils/assets';
@@ -71,10 +73,14 @@ type Params<Page extends AnyPage<string>> = {
    * Just a logger, which follows AppLogger interface
    */
   appLogger: AppLogger;
-  /**
-   * An async function, which generates needed metadata
-   */
-  getMetadata: GetMetadata<Page>;
+
+  metadata: {
+    /**
+     * An async function, which generates needed metadata
+     */
+    get: GetMetadata<Page>;
+    defaultBaseMetadata: Pick<Metadata, 'title' | 'description' | 'viewport'>;
+  };
   /**
    * A sync function, which returns a static HTML for a error page for the case
    * when the problem occured outside of a React scope, or it is a shellError
@@ -97,7 +103,7 @@ export const createApplicationRouteHandler =
     clientApplicationConfig,
     appLogger,
     defaultReactQueryOptions,
-    getMetadata,
+    metadata,
     onErrorFallbackHTML,
   }: Params<Page>): express.Handler =>
   (req, res) => {
@@ -300,10 +306,7 @@ export const createApplicationRouteHandler =
                 if (reactSSRMethodName === 'onShellReady') {
                   res.write(
                     generateShell({
-                      metadata: {
-                        title: 'Title',
-                        description: 'Description',
-                      },
+                      metadata: metadata.defaultBaseMetadata,
                       dependencyScript: pageDependenciesScriptTags,
                     }),
                   );
@@ -321,26 +324,42 @@ export const createApplicationRouteHandler =
                  * They can not execute any JS, so, there is no any reason to send
                  * dehydrated data and critical css (which is in a JS wrapper)
                  */
-                getMetadata({
-                  queryClient,
-                  page: appContext.page,
-                  URLQueryParams: appContext.URLQueryParams,
-                })
-                  .then((metadata) => {
-                    res.write(
-                      generateShell({
-                        metadata,
-                        dependencyScript: pageDependenciesScriptTags,
-                      }),
-                    );
-
-                    pipeableStream.pipe(res).once('finish', onFinishHandler);
+                metadata
+                  .get({
+                    queryClient,
+                    page: appContext.page,
+                    URLQueryParams: appContext.URLQueryParams,
                   })
-                  .catch((error) => {
-                    // @TODO log that error too
-                    console.log('CATCH getMetadata');
+                  .then(
+                    (metadata) => {
+                      res.write(
+                        generateShell({
+                          metadata,
+                          dependencyScript: pageDependenciesScriptTags,
+                        }),
+                      );
+                    },
+                    (error) => {
+                      logApplicationBootstrapError({
+                        error: error || new Error('getMetaDataError'),
+                        sourceName: 'getMetaData',
+                        appLogger,
+                      });
 
-                    res.send(onErrorFallbackHTML(error));
+                      res.write(
+                        generateShell({
+                          metadata: metadata.defaultBaseMetadata,
+                          dependencyScript: pageDependenciesScriptTags,
+                        }),
+                      );
+                    },
+                  )
+                  /**
+                   * We do not need to block render, if there was a error
+                   * during metadata loading
+                   */
+                  .finally(() => {
+                    pipeableStream.pipe(res).once('finish', onFinishHandler);
                   });
               },
 
@@ -355,19 +374,27 @@ export const createApplicationRouteHandler =
                * More info https://beta.reactjs.org/reference/react-dom/server/renderToPipeableStream#recovering-from-errors-outside-the-shell
                */
               onShellError(error) {
-                /**
-                 * Something errored before we could complete the shell,
-                 * so we emit an alternative shell.
-                 */
-                res.status(500);
-                console.error('onErrorShell: ', error);
+                logApplicationBootstrapError({
+                  error: error instanceof Error ? error : new Error('onShellError'),
+                  sourceName: 'onShellError',
+                  appLogger,
+                });
 
                 if (renderTimeoutId) {
                   clearTimeout(renderTimeoutId);
                 }
-
-                res.setHeader('content-type', 'text/html');
-                res.send(onErrorFallbackHTML(error as Error));
+                /**
+                 * Something errored before we could complete the shell,
+                 * so we emit an alternative shell.
+                 *
+                 * We need to check, that headersSent,
+                 * cause tehre is the same handler in onError
+                 */
+                if (!res.headersSent) {
+                  res.status(500);
+                  res.setHeader('content-type', 'text/html');
+                  res.send(onErrorFallbackHTML(error as Error));
+                }
               },
 
               /**
@@ -376,14 +403,34 @@ export const createApplicationRouteHandler =
                * onError is used for error reporting only
                */
               onError(error) {
+                const preparedError = error instanceof Error ? error : new Error('onError');
                 didError = true;
-                console.error('onError: ', error);
 
                 if (renderTimeoutId) {
                   clearTimeout(renderTimeoutId);
                 }
 
-                // Need to log a error
+                logApplicationBootstrapError({
+                  error: preparedError,
+                  sourceName: 'onError',
+                  appLogger,
+                });
+
+                /**
+                 * We need to check, that headersSent,
+                 * cause tehre is the same handler in onShellError
+                 *
+                 * In some cases, when error appears somewhere outside of React render
+                 * onError callback is called
+                 *
+                 * But, if error appears in, let's say, shell.tsx,
+                 * both: onError and onShellError are called.
+                 */
+                if (!res.headersSent) {
+                  res.status(500);
+                  res.setHeader('content-type', 'text/html');
+                  res.send(onErrorFallbackHTML(preparedError));
+                }
               },
             },
           );
@@ -398,10 +445,14 @@ export const createApplicationRouteHandler =
         }
       })
       .catch((error) => {
+        logApplicationBootstrapError({
+          error: error instanceof Error ? error : new Error('InfrastructurePromisesError'),
+          sourceName: 'InfrastructurePromisesError',
+          appLogger,
+        });
+
         res.status(500);
         res.setHeader('content-type', 'text/html');
-
-        // Need to log a error
         res.send(onErrorFallbackHTML(error));
       });
   };

@@ -11,17 +11,23 @@ import { getMetaData as getMetaDataForRootPage } from 'application/pages/root';
 import { Page } from 'application/pages/shared';
 import { getMetaData as getMetaDataForUsersPage } from 'application/pages/users';
 
+export const defaultBaseMetadata: Pick<Metadata, 'title' | 'description' | 'viewport'> = {
+  title: 'Title',
+  description: 'Description',
+  viewport: {
+    width: 'device-width',
+    maximumScale: '1.0',
+    initialScale: '1.0',
+    userScalable: 'no',
+  },
+};
+
 export const getMetadata: GetMetadata<Page> = async (params) => {
   const pageMetadata = await getPageMetadata(params);
 
   return {
+    ...defaultBaseMetadata,
     ...pageMetadata,
-    viewport: {
-      width: 'device-width',
-      maximumScale: '1.0',
-      initialScale: '1.0',
-      userScalable: 'no',
-    },
   };
 };
 

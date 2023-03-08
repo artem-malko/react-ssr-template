@@ -22,7 +22,13 @@ export interface PerformanceLogParams {
 
 export type ErrorLogParams = {
   message?: string;
-  source: 'router' | 'windowerror' | 'unhandledrejection' | 'service' | 'unknown';
+  source:
+    | 'router'
+    | 'application_bootstrap'
+    | 'windowerror'
+    | 'unhandledrejection'
+    | 'service'
+    | 'unknown';
   stack?: string;
   lineNumber?: number;
   columnNumber?: number;

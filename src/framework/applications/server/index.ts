@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import path from 'node:path';
 
 import cookieParser from 'cookie-parser';
@@ -6,13 +5,11 @@ import express from 'express';
 
 import { BaseServerConfig } from 'framework/config/types';
 import { utilityRouterPath } from 'framework/constants/application';
-import {
-  logServerUncaughtException,
-  logServerUnhandledRejection,
-} from 'framework/infrastructure/logger/serverLog';
 
 import { isServer } from 'lib/browser';
 
+import { logServerUncaughtException } from './logs/logServerUncaughtException';
+import { logServerUnhandledRejection } from './logs/logServerUnhandledRejection';
 import { clientIp } from './middlewares/clientIP';
 import { createRouterErrorHandlerMiddleware } from './middlewares/routerErrorHandler';
 import { isSearchBot } from './middlewares/searchBots';
