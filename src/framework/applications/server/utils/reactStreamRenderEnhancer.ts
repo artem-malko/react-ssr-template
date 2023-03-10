@@ -22,7 +22,7 @@ function dehydrateQuery(query: Query<unknown, ParsedError | Error>) {
  * 1. dehydratedQuery state exact at the right timing
  *    right after react rendered  a component with query usage
  *
- * 2. generated css right after react rendered  a component with styles
+ * 2. generated css right after react rendered a component with styles
  */
 export class ReactStreamRenderEnhancer extends Writable {
   private queryClient: QueryClient;
@@ -59,7 +59,7 @@ export class ReactStreamRenderEnhancer extends Writable {
      */
     if (queryClientCache.length !== this.queriesCache.length) {
       /**
-       * Ok, queryClientCache has more queries to dehydrate, than we dehydrated already
+       * Ok, queryClientCache has more queries to dehydrate, than we've dehydrated already
        * Let's try to find a query ready to be dehydrated
        * It can be any query in a `success` or `error` status
        */
@@ -150,6 +150,13 @@ export class ReactStreamRenderEnhancer extends Writable {
 
       /**
        * We have to clear store, to prevent generating already sent styles
+       *
+       * Even if we have a list of items with the same styles,
+       * clearStore won't emit additional scripts with styles,
+       * cause cssProviderStore has it's own inner cache.
+       * This cache allows to get a hash of styles without storing in the store
+       *
+       * clearStore !== clear styles in cache
        */
       this.cssProviderStore.clearStore();
     }

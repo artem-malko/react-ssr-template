@@ -25,6 +25,8 @@ import { RouterReduxContext } from 'framework/infrastructure/router/redux/store/
 import { AnyPage, ClientRouter } from 'framework/infrastructure/router/types';
 import { SessionContext } from 'framework/infrastructure/session/context';
 
+import { devConsoleLog } from 'lib/console/devConsole';
+
 import { restoreStore } from './store';
 import { GetTitle } from './types';
 import { afterAppRendered } from './utils/afterAppRendered';
@@ -176,7 +178,7 @@ export const startClientApplication = <Page extends AnyPage<string>>({
       {
         onRecoverableError: (...args) => {
           onRecoverableErrorHandler?.(...args);
-          console.log('args: ', args);
+          devConsoleLog('onRecoverableError', args);
         },
       },
     );
