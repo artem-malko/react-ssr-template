@@ -6,7 +6,7 @@ const pluginName = 'dependency-manager-plugin';
 export const PAGE_DEPENDENCIES_FILE_NAME = 'page_dependencies.json';
 
 /**
- * Returns an info about deps for every page's chunk
+ * Returns info about deps for every page's chunk
  */
 export class PageDependenciesManagerPlugin {
   public apply(compiler: Compiler) {
@@ -46,8 +46,15 @@ export class PageDependenciesManagerPlugin {
             }
 
             /**
+             * Quite useless to work with initial chunks like framework or vendor
+             */
+            if (statsChunk.initial) {
+              return mutableAcc;
+            }
+
+            /**
              * It's possible, when chunk doesn't have its own name.
-             * In that case its id will be used as a name
+             * In that case its id will be used as the name
              */
             const name = statsChunk?.names?.[0] || statsChunk.id;
             const originModuleName = statsChunk.origins?.find(
@@ -94,24 +101,52 @@ export class PageDependenciesManagerPlugin {
           },
         );
 
+        console.log('reducedStats: ', reducedStats);
+
         return Object.keys(reducedStats.chunkIdToChunkName).reduce<{ [chunkName: string]: string[] }>(
           (mutableAcc, chunkId) => {
             const chunkName = reducedStats.chunkIdToChunkName[chunkId];
 
             // We do not collect deps for not page's chunks
-            if (!chunkName || !/page/i.test(chunkName)) {
+            if (!chunkName || !/Page/.test(chunkName)) {
               return mutableAcc;
             }
 
-            const childrenIds = reducedStats.chunkIdToChildrenIds[chunkId];
-            const files = getFiles(
-              reducedStats.chunkIdToFileNameMap,
-              reducedStats.chunkIdToChildrenIds,
-              childrenIds,
-            );
+            const mutableChildrenIds = reducedStats.chunkIdToChildrenIds[chunkId];
 
-            if (files) {
-              mutableAcc[chunkName] = files;
+            if (!mutableChildrenIds?.length) {
+              return mutableAcc;
+            }
+
+            const mutableFiles: string[] = [];
+
+            /**
+             * The first level children can have its own children
+             * So, let's check all of them
+             */
+            while (mutableChildrenIds.length) {
+              const currentChildId = mutableChildrenIds.shift();
+
+              // currentChildId can be 0
+              if (typeof currentChildId === 'undefined') {
+                continue;
+              }
+
+              const innerChildrenIds = reducedStats.chunkIdToChildrenIds[currentChildId];
+
+              if (innerChildrenIds) {
+                mutableChildrenIds.push(...innerChildrenIds);
+              }
+
+              const fileName = reducedStats.chunkIdToFileNameMap[currentChildId];
+
+              if (fileName && !mutableFiles.includes(fileName)) {
+                mutableFiles.push(fileName);
+              }
+            }
+
+            if (mutableFiles.length) {
+              mutableAcc[chunkName] = mutableFiles;
             }
 
             return mutableAcc;
@@ -136,63 +171,18 @@ export class PageDependenciesManagerPlugin {
   }
 }
 
-/**
- * This function has a recurtion inside, cause the first level children can have its own children
- */
-const getFiles = (
-  chunkIdToFileNameMap: { [chunkId: string]: string },
-  chunkIdToChildrenIds: { [chunkId: string]: (string | number)[] },
-  childrenIds?: (string | number)[],
-) => {
-  const mutableFoundFiles: string[] = [];
-  const mutabledProcessedChildren: Record<string, boolean> = {};
-
-  function innerFunc(
-    chunkIdToFileNameMap: { [chunkId: string]: string },
-    chunkIdToChildrenIds: { [chunkId: string]: (string | number)[] },
-    childrenIds?: (string | number)[],
-  ) {
-    if (!childrenIds?.length) {
-      return mutableFoundFiles;
-    }
-
-    const hasUnProcessedChildren = !!childrenIds.find((childId) => !mutabledProcessedChildren[childId]);
-
-    if (!hasUnProcessedChildren) {
-      return mutableFoundFiles;
-    }
-
-    childrenIds.forEach((childId) => {
-      mutabledProcessedChildren[childId] = true;
-
-      const fileName = chunkIdToFileNameMap[childId];
-
-      if (chunkIdToChildrenIds[childId]?.length) {
-        innerFunc(chunkIdToFileNameMap, chunkIdToChildrenIds, chunkIdToChildrenIds[childId]);
-      }
-      if (fileName && !mutableFoundFiles.includes(fileName)) {
-        mutableFoundFiles.push(fileName);
-      }
-    });
-  }
-
-  innerFunc(chunkIdToFileNameMap, chunkIdToChildrenIds, childrenIds);
-
-  return mutableFoundFiles;
-};
-
 function isNeededToBePreloaded(name: string, originModuleName: string | undefined): boolean {
   /**
    * _sk_pr in the name means, that current file is not intended to be preloaded
    */
-  if (name.includes('_sk_pr')) {
+  if (name.includes('__sk__pr__')) {
     return false;
   }
 
   /**
    * _pr in the name means, that current file is intended to preload
    */
-  if (name.includes('_pr')) {
+  if (name.includes('__pr__')) {
     return true;
   }
 
