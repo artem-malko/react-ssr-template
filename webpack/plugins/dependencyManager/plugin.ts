@@ -101,8 +101,6 @@ export class PageDependenciesManagerPlugin {
           },
         );
 
-        console.log('reducedStats: ', reducedStats);
-
         return Object.keys(reducedStats.chunkIdToChunkName).reduce<{ [chunkName: string]: string[] }>(
           (mutableAcc, chunkId) => {
             const chunkName = reducedStats.chunkIdToChunkName[chunkId];
