@@ -110,19 +110,20 @@ export class PageDependenciesManagerPlugin {
               return mutableAcc;
             }
 
-            const mutableChildrenIds = reducedStats.chunkIdToChildrenIds[chunkId];
+            const mutableFiles: string[] = [];
+            const pageChunkFileName = reducedStats.chunkIdToFileNameMap[chunkId];
 
-            if (!mutableChildrenIds?.length) {
-              return mutableAcc;
+            if (pageChunkFileName) {
+              mutableFiles.push(pageChunkFileName);
             }
 
-            const mutableFiles: string[] = [];
+            const mutableChildrenIds = reducedStats.chunkIdToChildrenIds[chunkId];
 
             /**
              * The first level children can have its own children
              * So, let's check all of them
              */
-            while (mutableChildrenIds.length) {
+            while (mutableChildrenIds?.length) {
               const currentChildId = mutableChildrenIds.shift();
 
               // currentChildId can be 0
