@@ -82,9 +82,9 @@ export default memo<{ page: UsersPage }>(
             <Suspense fallback={<Preloader purpose="UserEditor" />}>
               <Lazy
                 loader={() =>
-                  import(/* webpackChunkName: "userListEditor" */ 'application/features/editUser').then(
-                    (module) => ({ default: module.UserEditor }),
-                  )
+                  import(
+                    /* webpackChunkName: "userListEditor__sk__pr__" */ 'application/features/editUser'
+                  ).then((module) => ({ default: module.UserEditor }))
                 }
                 render={(UserEditor) => <UserEditor userId={activeUserId} />}
                 fallback={(status) =>

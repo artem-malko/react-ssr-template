@@ -111,8 +111,9 @@ export class PageDependenciesManagerPlugin {
             }
 
             const mutableFiles: string[] = [];
-            const pageChunkFileName = reducedStats.chunkIdToFileNameMap[chunkId];
 
+            // Do not forget to include page's chunk too
+            const pageChunkFileName = reducedStats.chunkIdToFileNameMap[chunkId];
             if (pageChunkFileName) {
               mutableFiles.push(pageChunkFileName);
             }
