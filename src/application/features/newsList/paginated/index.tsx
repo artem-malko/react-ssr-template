@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 
 import { newsPageDefaultParams } from 'application/pages/shared';
 
@@ -35,6 +35,12 @@ const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) =>
       },
       [pageNumber, navigate, showToast],
     );
+
+    useEffect(() => {
+      import(/* webpackPreload: true */ 'application/shared/lib/showPageName').then((t) => {
+        t.showPageName('Paginated newslist on news page with preload');
+      });
+    }, []);
 
     return (
       <>

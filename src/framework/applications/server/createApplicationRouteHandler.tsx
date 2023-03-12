@@ -221,6 +221,8 @@ export const createApplicationRouteHandler =
            *
            * You can manage, what should be preloaded via file name.
            * Checkout isNeededToBePreloaded function for more info
+           *
+           * Such stats are collected with PageDependenciesManagerPlugin
            */
           const pageDependencies = dependencyStats[`${state.appContext.page.name}Page`] || [];
           const pageDependenciesScriptTags = pageDependencies

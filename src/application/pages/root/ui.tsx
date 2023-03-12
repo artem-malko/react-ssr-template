@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 import { Page } from 'application/pages/shared';
 
@@ -40,6 +40,12 @@ export default memo<{ page: RootPage }>(() => {
       title: 'news/29133561',
     },
   ];
+
+  useEffect(() => {
+    import(/* webpackPrefetch: true */ 'application/shared/lib/showPageName').then((t) => {
+      t.showPageName('root');
+    });
+  }, []);
 
   return (
     <>

@@ -3,11 +3,9 @@ import path from 'path';
 import esbuild from 'esbuild';
 import webpack from 'webpack';
 
-import { PAGE_DEPENDENCIES_FILE_NAME } from './plugins/dependencyManager/plugin';
 import { universalConfig } from './universal';
 import { merge } from './utils/merge';
 import { pinoBannerPlugin, pinoEntries } from './utils/pino';
-import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -69,17 +67,6 @@ const serverConfig: webpack.Configuration = {
   devtool: false,
 
   target: 'node',
-
-  /**
-   * Client-side builder creates some stats files.
-   * These files have some info about client build, its files.
-   * This info can be used somewhere on the server-side.
-   * For example, for reading webpack runtime and so on.
-   */
-  externals: [
-    { [`./${ASSETS_STATS_FILE_NAME}`]: `commonjs ./${ASSETS_STATS_FILE_NAME}` },
-    { [`./${PAGE_DEPENDENCIES_FILE_NAME}`]: `commonjs ./${PAGE_DEPENDENCIES_FILE_NAME}` },
-  ],
 };
 
 export default isProduction

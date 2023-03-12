@@ -3,12 +3,24 @@ import { Compilation, Compiler, sources } from 'webpack';
 const RawSource = sources.RawSource;
 const pluginName = 'dependency-manager-plugin';
 
-export const PAGE_DEPENDENCIES_FILE_NAME = 'page_dependencies.json';
+type Options = {
+  isRootChunk: (webpackChunkName: string) => boolean;
+  filename: string;
+};
 
 /**
- * Returns info about deps for every page's chunk
+ * Returns info about deps for every root chunk
  */
-export class PageDependenciesManagerPlugin {
+export class RootChunkDependenciesManagerPlugin {
+  private options: Options = {
+    isRootChunk: () => false,
+    filename: 'root_chunks_dependencies.json',
+  };
+
+  constructor(options: Options) {
+    this.options = options;
+  }
+
   public apply(compiler: Compiler) {
     // Capture the compilation and then set up further hooks.
     compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
@@ -64,8 +76,6 @@ export class PageDependenciesManagerPlugin {
             /**
              * Sometimes, dynamic import() should not be preloaded
              * For example, module A should be imported on a click event
-             * Only that files, which have '_pr' or '_comp' in their name
-             * will be preloaded
              */
             if (!isNeededToBePreloaded(name.toString(), originModuleName)) {
               return mutableAcc;
@@ -105,17 +115,17 @@ export class PageDependenciesManagerPlugin {
           (mutableAcc, chunkId) => {
             const chunkName = reducedStats.chunkIdToChunkName[chunkId];
 
-            // We do not collect deps for not page's chunks
-            if (!chunkName || !/Page/.test(chunkName)) {
+            // We do not collect deps for not root chunks
+            if (!chunkName || !this.options.isRootChunk(chunkName)) {
               return mutableAcc;
             }
 
             const mutableFiles: string[] = [];
 
-            // Do not forget to include page's chunk too
-            const pageChunkFileName = reducedStats.chunkIdToFileNameMap[chunkId];
-            if (pageChunkFileName) {
-              mutableFiles.push(pageChunkFileName);
+            // Do not forget to include root's chunk too
+            const rootChunkFileName = reducedStats.chunkIdToFileNameMap[chunkId];
+            if (rootChunkFileName) {
+              mutableFiles.push(rootChunkFileName);
             }
 
             const mutableChildrenIds = reducedStats.chunkIdToChildrenIds[chunkId];
@@ -158,7 +168,7 @@ export class PageDependenciesManagerPlugin {
         const resultString = JSON.stringify(result, null, 2);
         const resultStringBuf = Buffer.from(resultString, 'utf-8');
         const source = new RawSource(resultStringBuf);
-        const filename = `../${PAGE_DEPENDENCIES_FILE_NAME}`;
+        const filename = this.options.filename;
 
         const asset = compilation.getAsset(filename);
 
@@ -188,7 +198,7 @@ function isNeededToBePreloaded(name: string, originModuleName: string | undefine
 
   /**
    * tsx in the end of the originModuleName means, that current file is intended to be preload,
-   * cause it is a component's js-code
+   * cause it is a component's code
    */
   if (originModuleName?.endsWith('tsx')) {
     return true;

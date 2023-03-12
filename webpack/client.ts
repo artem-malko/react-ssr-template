@@ -4,11 +4,14 @@ import esbuild from 'esbuild';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import { PageDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
+import { RootChunkDependenciesManagerPlugin } from './plugins/dependencyManager/plugin';
 import { universalConfig } from './universal';
 import { merge } from './utils/merge';
 import { CSSInJSPlugin } from '../src/framework/infrastructure/css/webpack/plugin';
-import { ASSETS_STATS_FILE_NAME } from '../src/framework/infrastructure/webpack/stats';
+import {
+  ASSETS_STATS_FILE_NAME,
+  PAGE_DEPENDENCIES_FILE_NAME,
+} from '../src/framework/infrastructure/webpack/constants';
 
 // eslint-disable-next-line no-duplicate-imports
 import type { TransformOptions as EsbuildOptions } from 'esbuild';
@@ -113,9 +116,6 @@ const clientConfig: webpack.Configuration = {
     moduleIds: 'hashed',
 
     splitChunks: {
-      minChunks: 2,
-      minSize: 30000,
-
       cacheGroups: {
         infrastructure: {
           name: 'framework',
@@ -125,7 +125,7 @@ const clientConfig: webpack.Configuration = {
         },
         lib: {
           name: 'lib',
-          test: /lib/,
+          test: /src\/lib/,
           chunks: 'all',
           enforce: true,
         },
@@ -168,7 +168,10 @@ const clientConfig: webpack.Configuration = {
       rtlChunkName: 'stylesRtl',
     }),
 
-    new PageDependenciesManagerPlugin(),
+    new RootChunkDependenciesManagerPlugin({
+      isRootChunk: (webpackChunkName) => /Page/.test(webpackChunkName),
+      filename: `../${PAGE_DEPENDENCIES_FILE_NAME}`,
+    }),
 
     // Store connection between chunks and bundles and their names
     new StatsWriterPlugin({
