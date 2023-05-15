@@ -81,17 +81,6 @@ startServer({
   publicPath: serverApplicationConfig.publicPath,
   onErrorFallbackHTML,
   enhanceServer: (server) => {
-    // @JUST_FOR_TEST JUST FOR TEST
-    server.use((req, _res, next) => {
-      // Artificially delay serving JS
-      // to demonstrate streaming HTML
-      if (req.url.includes('newsList.')) {
-        setTimeout(next, process.env.NODE_ENV === 'production' ? 2000 : 1000);
-      } else {
-        next();
-      }
-    });
-
     server.use('/api/fakecrud', fakeCRUDRouter);
 
     /**

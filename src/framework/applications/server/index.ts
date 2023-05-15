@@ -106,6 +106,17 @@ export const startServer = ({
   // Check, that current client is a search bot
   server.use(isSearchBot);
 
+  // @JUST_FOR_TEST JUST FOR TEST
+  server.use((req, _res, next) => {
+    // Artificially delay serving JS
+    // to demonstrate streaming HTML
+    if (req.url.includes('.js')) {
+      setTimeout(next, process.env.NODE_ENV === 'production' ? 2000 : 1000);
+    } else {
+      next();
+    }
+  });
+
   server.use(
     publicPath,
     express.static(path.resolve(process.cwd(), 'build', 'public'), {

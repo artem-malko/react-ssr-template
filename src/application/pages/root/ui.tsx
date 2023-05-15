@@ -4,6 +4,8 @@ import { Page } from 'application/pages/shared';
 
 import { Link } from 'application/entities/ui/navigation';
 
+import { A } from 'application/shared/kit/flexbox';
+
 import { RootPage } from '.';
 
 export default memo<{ page: RootPage }>(() => {
@@ -42,7 +44,7 @@ export default memo<{ page: RootPage }>(() => {
   ];
 
   useEffect(() => {
-    import(/* webpackPrefetch: true */ 'application/shared/lib/showPageName').then((t) => {
+    import('application/shared/lib/showPageName').then((t) => {
       t.showPageName('root');
     });
   }, []);
@@ -55,6 +57,7 @@ export default memo<{ page: RootPage }>(() => {
           React 18 with a brand new API
         </Link>
       </h1>
+      <A />
       <br />
       <br />
       <h2>Pages</h2>

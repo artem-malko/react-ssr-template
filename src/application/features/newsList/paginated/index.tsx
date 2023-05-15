@@ -37,7 +37,7 @@ const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) =>
     );
 
     useEffect(() => {
-      import(/* webpackPreload: true */ 'application/shared/lib/showPageName').then((t) => {
+      import('application/shared/lib/showPageName').then((t) => {
         t.showPageName('Paginated newslist on news page with preload');
       });
     }, []);
