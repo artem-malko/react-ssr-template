@@ -177,7 +177,7 @@ export const startClientApplication = <Page extends AnyPage<string>>({
       </StrictMode>,
       {
         onRecoverableError: (...args) => {
-          onRecoverableErrorHandler?.(...args);
+          onRecoverableErrorHandler?.(args);
           devConsoleLog('onRecoverableError', args);
         },
       },

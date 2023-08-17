@@ -57,4 +57,5 @@ type IsModificator<X, T extends keyof X> = T extends `_${string}`
   : // At last we will try to find any modificators inside @supports
   T extends `@supports${string}`
   ? IsModificator<X[T], keyof X[T]>
-  : never;
+  : // '' to prevent Type instantiation is excessively deep and possibly infinite.
+    '';

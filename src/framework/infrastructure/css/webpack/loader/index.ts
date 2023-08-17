@@ -176,7 +176,7 @@ const loader = function (this: LoaderContext<LoaderParams>, source: string) {
     return;
   }
 
-  this._module!.buildInfo[STYLE_DESCRIPTOR] = styleDescriptor;
+  this._module!.buildInfo![STYLE_DESCRIPTOR] = styleDescriptor;
   const classNames = Object.keys(styleDescriptor);
   const hashMap: Record<string, string> = {};
 
