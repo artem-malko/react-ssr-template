@@ -76,17 +76,26 @@ const execNodeJSModule = <T>(
 
   const deps: string[] = [];
 
-  module.children.forEach((c: { filename: string }) => {
-    if (!c.filename.endsWith('css.ts')) {
-      return;
-    }
+  /**
+   * Process of all module children recursively
+   */
+  function getAllDepsForModule(children: any) {
+    children.forEach((c: { filename: string; children: any }) => {
+      if (!deps.includes(c.filename)) {
+        deps.push(c.filename);
 
-    deps.push(c.filename);
+        if (require.cache[c.filename]) {
+          delete require.cache[c.filename];
+        }
 
-    if (require.cache[c.filename]) {
-      delete require.cache[c.filename];
-    }
-  });
+        if (c.children && c.children.length) {
+          getAllDepsForModule(c.children);
+        }
+      }
+    });
+  }
+
+  getAllDepsForModule(module.children);
 
   if (require.cache[filename]) {
     delete require.cache[filename];

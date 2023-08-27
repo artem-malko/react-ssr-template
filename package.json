@@ -18,7 +18,7 @@
   "homepage": "https://github.com/artem-malko/react-ssr-template#readme",
   "sideEffects": false,
   "dependencies": {
-    "@tanstack/react-query": "4.32.6",
+    "@tanstack/react-query": "4.33.0",
     "bidi-css-js": "3.1.0",
     "cookie-parser": "1.4.6",
     "express": "4.18.2",
@@ -40,7 +40,7 @@
     "uuid": "9.0.0"
   },
   "devDependencies": {
-    "@tanstack/react-query-devtools": "4.32.6",
+    "@tanstack/react-query-devtools": "4.33.0",
     "@testing-library/react": "14.0.0",
     "@types/chai": "4.3.5",
     "@types/chai-dom": "1.11.0",

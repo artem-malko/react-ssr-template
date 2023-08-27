@@ -196,7 +196,7 @@ export class ReactStreamRenderEnhancer extends Writable {
 function wrapWithImmediateScript(code: string) {
   const randomScriptId = generateRandomId();
 
-  return `<script id="${randomScriptId}">${code}document.getElementById("${randomScriptId}").remove();</script>`;
+  return `<script id="${randomScriptId}">;${code};document.getElementById("${randomScriptId}").remove();</script>`;
 }
 
 function generateRandomId(prefix?: string) {

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { Suspense, memo } from 'react';
 
 import { APPLICATION_CONFIG_VAR_NAME } from 'framework/config/generator/shared';
 import { BaseApplicationConfig } from 'framework/config/types';
@@ -54,7 +54,7 @@ export const Shell = memo<{
       <>
         {/* Use renderCallback as described here https://github.com/reactwg/react-18/discussions/5 */}
         <div ref={onRender}></div>
-        {mainComp}
+        <Suspense>{mainComp}</Suspense>
 
         {/* All needed script-files like React, vendors and so on
             will be added to a page via React (bootstrapScripts) */}
