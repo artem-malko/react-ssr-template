@@ -15,7 +15,7 @@ const InfinityList = memo<{ initialPage: number; onItemHover: (title: string) =>
         <h3>Infinity List</h3>
         <br />
         {infinityNews.isFetching && !infinityNews.isFetchingNextPage && <div>isFetching...</div>}
-        {infinityNews.isError && <div>ERROR: {infinityNews.error.code}</div>}
+        {infinityNews.error && <div>ERROR: {infinityNews.error.code}</div>}
         {infinityNews.isSuccess && (
           <div>
             {infinityNews.data.pages.map((p) =>

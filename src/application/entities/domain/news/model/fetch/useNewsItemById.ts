@@ -1,4 +1,4 @@
-import { useAppQuery } from 'application/shared/hooks/useAppQuery';
+import { useAppSuspenseQuery } from 'application/shared/hooks/useAppSuspenseQuery';
 import { useApi } from 'application/shared/lib/api';
 
 import { getNewsItemByIdApi } from '../../api/getNewsItemById';
@@ -12,7 +12,10 @@ export type UseNewsItemParams = {
 export const useNewsItemById = (params: UseNewsItemParams) => {
   const getNewsItemById = useApi(getNewsItemByIdApi);
 
-  return useAppQuery(newsQueryKeys.byId(params), () => getNewsItemById({ id: params.newsItemId }), {
+  return useAppSuspenseQuery({
+    queryKey: newsQueryKeys.byId(params),
+    queryFn: () => getNewsItemById({ id: params.newsItemId }),
+
     staleTime: Infinity,
     initialData: params.initialData,
   });

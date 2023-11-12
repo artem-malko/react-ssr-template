@@ -154,8 +154,8 @@ export const DevMenu = memo(() => {
         </div>
       </div>
       {isQueryDevToolsUsed && (
-        <div style={{ position: 'fixed' }}>
-          <ReactQueryDevtools initialIsOpen={false} panelProps={{ style: { height: 300 } }} />
+        <div style={{ position: 'fixed', zIndex: 999 }}>
+          <ReactQueryDevtools initialIsOpen={false} />
         </div>
       )}
     </>

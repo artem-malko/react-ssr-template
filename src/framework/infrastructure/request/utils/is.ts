@@ -7,6 +7,7 @@
 import { URLSearchParams } from 'url';
 
 import { RequestError } from '../error';
+import { ParsedError } from '../types';
 
 const NAME = Symbol.toStringTag;
 
@@ -69,4 +70,20 @@ export function isRequestError(error: Error): error is RequestError {
   }
 
   return false;
+}
+
+export function isParsedError(error: unknown): error is ParsedError {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  return (
+    'code' in error &&
+    typeof error.code === 'number' &&
+    'data' in error &&
+    typeof error.data === 'object' &&
+    !!error.data &&
+    'message' in error.data &&
+    typeof error.data.message === 'string'
+  );
 }

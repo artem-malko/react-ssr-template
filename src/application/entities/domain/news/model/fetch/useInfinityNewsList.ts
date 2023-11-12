@@ -1,4 +1,4 @@
-import { useInfiniteAppQuery } from 'application/shared/hooks/useInfiniteAppQuery';
+import { useAppSuspenseInfiniteQuery } from 'application/shared/hooks/useAppSuspenseInfiniteQuery';
 import { useApi } from 'application/shared/lib/api';
 
 import { getNewsListApi } from '../../api/getNewsList';
@@ -11,12 +11,12 @@ export type UseInfinityNewsParams = {
 export const useInfinityNewsList = (params: UseInfinityNewsParams) => {
   const getNewsList = useApi(getNewsListApi);
 
-  return useInfiniteAppQuery(
-    newsQueryKeys.infinityListByParams(params),
-    ({ pageParam = params.initialPage }) => getNewsList({ page: pageParam }),
-    {
-      staleTime: Infinity,
-      getNextPageParam: (_, pages) => params.initialPage + pages.length,
-    },
-  );
+  return useAppSuspenseInfiniteQuery({
+    queryKey: newsQueryKeys.infinityListByParams(params),
+    queryFn: ({ pageParam }) => getNewsList({ page: pageParam }),
+
+    staleTime: Infinity,
+    getNextPageParam: (_, pages) => params.initialPage + pages.length,
+    initialPageParam: params.initialPage,
+  });
 };

@@ -93,12 +93,12 @@ watch-ts-errors:
 # Make production build for client
 .PHONY: build-prod-client
 build-prod-client:
-	NODE_ENV=production node_modules/.bin/webpack --config webpack/client.ts --bail
+	NODE_ENV=production node_modules/.bin/webpack-cli --config webpack/client.ts
 
 # Make production build for server
 .PHONY: build-prod-server
 build-prod-server:
-	NODE_ENV=production node_modules/.bin/webpack --config webpack/server.ts --bail
+	NODE_ENV=production node_modules/.bin/webpack-cli --config webpack/server.ts
 
 ## Tests, checks on push
 
@@ -165,8 +165,9 @@ tsc:
 # Build a docker image with NodeJS App inside
 .PHONY: build-nodejs-app-image
 build-nodejs-app-image:
-	docker build \
-		--platform linux/amd64 \
+	docker buildx build \
+		--load \
+		--platform=linux/amd64 \
 		--build-arg GITHUB_SHA=$$(git rev-parse --verify HEAD) \
 		--build-arg DOCKER_IMAGE_WITH_EXISTS_BUILD=${DOCKER_IMAGE_PATH}:latest \
 		-t ${DOCKER_IMAGE_PATH}:latest .

@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 
 import esbuild from 'esbuild';
 import webpack from 'webpack';
@@ -6,8 +6,7 @@ import webpack from 'webpack';
 import { universalConfig } from './universal';
 import { merge } from './utils/merge';
 import { pinoBannerPlugin, pinoEntries } from './utils/pino';
-
-const isProduction = process.env.NODE_ENV === 'production';
+import { isProduction } from './utils/isProduction';
 
 const serverConfig: webpack.Configuration = {
   entry: {
@@ -69,7 +68,7 @@ const serverConfig: webpack.Configuration = {
   target: 'node',
 };
 
-export default isProduction
+export default isProduction()
   ? merge(universalConfig, serverConfig, { mode: 'production' })
   : merge(
       universalConfig,

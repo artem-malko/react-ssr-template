@@ -21,8 +21,14 @@ export { createRouteConfigCreator } from 'framework/infrastructure/router/create
 export { bindRouteConfigToPathCreator } from 'framework/infrastructure/router/bindRouteConfigToPathCreator';
 export { createURLCompiler } from 'framework/infrastructure/router/compileURL';
 
-export { useCommonAppQuery } from 'framework/infrastructure/query/useCommonAppQuery';
-export { useInfiniteCommonAppQuery } from 'framework/infrastructure/query/useInfiniteCommonAppQuery';
+export {
+  type UseAnyAppSuspenseQueryOptions,
+  useAnyAppSuspenseQuery,
+} from 'framework/infrastructure/query/useAnyAppSuspenseQuery';
+export {
+  type UseAnyAppSuspenseInfiniteQueryOptions,
+  useAnyAppSuspenseInfiniteQuery,
+} from 'framework/infrastructure/query/useAnyAppSuspenseInfiniteQuery';
 
 export { usePlatformAPI } from 'framework/infrastructure/platform/shared/context';
 
@@ -33,4 +39,6 @@ export { RaiseError } from 'framework/infrastructure/raise/react/component';
 
 export { DATA_T_ATTRIBUTE_NAME, dt } from 'framework/infrastructure/tests/dom/dt';
 
-export { type GetTitle } from '../applications/client/types';
+export { type GetTitle } from 'framework/applications/client/types';
+
+export { isParsedError } from 'framework/infrastructure/request/utils/is';

@@ -69,9 +69,8 @@ export class RootChunkDependenciesManagerPlugin {
              * In that case its id will be used as the name
              */
             const name = statsChunk?.names?.[0] || statsChunk.id;
-            const originModuleName = statsChunk.origins?.find(
-              (origin) => !!origin.moduleName,
-            )?.moduleName;
+            const originModuleName = statsChunk.origins?.find((origin) => !!origin.moduleName)
+              ?.moduleName;
 
             /**
              * Sometimes, dynamic import() should not be preloaded

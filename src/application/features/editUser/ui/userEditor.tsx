@@ -50,7 +50,7 @@ export const UserEditor = memo<Props>(({ userId }) => {
     [navigate],
   );
 
-  const { mutate: editUser, isLoading: isMutationInProgress } = useEditUser();
+  const { mutate: editUser, isPending: isMutationInProgress } = useEditUser();
   const onEditUserClick = useCallback(
     (params: { name: string; status: UserStatus }) => {
       editUser(

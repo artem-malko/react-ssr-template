@@ -35,7 +35,7 @@ export const UserTableRow = memo<Props>(({ user, index, page }) => {
     },
     [navigate],
   );
-  const { mutate: deleteUser, isLoading: isMutationInProgress } = useDeleteUser();
+  const { mutate: deleteUser, isPending: isMutationInProgress } = useDeleteUser();
   const onDeleteClick = useCallback(() => {
     return deleteUser(
       { userId: user.id, name: user.name },

@@ -103,3 +103,7 @@ export const GlassBoundary = memo<PropsWithChildren<Props>>(
   },
 );
 GlassBoundary.displayName = 'GlassBoundary';
+
+export const useGlassContext = () => {
+  return useContext(GlassContext);
+};

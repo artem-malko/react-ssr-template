@@ -6,7 +6,7 @@ import { UserForm } from 'application/entities/ui/userForm';
 import { useGlassEffect } from 'application/shared/kit/glass';
 
 export const AddUser = memo(() => {
-  const { mutate: addUser, isLoading: isMutationInProgress } = useAddUser();
+  const { mutate: addUser, isPending: isMutationInProgress } = useAddUser();
 
   const invalidateAllUserQueries = useInvalidateAllUserQueries();
 

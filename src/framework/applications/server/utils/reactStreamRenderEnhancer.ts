@@ -64,7 +64,7 @@ export class ReactStreamRenderEnhancer extends Writable {
        * It can be any query in a `success` or `error` status
        */
       const queryToDehydrate = queryClientCache.find(
-        (q) => q.state.status !== 'loading' && !this.queryStorage[q.queryHash],
+        (q) => q.state.status !== 'pending' && !this.queryStorage[q.queryHash],
       );
 
       /**

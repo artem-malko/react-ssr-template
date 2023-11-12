@@ -6,7 +6,7 @@ ARG DOCKER_IMAGE_WITH_EXISTS_BUILD=undefined
 
 # Install dependencies stage
 # Install dependencies only when needed
-FROM node:alpine AS deps
+FROM --platform=linux/amd64 node:alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /usr/app
@@ -15,7 +15,7 @@ RUN npm ci
 
 # Build stage
 # Rebuild the source code only when needed
-FROM node:alpine AS builder
+FROM --platform=linux/amd64 node:alpine AS builder
 
 # This is a build-arg to store an application version
 # This SHA is used in logs, to help you to realize,
@@ -38,11 +38,11 @@ RUN APP_VERSION=${GITHUB_SHA:0:7} make production
 # That builds will be used to store prev files,
 # which can be requested by browser cache, bots and so on
 # You have to specify your own image here
-FROM ${DOCKER_IMAGE_WITH_EXISTS_BUILD} AS exists-build
+FROM --platform=linux/amd64 ${DOCKER_IMAGE_WITH_EXISTS_BUILD} AS exists-build
 
 
 # Production image, copy all the files and run it
-FROM node:alpine
+FROM --platform=linux/amd64 node:alpine
 ARG  SERVER_PORT=4000
 
 RUN apk update && apk add --no-cache make

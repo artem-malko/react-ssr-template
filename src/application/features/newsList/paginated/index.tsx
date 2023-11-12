@@ -53,7 +53,7 @@ const PaginatedList = memo<{ pageNumber: number; onItemHover: (title: string) =>
         <br />
         <br />
         {news.isLoading && <div>LOADING...</div>}
-        {news.isFetching && <div>Updating...</div>}
+        {news.isFetching && <div>Fetching new page...</div>}
         {news.isError && <div>ERROR: {JSON.stringify(news.error)}</div>}
         {news.isSuccess &&
           news.data.slice(0, 10).map((item) => (

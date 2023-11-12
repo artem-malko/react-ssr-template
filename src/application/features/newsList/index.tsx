@@ -11,6 +11,7 @@ import { Preloader } from 'application/shared/kit/preloader';
 import { useToast } from 'application/shared/kit/toast';
 
 import { styles } from './index.css';
+import { ReactQueryBoundary } from 'application/shared/lib/query';
 
 export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
   ({ initialPage, useInfinityList }) => {
@@ -71,7 +72,11 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
           {listType === 'paginated' ? (
             <Lazy
               loader={() => import('./paginated')}
-              render={(List) => <List pageNumber={initialPage} onItemHover={onItemHover} />}
+              render={(List) => (
+                <ReactQueryBoundary>
+                  <List pageNumber={initialPage} onItemHover={onItemHover} />
+                </ReactQueryBoundary>
+              )}
               fallback={(status) =>
                 status === 'error' ? (
                   <>paginatedNewList error</>
@@ -84,7 +89,11 @@ export const NewsList = memo<{ initialPage: number; useInfinityList: boolean }>(
           ) : (
             <Lazy
               loader={() => import('./infinity')}
-              render={(List) => <List initialPage={initialPage} onItemHover={onItemHover} />}
+              render={(List) => (
+                <ReactQueryBoundary>
+                  <List initialPage={initialPage} onItemHover={onItemHover} />
+                </ReactQueryBoundary>
+              )}
               fallback={(status) =>
                 status === 'error' ? <>infinityNewList error</> : <Preloader purpose="infinityNewList" />
               }

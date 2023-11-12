@@ -22,7 +22,7 @@ export const useResetCacheOnUnmount = <TResult, TError extends ParsedError>({
 
   useEffect(() => {
     return () => {
-      const queryState = queryClient.getQueryState<TResult, TError>(key, { exact: true });
+      const queryState = queryClient.getQueryState<TResult, TError>(key);
 
       if (queryState?.status !== 'error') {
         return;
@@ -32,7 +32,7 @@ export const useResetCacheOnUnmount = <TResult, TError extends ParsedError>({
       const isErrorCodeOkToResetCache = errorCode ? isErrorCodeOkToResetCacheChecker(errorCode) : true;
 
       if (isErrorCodeOkToResetCache) {
-        queryClient.getQueryCache().find(key, { exact: true })?.reset();
+        queryClient.getQueryCache().find({ exact: true, queryKey: key })?.reset();
       }
     };
     // We use queryId as compiled key here,

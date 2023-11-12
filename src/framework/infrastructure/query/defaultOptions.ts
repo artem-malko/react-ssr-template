@@ -1,4 +1,4 @@
-import { DefaultOptions } from '@tanstack/react-query';
+import { DefaultOptions, keepPreviousData } from '@tanstack/react-query';
 
 /**
  * Just some reasonable default options for react-query
@@ -16,14 +16,19 @@ export const defaultQueryOptions: DefaultOptions = {
      */
     refetchOnMount: true,
 
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
 
-    // Actually, its ok to change this option to 3 times
+    /**
+     * Actually, its ok to change this option to 3 times
+     */
     retry: false,
-    retryOnMount: false,
 
-    suspense: true,
-    // As for me, it is much more easy to handle error near useQuery usage
-    useErrorBoundary: false,
+    /**
+     * Works for useQuery, useInfinityQuery and mutations only
+     *
+     * For useSuspense and useSuspenseInfinityQuery with option is useless
+     * https://tanstack.com/query/latest/docs/react/guides/suspense#throwonerror-default
+     */
+    throwOnError: false,
   },
 };

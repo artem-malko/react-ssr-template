@@ -1,7 +1,5 @@
 import { memo, useCallback, useEffect, useId } from 'react';
 
-import { RaiseError } from 'framework/public/universal';
-
 import { usersPageDefaultParams } from 'application/pages/shared';
 
 import { useUserList, type UserStatus } from 'application/entities/domain/user';
@@ -20,7 +18,7 @@ type Props = {
  */
 export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
   const toggleGlass = useToggleGlass();
-  const userListResult = useUserList({
+  const { data, isFetching, isRefetchError, refetch } = useUserList({
     page,
     statusFilter: filterStatus,
   });
@@ -45,28 +43,20 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
    * So, we have to process this status by ourselves
    */
   useEffect(() => {
-    toggleGlass(userListResult.isFetching, 'list');
-  }, [userListResult.isFetching, toggleGlass]);
-
-  if (userListResult.error) {
-    return (
-      <>
-        <UserListFilters disabled={userListResult.isFetching} filterStatus={filterStatus} />
-        <h1>ERROR!</h1>
-        <RaiseError code={userListResult.error.code} />
-        <strong>{JSON.stringify(userListResult.error)}</strong>
-        <button onClick={() => userListResult.refetch()}>Retry</button>
-      </>
-    );
-  }
-
-  if (!userListResult.data) {
-    return null;
-  }
+    toggleGlass(isFetching, 'list');
+  }, [isFetching, toggleGlass]);
 
   return (
     <div>
-      <UserListFilters disabled={userListResult.isFetching} filterStatus={filterStatus} />
+      {isRefetchError && (
+        <div>
+          Data might be stale{' '}
+          <button type="button" onClick={() => refetch()}>
+            Update
+          </button>
+        </div>
+      )}
+      <UserListFilters disabled={false} filterStatus={filterStatus} />
       <table cellPadding={8} cellSpacing={4}>
         <tbody>
           <tr>
@@ -76,7 +66,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
               </td>
             ))}
           </tr>
-          {userListResult.data.users.map((user, i) => (
+          {data.users.map((user, i) => (
             <UserTableRow user={user} index={i} key={user.id} page={page} />
           ))}
         </tbody>
@@ -85,10 +75,7 @@ export const UserList = memo<Props>(({ page, filterStatus = [] }) => {
       <button disabled={page === 1} onClick={() => onPageChange('dec')}>
         Prev page
       </button>
-      <button
-        disabled={page === Math.ceil(userListResult.data.total / 10)}
-        onClick={() => onPageChange('inc')}
-      >
+      <button disabled={page === Math.ceil(data.total / 10)} onClick={() => onPageChange('inc')}>
         Next page
       </button>
       <br />

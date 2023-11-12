@@ -8,9 +8,11 @@ import { UserStatus } from '../../types';
 export const useAddUser = () => {
   const postUser = useApi(postUserApi);
 
-  return useMutation((userToAdd: { name: string; status: UserStatus }) => {
-    return postUser({
-      user: userToAdd,
-    });
+  return useMutation({
+    mutationFn: (userToAdd: { name: string; status: UserStatus }) => {
+      return postUser({
+        user: userToAdd,
+      });
+    },
   });
 };

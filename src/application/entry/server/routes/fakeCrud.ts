@@ -20,13 +20,16 @@ async function fakeAPIRandomLatencyAndErrorResponser(req: Request, res: Response
 
   if (useRandomLatencyInFakeAPIFromCookie === '1') {
     await new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, Math.round(Math.random() * 3000));
+      setTimeout(
+        () => {
+          resolve();
+        },
+        Math.round(Math.random() * 3000),
+      );
     });
   }
 
-  if (useErrorsInFakeAPIFromCookie === '1' && Math.random() <= 0.25) {
+  if (useErrorsInFakeAPIFromCookie === '1' && Math.random() <= 0.5) {
     return res.status(500).json(renderError(500, 'Fake error'));
   }
 

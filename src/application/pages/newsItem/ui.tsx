@@ -3,6 +3,7 @@ import { memo } from 'react';
 import NewsItem from 'application/features/newsItem';
 
 import { NewsItemPage } from '.';
+import { ReactQueryBoundary } from 'application/shared/lib/query';
 
 export default memo<{ page: NewsItemPage }>(
   ({
@@ -16,7 +17,9 @@ export default memo<{ page: NewsItemPage }>(
     return (
       <>
         <div>news item with id {page.params.id}</div>
-        <NewsItem newsItemId={page.params.id} />
+        <ReactQueryBoundary>
+          <NewsItem newsItemId={page.params.id} />
+        </ReactQueryBoundary>
       </>
     );
   },

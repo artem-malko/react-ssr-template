@@ -1,4 +1,4 @@
-import { memo, Suspense } from 'react';
+import { memo, Suspense, useEffect } from 'react';
 
 import { AddUser } from 'application/features/addUser';
 import { FakeAPIConfigurator } from 'application/features/fakeAPIConfigurator';
@@ -6,12 +6,15 @@ import { UserList } from 'application/features/userList';
 
 import { Link } from 'application/entities/ui/navigation';
 
-import { GlassBoundary } from 'application/shared/kit/glass';
+import { GlassBoundary, useGlassContext } from 'application/shared/kit/glass';
 import { Lazy } from 'application/shared/kit/lazy';
 import { Preloader } from 'application/shared/kit/preloader';
 import { Spoiler } from 'application/shared/kit/spoiler';
 
 import { UsersPage, usersPageDefaultParams } from '.';
+import { isParsedError, RaiseError } from 'framework/public/universal';
+
+import { ReactQueryBoundary } from 'application/shared/lib/query';
 
 /**
  * This page is made to demonstrate several approaches, how to work with mutations in react-query
@@ -71,9 +74,27 @@ export default memo<{ page: UsersPage }>(
         <br />
         <GlassBoundary name="fulllist">
           <GlassBoundary name="list">
-            <Suspense fallback={<Preloader purpose="UserList data loading" />}>
+            <ReactQueryBoundary
+              loadingFallback={<Preloader purpose="UserList data loading" />}
+              errorFallback={({ error, resetErrorBoundary }) => {
+                const { hideGlass } = useGlassContext();
+
+                useEffect(() => {
+                  hideGlass('list');
+                }, []);
+
+                return (
+                  <>
+                    <h1>ERROR!</h1>
+                    {isParsedError(error) && <RaiseError code={error.code} />}
+                    <strong>{JSON.stringify(error)}</strong>
+                    <button onClick={resetErrorBoundary}>Retry</button>
+                  </>
+                );
+              }}
+            >
               <UserList filterStatus={page.params.filterStatus} page={page.params.page} />
-            </Suspense>
+            </ReactQueryBoundary>
           </GlassBoundary>
           <br />
           <br />

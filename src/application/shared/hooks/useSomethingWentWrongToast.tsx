@@ -7,7 +7,7 @@ export const useSomethingWentWrongToast = () => {
 
   return useCallback(
     (params: { description?: ReactNode; error?: Error }) => {
-      const { description = 'Something went wrong', error } = params;
+      const { description = 'Something went wrong!', error } = params;
       showToast({
         body: () => (
           <>

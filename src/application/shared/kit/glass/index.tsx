@@ -1,4 +1,4 @@
-export { GlassBoundary } from './context';
+export { GlassBoundary, useGlassContext } from './context';
 
 export { RootGlassBoundaryName } from './constants';
 

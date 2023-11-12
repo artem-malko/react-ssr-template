@@ -107,12 +107,22 @@ export const Popover = memo<Props>(
         event.stopPropagation();
       };
 
-      popoverContainerRef.current?.addEventListener('mousedown', eventListener, true);
-      popoverContainerRef.current?.addEventListener('touchstart', eventListener, true);
+      popoverContainerRef.current?.addEventListener('mousedown', eventListener, {
+        capture: true,
+        passive: false,
+      });
+      popoverContainerRef.current?.addEventListener('touchstart', eventListener, {
+        capture: true,
+        passive: false,
+      });
 
       return () => {
-        popoverContainerRef.current?.removeEventListener('mousedown', eventListener, true);
-        popoverContainerRef.current?.removeEventListener('touchstart', eventListener, true);
+        popoverContainerRef.current?.removeEventListener('mousedown', eventListener, {
+          capture: true,
+        });
+        popoverContainerRef.current?.removeEventListener('touchstart', eventListener, {
+          capture: true,
+        });
       };
     }, []);
 

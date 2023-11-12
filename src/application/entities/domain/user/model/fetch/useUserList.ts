@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { useAppQuery } from 'application/shared/hooks/useAppQuery';
+import { useAppSuspenseQuery } from 'application/shared/hooks/useAppSuspenseQuery';
 import { useApi } from 'application/shared/lib/api';
 import { UnwrapQueryData } from 'application/shared/lib/query';
 
@@ -24,7 +24,10 @@ const useUserListFetcher = () => {
 export const useUserList = (params: UseUserListParams) => {
   const userListFetcher = useUserListFetcher();
 
-  return useAppQuery(userQueryKeys.listByParams(params), () => userListFetcher(params));
+  return useAppSuspenseQuery({
+    queryKey: userQueryKeys.listByParams(params),
+    queryFn: () => userListFetcher(params),
+  });
 };
 
 export const useUserListOptimisticUpdater = () => {
@@ -33,7 +36,9 @@ export const useUserListOptimisticUpdater = () => {
   return useCallback(
     (userToUpdate: User) => {
       return queryClient.setQueriesData<UnwrapQueryData<typeof useUserList>>(
-        userQueryKeys.allLists(),
+        {
+          queryKey: userQueryKeys.allLists(),
+        },
         (previous) => {
           if (typeof previous === 'undefined') {
             return { total: 0, users: [] };

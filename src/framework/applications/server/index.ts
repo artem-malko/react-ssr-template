@@ -110,7 +110,7 @@ export const startServer = ({
   server.use((req, _res, next) => {
     // Artificially delay serving JS
     // to demonstrate streaming HTML
-    if (req.url.includes('.js')) {
+    if (req.url.includes('news')) {
       setTimeout(next, process.env.NODE_ENV === 'production' ? 2000 : 1000);
     } else {
       next();

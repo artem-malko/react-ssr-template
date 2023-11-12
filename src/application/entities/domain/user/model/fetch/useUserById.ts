@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 
-import { useAppQuery } from 'application/shared/hooks/useAppQuery';
+import { useAppSuspenseQuery } from 'application/shared/hooks/useAppSuspenseQuery';
 import { useApi } from 'application/shared/lib/api';
 import { UnwrapQueryData } from 'application/shared/lib/query';
 
@@ -22,7 +22,10 @@ const useUserByIdFetcher = () => {
 export const useUserById = (params: UserByIdParams) => {
   const userByIdFetcher = useUserByIdFetcher();
 
-  return useAppQuery(userQueryKeys.byId(params), () => userByIdFetcher(params));
+  return useAppSuspenseQuery({
+    queryKey: userQueryKeys.byId(params),
+    queryFn: () => userByIdFetcher(params),
+  });
 };
 
 export const useUserByIdQueryFetcher = () => {
@@ -31,7 +34,10 @@ export const useUserByIdQueryFetcher = () => {
 
   return useCallback(
     (params: UserByIdParams) => {
-      return queryClient.fetchQuery(userQueryKeys.byId(params), () => userByIdFetcher(params));
+      return queryClient.fetchQuery({
+        queryKey: userQueryKeys.byId(params),
+        queryFn: () => userByIdFetcher(params),
+      });
     },
     [queryClient, userByIdFetcher],
   );
