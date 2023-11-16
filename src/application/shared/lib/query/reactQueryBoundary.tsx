@@ -1,6 +1,6 @@
 import { QueryErrorResetBoundary } from '@tanstack/react-query';
 import { Preloader } from 'application/shared/kit/preloader';
-import { ComponentType, PropsWithChildren, ReactNode, Suspense, memo } from 'react';
+import { ComponentType, PropsWithChildren, ReactNode, Suspense, memo, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 type Props = {
@@ -27,7 +27,14 @@ export const ReactQueryBoundary = memo<PropsWithChildren<Props>>(
 ReactQueryBoundary.displayName = 'ReactQueryBoundary';
 
 const DefaultLoading = memo(() => {
-  return <Preloader />;
+  const [n, setN] = useState(0);
+  return (
+    <div>
+      <div>Interactive preloader! n is {n}</div>
+      <button onClick={() => setN(n + 1)}>increase n</button>
+      <Preloader />
+    </div>
+  );
 });
 DefaultLoading.displayName = 'DefaultLoading';
 
