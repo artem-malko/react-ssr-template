@@ -75,7 +75,7 @@ export const Main = memo(() => {
                   <DevMenu />
                 </div>
                 <Suspense fallback={<Preloader purpose={`page with name ${page.name}`} />}>
-                  <Page page={page} />
+                  <PageUI page={page} />
                 </Suspense>
               </div>
             }
@@ -88,7 +88,7 @@ export const Main = memo(() => {
 });
 Main.displayName = 'Main';
 
-const Page = memo<{ page: Page }>(({ page }) => {
+const PageUI = memo<{ page: Page }>(({ page }) => {
   switch (page.name) {
     case 'root':
       return <RootPage page={page} />;

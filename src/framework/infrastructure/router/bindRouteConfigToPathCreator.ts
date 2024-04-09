@@ -61,8 +61,8 @@ export const bindRouteConfigToPathCreator = <AppPage extends AnyPage<string>>() 
    */
   return <RoutePath extends string, MatchedPage extends AppPage = AppPage>(
     path: RoutePath,
-    config: RouteConfig<ExtractRouteParams<RoutePath>, AppPage, MatchedPage>,
-  ): Route<ExtractRouteParams<RoutePath>, AppPage, MatchedPage> => {
+    config: RouteConfig<ExtractRouteParams<NoInfer<RoutePath>>, AppPage, MatchedPage>,
+  ): Route<ExtractRouteParams<NoInfer<RoutePath>>, AppPage, MatchedPage> => {
     return {
       path,
       ...config,

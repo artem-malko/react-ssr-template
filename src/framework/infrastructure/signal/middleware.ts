@@ -1,4 +1,4 @@
-import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux';
+import { UnknownAction, Dispatch, Middleware, isAction } from 'redux';
 
 import {
   SIGNAL_ACTION,
@@ -7,22 +7,41 @@ import {
   WITH_SELECTORS_ACTION,
   NOOP_ACTION,
 } from './constants';
+import {
+  isSignalActionWithActionInPayload,
+  isSignalActionWithActionsInPayload,
+  isSignalActionWithSelectorsInPayload,
+} from './utils';
 
 export function createSignalMiddleware(): Middleware<Record<string, unknown>> {
-  return (store: MiddlewareAPI<Dispatch>) => (next: Dispatch) => (action: AnyAction) => {
+  return (store) => (next) => (action) => {
+    if (!isAction(action)) {
+      return next(action);
+    }
+
     const { dispatch, getState } = store;
+
     switch (action.type) {
       case SIGNAL_ACTION:
-        return dispatch(action.payload);
+        return isSignalActionWithActionInPayload(action) ? dispatch(action.payload) : next(action);
       case SEQUENCE_ACTION:
-        return runSequence(action.payload, dispatch);
+        return isSignalActionWithActionsInPayload(action)
+          ? runSequence(action.payload, dispatch)
+          : next(action);
       case PARALLEL_ACTION:
-        return runParallel(action.payload, dispatch);
+        return isSignalActionWithActionsInPayload(action)
+          ? runParallel(action.payload, dispatch)
+          : next(action);
       case WITH_SELECTORS_ACTION: {
         const state = getState();
+
+        if (!isSignalActionWithSelectorsInPayload(action)) {
+          return next(action);
+        }
+
         const selectorsResult = Object.keys(action.selectors).reduce(
           (mutableRes: { [key: string]: any }, selectorLabel) => {
-            mutableRes[selectorLabel] = action.selectors[selectorLabel](state);
+            mutableRes[selectorLabel] = action.selectors[selectorLabel]?.(state);
             return mutableRes;
           },
           {},
@@ -38,10 +57,10 @@ export function createSignalMiddleware(): Middleware<Record<string, unknown>> {
   };
 }
 
-function runSequence(actions: AnyAction[], dispatch: Dispatch) {
+function runSequence(actions: UnknownAction[], dispatch: Dispatch) {
   return actions.reduce<Promise<any>>((result, a) => result.then(() => dispatch(a)), Promise.resolve());
 }
 
-function runParallel(actions: AnyAction[], dispatch: Dispatch) {
+function runParallel(actions: UnknownAction[], dispatch: Dispatch) {
   return Promise.all(actions.map((a) => dispatch(a)));
 }
