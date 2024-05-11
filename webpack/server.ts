@@ -66,6 +66,12 @@ const serverConfig: webpack.Configuration = {
   devtool: false,
 
   target: 'node',
+
+  ignoreWarnings: [
+    {
+      message: /Critical dependency:/,
+    },
+  ],
 };
 
 export default isProduction()

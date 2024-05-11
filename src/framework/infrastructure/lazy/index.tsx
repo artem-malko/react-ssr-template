@@ -1,4 +1,4 @@
-import { Component, ComponentType, lazy, LazyExoticComponent, Suspense } from 'react';
+import { Component, ComponentType, lazy, LazyExoticComponent, Suspense, type JSX } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { noopFunc } from 'lib/lodash';

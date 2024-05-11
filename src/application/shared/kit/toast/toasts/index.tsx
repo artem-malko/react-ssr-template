@@ -67,7 +67,13 @@ export const Toasts = memo<{ gap?: number }>(({ gap = 20 }) => {
   return (
     <>
       {toastsToRender.map((toast, i) => (
-        <div ref={(el) => (toastElementsRef.current[i] = el)} key={toast.id} className={css('item')}>
+        <div
+          ref={(el) => {
+            toastElementsRef.current[i] = el;
+          }}
+          key={toast.id}
+          className={css('item')}
+        >
           <ToastItem toast={toast} remove={remove} />
         </div>
       ))}

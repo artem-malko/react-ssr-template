@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 export type Popup = {
   id: string;
   body: (params: { closePopup: () => void; popupId: string }) => JSX.Element;

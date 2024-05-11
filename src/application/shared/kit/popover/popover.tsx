@@ -30,7 +30,7 @@ const defaultView = {
 };
 
 type Props = {
-  targetRef: React.RefObject<HTMLElement>;
+  targetRef: React.RefObject<HTMLElement | null>;
   isShown: boolean;
   hide: () => void;
   placement?: Placement;
@@ -206,11 +206,11 @@ export const Popover = memo<Props>(
     const childrenToRender = isValidElement(children)
       ? children
       : typeof children === 'function'
-      ? children({
-          alignment,
-          placement,
-        })
-      : children;
+        ? children({
+            alignment,
+            placement,
+          })
+        : children;
 
     return createPortal(
       <div
